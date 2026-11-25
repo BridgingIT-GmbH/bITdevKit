@@ -379,6 +379,8 @@ Scope applies to exact detail, related work, counts, facets, exports and compani
 
 ## Privacy and protection
 
+Audit display text uses Common's UTF-8 byte-limit helper through `AuditCollector.Text`. [Truncate text to a UTF-8 byte limit](./common-extensions.md#truncate-text-to-a-utf-8-byte-limit)
+
 Capture only explicit `AuditValue` projections. `IAuditDetails`, typed `IAuditDetailsProvider<T>` and `IAuditContributor` can add approved facts; they do not enable the source boundary. Metadata callbacks are synchronous, guarded against recursion, and skipped under no-op/suppression. Do not retain the scope/service provider or execute business work from a contributor.
 
 Default exclusions include password, secret, token, authorization, cookie, access/refresh token, email, subject, body, content and connectionString. Exclusion wins over redaction and hashing. Add names through immutable `AuditCapturePolicyOptions` sets. Hashing a low-entropy value does not establish anonymity.

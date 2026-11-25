@@ -6,14 +6,77 @@
 namespace BridgingIT.DevKit.Common.UnitTests.Abstractions.Extensions;
 
 using System;
+using System.Globalization;
 using Bogus;
 using Shouldly;
 using Xunit;
 
+/// <summary>Verifies timeout, duration, and clock-text extensions.</summary>
+/// <example><code>var parsed = "750ms".TryParseDuration(out var duration);</code></example>
 [UnitTest("Common")]
 public class TimeSpanExtensionsTests
 {
     private readonly Faker faker = new();
+
+    /// <summary>Checks standard text and each friendly duration suffix.</summary>
+    /// <example><code>var parsed = "+1.5S".TryParseDuration(out var duration);</code></example>
+    [Theory]
+    [InlineData("1.02:03:04.005", 93784005)]
+    [InlineData(" 500MS ", 500)]
+    [InlineData("+1.5S", 1500)]
+    [InlineData("-1.5m", -90000)]
+    [InlineData("0.5h", 1800000)]
+    [InlineData("1e-3s", 1)]
+    [InlineData("0s", 0)]
+    public void TryParseDuration_SupportedFormat_ReturnsExpectedDuration(string source, int expectedMilliseconds)
+    {
+        var parsed = source.TryParseDuration(out var duration);
+
+        parsed.ShouldBeTrue();
+        duration.ShouldBe(TimeSpan.FromMilliseconds(expectedMilliseconds));
+    }
+
+    /// <summary>Checks that invalid, non-finite, and overflowing input returns zero.</summary>
+    /// <example><code>var parsed = "NaNs".TryParseDuration(out var duration);</code></example>
+    [Theory]
+    [InlineData(null)]
+    [InlineData("")]
+    [InlineData(" ")]
+    [InlineData("ms")]
+    [InlineData("1d")]
+    [InlineData("NaNs")]
+    [InlineData("Infinityh")]
+    [InlineData("1e300h")]
+    [InlineData("02:30 PM")]
+    public void TryParseDuration_UnsupportedFormat_ReturnsFalseAndZero(string source)
+    {
+        var parsed = source.TryParseDuration(out var duration);
+
+        parsed.ShouldBeFalse();
+        duration.ShouldBe(TimeSpan.Zero);
+    }
+
+    /// <summary>Checks that changing the current culture leaves the decimal separator invariant.</summary>
+    /// <example><code>var parsed = "1.5s".TryParseDuration(out var duration);</code></example>
+    [Fact]
+    public void TryParseDuration_CommaDecimalCulture_UsesInvariantDecimalSeparator()
+    {
+        var originalCulture = CultureInfo.CurrentCulture;
+        try
+        {
+            CultureInfo.CurrentCulture = CultureInfo.GetCultureInfo("nl-NL");
+
+            "1.5s".TryParseDuration(out var duration).ShouldBeTrue();
+            "1,5s".TryParseDuration(out var rejectedDuration).ShouldBeFalse();
+
+            duration.ShouldBe(TimeSpan.FromMilliseconds(1500));
+            rejectedDuration.ShouldBe(TimeSpan.Zero);
+        }
+        finally
+        {
+            CultureInfo.CurrentCulture = originalCulture;
+        }
+    }
 
     [Fact]
     public void ToCancellationTokenSource_ZeroTimeSpan_ReturnsCancelledToken()

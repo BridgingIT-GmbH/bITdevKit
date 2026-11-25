@@ -4,9 +4,88 @@
 namespace BridgingIT.DevKit.Common.UnitTests.Serialization;
 
 using System.Globalization;
+using System.Text.Json;
 
+/// <summary>Checks the scalar JSON property bag contract for strings and DOM elements.</summary>
+/// <example><code>var parsed = ScalarPropertyBagJson.Parse("""{"sampleCount":42}""");</code></example>
 public sealed class ScalarPropertyBagJsonTests
 {
+    /// <summary>Checks that both entry points apply the same scalar conversion and validation rules.</summary>
+    /// <example><code>var parsed = ScalarPropertyBagJson.ParseElement(document.RootElement);</code></example>
+    [Theory]
+    [InlineData("null")]
+    [InlineData("{}")]
+    [InlineData("""{"First":1,"first":2,"label":"München","number":1.5,"float":1e100,"flag":true,"missing":null}""")]
+    [InlineData("""{" ":1}""")]
+    [InlineData("""{"nested":{}}""")]
+    [InlineData("""{"array":[]}""")]
+    [InlineData("42")]
+    [InlineData("""{"overflow":1e400}""")]
+    [InlineData("""{"underflow":1e-400}""")]
+    public void ParseElement_SupportedAndUnsupportedValues_MatchesStringParser(string json)
+    {
+        using var document = JsonDocument.Parse(json);
+        var expected = ScalarPropertyBagJson.Parse(json, preserveMissing: true);
+        var actual = ScalarPropertyBagJson.ParseElement(document.RootElement, preserveMissing: true);
+
+        actual.IsSuccess.ShouldBe(expected.IsSuccess);
+        if (expected.IsFailure)
+        {
+            actual.Errors.Single().ShouldBeOfType<ValidationError>().Message.ShouldBe(expected.Errors.Single().Message);
+        }
+        else if (expected.Value is null)
+        {
+            actual.Value.ShouldBeNull();
+        }
+        else
+        {
+            actual.Value.Select(entry => entry.Key).ShouldBe(expected.Value.Select(entry => entry.Key));
+            foreach (var (key, value) in expected.Value)
+            {
+                var actualValue = actual.Value.Get(key.ToUpperInvariant());
+                actualValue.ShouldBe(value);
+                actualValue?.GetType().ShouldBe(value?.GetType());
+            }
+        }
+    }
+
+    /// <summary>Checks that an undefined element uses the requested missing policy.</summary>
+    /// <example><code>var parsed = ScalarPropertyBagJson.ParseElement(default, preserveMissing: true);</code></example>
+    [Fact]
+    public void ParseElement_UndefinedInput_UsesMissingPolicy()
+    {
+        ScalarPropertyBagJson.Parse(default).Value.ShouldBeEmpty();
+        ScalarPropertyBagJson.ParseElement(default).Value.ShouldBeEmpty();
+        ScalarPropertyBagJson.ParseElement(default, preserveMissing: true).Value.ShouldBeNull();
+    }
+
+    /// <summary>Checks that parsed values outlive their source document.</summary>
+    /// <example><code>var parsed = ScalarPropertyBagJson.ParseElement(document.RootElement);</code></example>
+    [Fact]
+    public void ParseElement_UsingJsonDocument_ReturnsIndependentBag()
+    {
+        using var document = JsonDocument.Parse("""{"label":"München","count":42}""");
+        var root = document.RootElement;
+        var result = ScalarPropertyBagJson.ParseElement(root);
+        document.Dispose();
+
+        result.Value.Get("label").ShouldBe("München");
+        result.Value.Get("count").ShouldBe(42L);
+        Should.Throw<ObjectDisposedException>(() => ScalarPropertyBagJson.ParseElement(root));
+    }
+
+    /// <summary>Checks that invalid UTF-16 escapes retain the scalar parser's decoding exception.</summary>
+    /// <example><code>var parsed = ScalarPropertyBagJson.ParseElement(document.RootElement);</code></example>
+    [Theory]
+    [InlineData("""{"\uD800":1}""")]
+    [InlineData("""{"key":"\uD800"}""")]
+    public void ParseElement_MalformedSurrogateEscape_ThrowsInvalidOperationException(string json)
+    {
+        using var document = JsonDocument.Parse(json);
+
+        Should.Throw<InvalidOperationException>(() => ScalarPropertyBagJson.ParseElement(document.RootElement));
+    }
+
     [Theory]
     [InlineData(null)]
     [InlineData("")]

@@ -9,93 +9,41 @@ using System.Security.Cryptography;
 using System.Text;
 using BridgingIT.DevKit.Common;
 
-/// <summary>Matches anchored path globs with bounded state and no regular-expression backtracking.</summary>
+/// <summary>Matches request path exclusions and produces canonical keys for Request Profiling.</summary>
+/// <seealso cref="PathGlobMatcher"/>
 /// <example><code>var matcher = new RequestProfilingPathMatcher(["/health/**"]);</code></example>
 public sealed class RequestProfilingPathMatcher
 {
-    private readonly string[][] patterns;
-    private readonly Dictionary<string, GlobPatternMatcher> asciiPatterns = new(StringComparer.Ordinal);
+    private readonly PathGlobMatcher matcher;
 
-    /// <summary>Validates and prepares at most 128 patterns, each at most 256 characters.</summary>
+    /// <summary>Validates and prepares at most 128 patterns, each at most 256 UTF-16 code units.</summary>
+    /// <param name="patterns">The anchored request path patterns.</param>
+    /// <exception cref="ArgumentNullException"><paramref name="patterns"/> is null.</exception>
+    /// <exception cref="ArgumentException">The list exceeds its count limit or contains an invalid pattern.</exception>
     /// <example><code>var excluded = new RequestProfilingPathMatcher(["/swagger/**"]).IsMatch(path);</code></example>
     public RequestProfilingPathMatcher(IReadOnlyList<string> patterns)
     {
-        ArgumentNullException.ThrowIfNull(patterns);
-        if (patterns.Count > 128)
-        {
-            throw new ArgumentException("At most 128 request path patterns are supported.", nameof(patterns));
-        }
-
-        this.patterns = new string[patterns.Count][];
-        for (var i = 0; i < patterns.Count; i++)
-        {
-            var pattern = patterns[i];
-            if (string.IsNullOrWhiteSpace(pattern) || pattern.Length > 256 || pattern[0] != '/' || pattern.Contains('?') || pattern.Contains('#')
-                || pattern.Any(c => char.IsControl(c) || c is '{' or '}' or '[' or ']' or '(' or ')' or '\\'))
-            {
-                throw new ArgumentException("A request path pattern must be an anchored literal path with supported wildcard segments.", nameof(patterns));
-            }
-
-            var segments = pattern.TrimEnd('/').Split('/').Skip(1).ToArray();
-            if (segments.Any(segment => segment.Contains("**", StringComparison.Ordinal) && segment != "**"))
-            {
-                throw new ArgumentException("Double star must occupy a complete path segment.", nameof(patterns));
-            }
-
-            foreach (var segment in segments)
-            {
-                if (segment != "**" && Ascii.IsValid(segment) && !this.asciiPatterns.ContainsKey(segment))
-                {
-                    this.asciiPatterns.Add(segment, new(segment));
-                }
-            }
-
-            this.patterns[i] = segments;
-        }
+        this.matcher = new(patterns);
     }
 
     /// <summary>Matches the original incoming path before prefix stripping or key shortening.</summary>
+    /// <param name="path">The incoming path. Null and empty inputs represent the root path.</param>
+    /// <returns>True if any configured pattern matches.</returns>
     /// <example><code>if (matcher.IsMatch("/health/live")) ExcludeCapture();</code></example>
     public bool IsMatch(string path)
     {
-        var input = (string.IsNullOrEmpty(path) ? "/" : path).AsSpan().TrimEnd('/');
-        Span<bool> current = stackalloc bool[257];
-        Span<bool> next = stackalloc bool[257];
-        foreach (var pattern in this.patterns)
-        {
-            current.Clear();
-            current[0] = true;
-            Close(pattern, current);
-            var remaining = input.Length == 0 ? ReadOnlySpan<char>.Empty : input[1..];
-            while (!remaining.IsEmpty)
-            {
-                var slash = remaining.IndexOf('/');
-                var segment = slash < 0 ? remaining : remaining[..slash];
-                next.Clear();
-                for (var state = 0; state < pattern.Length; state++)
-                {
-                    if (current[state])
-                    {
-                        if (pattern[state] == "**") { next[state] = true; }
-                        else if (this.MatchSegment(pattern[state], segment)) { next[state + 1] = true; }
-                    }
-                }
-
-                Close(pattern, next);
-                next.CopyTo(current);
-                remaining = slash < 0 ? ReadOnlySpan<char>.Empty : remaining[(slash + 1)..];
-            }
-
-            if (current[pattern.Length])
-            {
-                return true;
-            }
-        }
-
-        return false;
+        // The original request matcher skipped the first code unit even on unrooted input.
+        return this.matcher.IsMatch(string.IsNullOrEmpty(path) || path[0] == '/'
+            ? path
+            : string.Concat("/", path.AsSpan(1)));
     }
 
     /// <summary>Strips one prefix on a path boundary and hashes overlong canonical keys.</summary>
+    /// <param name="path">The incoming path, with null or empty representing the root.</param>
+    /// <param name="prefix">The optional prefix to remove on a complete path boundary.</param>
+    /// <param name="maximumLength">The positive maximum key length in UTF-16 code units.</param>
+    /// <returns>The canonical key and whether it was shortened.</returns>
+    /// <exception cref="ArgumentOutOfRangeException"><paramref name="maximumLength"/> is zero or negative.</exception>
     /// <example><code>var (key, shortened) = RequestProfilingPathMatcher.CreateKey(path, "/api", 128);</code></example>
     public static (string Key, bool Shortened) CreateKey(string path, string prefix, int maximumLength)
     {
@@ -124,38 +72,5 @@ public sealed class RequestProfilingPathMatcher
         if (char.IsHighSurrogate(path[prefixLength - 1])) { prefixLength--; }
 
         return (path[..prefixLength] + "~" + hash[..16], true);
-    }
-
-    private static void Close(string[] pattern, Span<bool> states)
-    {
-        for (var i = 0; i < pattern.Length; i++)
-        {
-            if (states[i] && pattern[i] == "**") { states[i + 1] = true; }
-        }
-    }
-
-    private bool MatchSegment(string pattern, ReadOnlySpan<char> value)
-    {
-        if (Ascii.IsValid(value) && this.asciiPatterns.TryGetValue(pattern, out var matcher))
-        {
-            return matcher.IsMatch(value);
-        }
-
-        // Preserve the path API's established UTF-16 character comparisons for non-ASCII text.
-        var p = 0;
-        var v = 0;
-        var star = -1;
-        var retry = 0;
-        while (v < value.Length)
-        {
-            if (p < pattern.Length && pattern[p] != '*' && char.ToUpperInvariant(pattern[p]) == char.ToUpperInvariant(value[v])) { p++; v++; }
-            else if (p < pattern.Length && pattern[p] == '*') { star = p++; retry = v; }
-            else if (star >= 0) { p = star + 1; v = ++retry; }
-            else { return false; }
-        }
-
-        while (p < pattern.Length && pattern[p] == '*') { p++; }
-
-        return p == pattern.Length;
     }
 }

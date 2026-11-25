@@ -262,6 +262,47 @@ public sealed class DocumentStorageMaintenanceEndpointsTests
         (await ReadDocumentAsync(host, "one")).Name.ShouldBe("Updated");
     }
 
+    /// <summary>Exercises scalar body metadata through document writes and property updates.</summary>
+    /// <example><code>var entry = await store.GetEntryJsonAsync(new("records", "report"));</code></example>
+    [Theory]
+    [InlineData(false)]
+    [InlineData(true)]
+    public async Task PutAndPatch_ScalarBodyMetadata_PreservesReplacesAndClearsProperties(bool patch)
+    {
+        await using var host = await EndpointHost.StartAsync();
+        using var created = await SendAsync(host.Client, HttpMethod.Post, host.Url("one"), Envelope("Original"));
+        created.StatusCode.ShouldBe(HttpStatusCode.Created);
+        using var scope = host.Services.CreateScope();
+        var store = scope.ServiceProvider.GetRequiredService<IDocumentStoreClientFactory>().Create(host.ClientId);
+        var key = new DocumentKey("records", "one");
+        var method = patch ? HttpMethod.Patch : HttpMethod.Put;
+        var url = host.Url("one", patch ? "/properties" : string.Empty);
+        var content = patch ? string.Empty : """
+            "content":{"name":"Updated"},
+            """;
+
+        async Task SendMetadataAsync(string metadata, HttpStatusCode expected)
+        {
+            var fields = metadata.Length == 0 ? content.TrimEnd(',') : content + metadata;
+            using var response = await SendAsync(host.Client, method, url, "{" + fields + "}");
+            response.StatusCode.ShouldBe(expected, await response.Content.ReadAsStringAsync());
+        }
+
+        await SendMetadataAsync(""" "properties":{"count":7,"price":2.5,"optional":null} """, HttpStatusCode.OK);
+        await SendMetadataAsync(string.Empty, HttpStatusCode.OK);
+        await SendMetadataAsync(""" "properties":null """, HttpStatusCode.OK);
+        await SendMetadataAsync(""" "properties":{"nested":[]} """, HttpStatusCode.BadRequest);
+
+        var stored = (await store.GetEntryJsonAsync(key)).Value.Info.Properties;
+        stored.Get("count").ShouldBeOfType<long>().ShouldBe(7);
+        stored.Get("price").ShouldBeOfType<decimal>().ShouldBe(2.5m);
+        stored.Contains("optional").ShouldBeTrue();
+        stored.Get("optional").ShouldBeNull();
+
+        await SendMetadataAsync(""" "properties":{} """, HttpStatusCode.OK);
+        (await store.GetEntryJsonAsync(key)).Value.Info.Properties.ShouldBeEmpty();
+    }
+
     [Theory]
     [InlineData("{}")]
     [InlineData("{\"content\":null}")]
@@ -395,6 +436,8 @@ public sealed class DocumentStorageMaintenanceEndpointsTests
     private sealed class EndpointHost(WebApplication app, HttpClient client, string clientId, string groupPath, string alternateClientId) : IAsyncDisposable
     {
         public HttpClient Client { get; } = client;
+
+        public IServiceProvider Services => app.Services;
 
         public string ClientId { get; } = clientId;
 

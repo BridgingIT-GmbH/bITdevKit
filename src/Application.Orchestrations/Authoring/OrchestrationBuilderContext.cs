@@ -5,12 +5,14 @@
 
 namespace BridgingIT.DevKit.Application.Orchestrations;
 
+using BridgingIT.DevKit.Common;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 
 /// <summary>
 /// Provides the shared builder context for orchestration registration.
 /// </summary>
+/// <example><code>new OrchestrationBuilderContext(services).StartupDelayInvariant("1.5m");</code></example>
 public class OrchestrationBuilderContext
 {
     /// <summary>
@@ -105,6 +107,21 @@ public class OrchestrationBuilderContext
         }
 
         return this;
+    }
+
+    /// <summary>Sets the recovery startup delay from invariant TimeSpan text or a duration such as <c>500ms</c>.</summary>
+    /// <param name="value">The duration text.</param>
+    /// <returns>The current builder context.</returns>
+    /// <exception cref="ArgumentException">The value is not a supported invariant duration.</exception>
+    /// <example><code>context.StartupDelayInvariant("1.5m");</code></example>
+    public OrchestrationBuilderContext StartupDelayInvariant(string value)
+    {
+        if (!value.TryParseDuration(out var duration))
+        {
+            throw new ArgumentException("Supply a valid invariant duration.", nameof(value));
+        }
+
+        return this.StartupDelay(duration);
     }
 
     /// <summary>

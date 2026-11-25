@@ -1,8 +1,11 @@
 namespace BridgingIT.DevKit.Application.Queueing;
 
+using BridgingIT.DevKit.Common;
+
 /// <summary>
 /// Builds <see cref="QueueingOptions"/> instances.
 /// </summary>
+/// <example><code>var options = new QueueingOptionsBuilder().StartupDelayInvariant("500ms").Build();</code></example>
 public class QueueingOptionsBuilder : OptionsBuilderBase<QueueingOptions, QueueingOptionsBuilder>
 {
     /// <summary>
@@ -61,5 +64,20 @@ public class QueueingOptionsBuilder : OptionsBuilderBase<QueueingOptions, Queuei
         }
 
         return this;
+    }
+
+    /// <summary>Sets the startup delay from invariant TimeSpan text or a duration such as <c>500ms</c>.</summary>
+    /// <param name="value">The duration text.</param>
+    /// <returns>The current builder.</returns>
+    /// <exception cref="ArgumentException">The value is not a supported invariant duration.</exception>
+    /// <example><code>builder.StartupDelayInvariant("500ms");</code></example>
+    public QueueingOptionsBuilder StartupDelayInvariant(string value)
+    {
+        if (!value.TryParseDuration(out var duration))
+        {
+            throw new ArgumentException("Supply a valid invariant duration.", nameof(value));
+        }
+
+        return this.StartupDelay(duration);
     }
 }

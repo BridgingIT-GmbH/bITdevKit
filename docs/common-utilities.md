@@ -1030,6 +1030,32 @@ await bulkhead.ExecuteAsync(
     cancellationToken);
 ```
 
+### Keyed asynchronous locks
+
+`AsyncKeyedLock<TKey>` in the `BridgingIT.DevKit.Common.Utilities` package uses one semaphore per active key within a pool. It is available in the `BridgingIT.DevKit.Common` namespace. Construct a pool for the operations that need to coordinate. The optional `IEqualityComparer<TKey>` defaults to the key type's equality comparer. Keep key equality and hash codes stable while a lease exists.
+
+Call the pool's `TryAcquireAsync(key, timeout, cancellationToken)` to wait for a key in one call. It returns an acquired lease, returns null on timeout, and throws `OperationCanceledException` on cancellation. Use `TimeSpan.Zero` for an immediate attempt and `Timeout.InfiniteTimeSpan` for an indefinite wait. Invalid timeouts throw `ArgumentOutOfRangeException`.
+
+```csharp
+using BridgingIT.DevKit.Common;
+
+using var locks = new AsyncKeyedLock<string>(StringComparer.OrdinalIgnoreCase);
+var cancellationToken = CancellationToken.None;
+using var lease = await locks.TryAcquireAsync("report-42", TimeSpan.FromSeconds(2), cancellationToken);
+if (lease is not null)
+{
+    Console.WriteLine("Refreshing report-42");
+}
+```
+
+To reserve a key in advance, call `Rent(TKey key)` and then call `TryAcquireAsync(timeout, cancellationToken)` once on that lease. The lease-level method returns `true` on acquisition and `false` on timeout.
+
+Dispose every lease, including one that never attempted acquisition. A timeout, cancellation, or failed wait returns the reservation automatically. Disposal releases an acquired lock once. The same key always shares exclusion within the pool, including when the holder tries to acquire it again through another lease. Different keys can proceed concurrently.
+
+Disposing a lease during its wait defers cleanup until that wait settles. Use the cancellation token to interrupt the wait. If the wait acquires the lock after lease disposal was requested, it releases the lock and throws `ObjectDisposedException`. Disposing the pool rejects new rentals and allows already rented leases to finish. An entry is removed when its last lease is returned.
+
+Coordination is local to the pool in the current process. File Storage uses this helper inside its local provider and continues to choose its path comparer by operating system. [File Storage filesystem provider](./features-storage-files.md#filesystem-package-and-migration)
+
 ### <img class="bdk-doc-icon" src="assets/features/rate-limiter.svg" width="24" height="24" alt=""> RateLimiter
 
 `RateLimiter` enforces a maximum number of operations inside a time window.

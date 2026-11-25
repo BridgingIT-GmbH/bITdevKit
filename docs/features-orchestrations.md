@@ -271,6 +271,8 @@ When background execution is enabled, the runtime uses:
 - in-process timer watchers for low-latency same-process wakeups
 - an internal background recovery worker that sweeps due timers and repairs incomplete waiting boundaries after restarts or mid-boundary failures
 
+Use `StartupDelayInvariant("500ms")` in the registration callback to accept friendly duration text. Invalid text throws `ArgumentException` before changing the startup delay. [Parse durations](./common-extensions.md#parse-durations)
+
 ## Authoring model
 
 An orchestration is a class derived from `Orchestration<TData>`.

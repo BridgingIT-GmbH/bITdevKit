@@ -13,6 +13,8 @@ using BridgingIT.DevKit.Presentation.Web;
 using BridgingIT.DevKit.Presentation.Web.Storage.Models;
 using Microsoft.Extensions.DependencyInjection;
 
+/// <summary>Exercises blob mutations and verifies the resulting provider state.</summary>
+/// <example><code>var metadata = await blobs.GetPropertiesAsync(new("reports", "report.txt"));</code></example>
 public sealed class BlobStorageMutationEndpointsTests : IAsyncLifetime
 {
     private const string Route = "/_bdk/api/storage/blobs/reports/blobs";
@@ -148,6 +150,38 @@ public sealed class BlobStorageMutationEndpointsTests : IAsyncLifetime
 
         var saved = await this.UploadAsync(HttpMethod.Put, "metadata.txt", "accepted", patched.Headers.ETag.ToString());
         saved.StatusCode.ShouldBe(HttpStatusCode.OK);
+    }
+
+    /// <summary>Exercises missing, empty, and invalid scalar body metadata against stored blob properties.</summary>
+    /// <example><code>var metadata = await blobs.GetPropertiesAsync(new("reports", "scalars.txt"));</code></example>
+    [Fact]
+    public async Task PatchAsync_ScalarBodyMetadata_PreservesReplacesAndClearsProperties()
+    {
+        const string name = "scalar-patch.txt";
+        using var created = await this.UploadAsync(HttpMethod.Post, name, "original");
+        created.StatusCode.ShouldBe(HttpStatusCode.Created);
+
+        async Task PatchAsync(string metadata, HttpStatusCode expected)
+        {
+            using var body = new StringContent(
+                $$"""{"container":"reports","name":"{{name}}"{{metadata}}}""", Encoding.UTF8, "application/json");
+            using var response = await this.sut.PatchAsync(Route + "/properties", body);
+            response.StatusCode.ShouldBe(expected, await response.Content.ReadAsStringAsync());
+        }
+
+        await PatchAsync(""","properties":{"count":7,"price":2.5,"optional":null}""", HttpStatusCode.OK);
+        await PatchAsync(string.Empty, HttpStatusCode.OK);
+        await PatchAsync(""","properties":null""", HttpStatusCode.OK);
+        await PatchAsync(""","properties":{"nested":[]}""", HttpStatusCode.BadRequest);
+
+        var stored = (await this.blobs.GetPropertiesAsync(new("reports", name))).Value.Properties;
+        stored.Get("count").ShouldBeOfType<long>().ShouldBe(7);
+        stored.Get("price").ShouldBeOfType<decimal>().ShouldBe(2.5m);
+        stored.Contains("optional").ShouldBeTrue();
+        stored.Get("optional").ShouldBeNull();
+
+        await PatchAsync(""","properties":{}""", HttpStatusCode.OK);
+        (await this.blobs.GetPropertiesAsync(new("reports", name))).Value.Properties.ShouldBeEmpty();
     }
 
     [Fact]

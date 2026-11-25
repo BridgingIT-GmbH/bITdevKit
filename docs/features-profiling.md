@@ -158,6 +158,8 @@ The default operation key is the matched route template, including any mount pre
 
 Request Profiling defaults to AllRequests sampling and the blacklist `/_bdk/**`, `/health*`, `/swagger/**`, `/scalar/**`, `/openapi/**`, `/.well-known*`, `/.well-known/**`. `Blacklist(...)` replaces that list; `Blacklist()` clears it. Blacklist patterns use `*` within a path segment and `**` across segments; they match the normalized request path before key-prefix stripping. `/health*` matches `/healthz` but not `/health/live`. The well-known patterns also exclude discovery endpoints such as `/.well-known/openid-configuration`.
 
+The blacklist and whitelist use Common's path glob matcher through `RequestProfilingPathMatcher`. [Match anchored path globs](./common-extensions.md#match-anchored-path-globs)
+
 Blacklist exclusions and HTTP sampling skips affect only the automatic HTTP recording. Business behaviors remain eligible: `JoinOrStartAsync` adds a segment when an operation exists and starts its own operation otherwise. Explicit `Suppress()` scopes still disable nested recording. Profiling queries, writers, cleanup and maintenance use explicit suppression to avoid recording their own instrumentation. Sampling is decided once at middleware entry using the incoming path; route-template enrichment after routing does not resample the request.
 
 Server-side RazorSlice pages execute inside the incoming HTTP request that renders the page. Their content refreshes also arrive through HTTP. Although the default blacklist excludes dashboard HTTP requests, their Requester queries and storage behaviors can create independent operations without a whitelist. This includes queries run by automatic dashboard refreshes. `Requester.SendAsync()` itself makes no HTTP call.
@@ -635,6 +637,8 @@ Register commands with `.AddConsoleCommands()`. The primary group is `profiling 
 | `profiling runtime clear --yes` | Remove every stored session and snapshot, including pinned sessions. |
 
 `profiling runtime clear` without `--yes` changes nothing. Clear is also rejected while a session is active.
+
+The `--interval` and `--duration` options use Common's invariant duration parser. Profiling validates the parsed durations against its session limits. [Parse durations](./common-extensions.md#parse-durations)
 
 ## Programmatic usage
 

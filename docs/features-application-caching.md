@@ -1215,6 +1215,8 @@ The default response policy is `Cache-Control: no-store`. Select `.WithCachePoli
 
 Conditional GET evaluates current validity and representation compatibility before returning `304`. That path reads metadata without acquiring payload bytes. Ordinary GET adds no metadata preflight.
 
+The HTTP layer uses Common's representation helpers through `HttpRepresentationConditions` to compare validators and evaluate single-range requests. [Evaluate representation conditions and byte ranges](./common-extensions.md#evaluate-representation-conditions-and-byte-ranges)
+
 `If-Match` and `If-Unmodified-Since` become atomic publication conditions on PUT and DELETE. `If-None-Match: *` on PUT is an atomic create-only condition. A missing, expired, or confirmed-negative entry permits creation. A valid positive null, empty string, or empty stream counts as present. A concurrent winning publication produces `412` rather than being overwritten.
 
 #### Submit invalidation

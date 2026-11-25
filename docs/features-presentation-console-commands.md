@@ -212,6 +212,18 @@ Binding rules:
 - Missing required options/arguments produce binder errors and detailed help output.
 - Unrecognized tokens yield validation feedback.
 
+Apply `[ConsoleCommandDuration]` to an option or argument of type `TimeSpan` or `TimeSpan?` to accept friendly values such as `500ms`. Unannotated duration properties continue to use standard invariant `TimeSpan` parsing. Invalid values use the regular binder error messages. [Parse durations](./common-extensions.md#parse-durations)
+
+Annotated properties also accept signed values such as `-1.5m` in a positional argument and `--timeout -500ms` for an option. A registered option name or alias takes precedence over a separate signed value. Use `--timeout=-500ms` to supply an option value explicitly.
+
+```csharp
+[ConsoleCommandOption("timeout"), ConsoleCommandDuration]
+public TimeSpan Timeout { get; set; }
+
+[ConsoleCommandArgument(0), ConsoleCommandDuration]
+public TimeSpan? Delay { get; set; }
+```
+
 ### Example: simple echo command
 
 ```csharp

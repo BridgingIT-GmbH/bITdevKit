@@ -456,16 +456,11 @@ public sealed class AuditCollector
     private void Note(string code) { if (string.IsNullOrEmpty(code) || code.Length > 64 || code.Any(c => !char.IsAsciiLetterOrDigit(c) && c is not ('.' or '_' or '-' or ':'))) code = "AuditNoteInvalid"; if (this.notes.TryGetValue(code, out var count)) this.notes[code] = count + 1; else if (this.notes.Count < 32) this.notes.Add(code, 1); }
     private void OmitDetail() { this.root = this.root with { OmittedDetailCount = this.root.OmittedDetailCount + 1 }; this.Note("AuditDetailLimit"); }
 
-    /// <summary>Truncates display text on complete UTF-8 rune boundaries.</summary>
+    /// <summary>Truncates audit display text on complete UTF-8 rune boundaries.</summary>
+    /// <param name="value">The display text to truncate.</param>
+    /// <param name="maxBytes">The byte limit. A negative limit returns an empty string for non-null input.</param>
+    /// <returns>The display text truncated to the byte limit, or null if <paramref name="value"/> is null.</returns>
+    /// <seealso cref="StringExtensions.TruncateUtf8(string, int)"/>
     /// <example><code>var label = AuditCollector.Text("Customer", 20);</code></example>
-    public static string Text(string value, int maxBytes)
-    {
-        if (value is null) return null;
-        if (Encoding.UTF8.GetByteCount(value) <= maxBytes) return value;
-        var builder = new StringBuilder();
-        var bytes = 0;
-        foreach (var rune in value.EnumerateRunes()) { if (bytes + rune.Utf8SequenceLength > maxBytes) break; builder.Append(rune); bytes += rune.Utf8SequenceLength; }
-
-        return builder.ToString();
-    }
+    public static string Text(string value, int maxBytes) => value.TruncateUtf8(Math.Max(0, maxBytes));
 }

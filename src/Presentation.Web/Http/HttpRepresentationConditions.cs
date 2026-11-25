@@ -5,13 +5,13 @@
 
 namespace BridgingIT.DevKit.Presentation.Web;
 
-using System.Globalization;
+using BridgingIT.DevKit.Common;
 using Microsoft.AspNetCore.Http;
-using Microsoft.Net.Http.Headers;
 
 /// <summary>Evaluates request conditions and a single byte range against an already selected representation.</summary>
 /// <remarks>The caller supplies authoritative existence, a strong entity tag and the last-modified timestamp.
 /// This helper does not acquire content, build validators, authorize access or apply mutation conditions atomically.</remarks>
+/// <seealso cref="HttpRepresentationHeaders"/>
 /// <example><code>var outcome = HttpRepresentationConditions.Evaluate(request, true, entityTag, publishedAt, read: true);
 /// if (outcome == HttpPreconditionOutcome.NotModified) { return Results.StatusCode(StatusCodes.Status304NotModified); }</code></example>
 public static class HttpRepresentationConditions
@@ -26,30 +26,9 @@ public static class HttpRepresentationConditions
     /// <example><code>var outcome = HttpRepresentationConditions.Evaluate(request, exists, entityTag, modifiedAt, read: false);</code></example>
     public static HttpPreconditionOutcome Evaluate(HttpRequest request, bool exists, string entityTag, DateTimeOffset lastModified, bool read)
     {
-        var ifMatch = request.Headers[HeaderNames.IfMatch].ToString();
-        var ifNoneMatch = request.Headers[HeaderNames.IfNoneMatch].ToString();
-        if (!string.IsNullOrWhiteSpace(ifMatch))
-        {
-            if (!exists || (ifMatch.Trim() != "*" && !MatchesEntityTag(ifMatch, entityTag, false))) { return HttpPreconditionOutcome.Failed; }
-        }
-        else if (exists && TryDate(request.Headers[HeaderNames.IfUnmodifiedSince], out var unmodified) && WholeSeconds(lastModified) > unmodified)
-        {
-            return HttpPreconditionOutcome.Failed;
-        }
-
-        if (!string.IsNullOrWhiteSpace(ifNoneMatch))
-        {
-            if (exists && (ifNoneMatch.Trim() == "*" || MatchesEntityTag(ifNoneMatch, entityTag, true)))
-            {
-                return read ? HttpPreconditionOutcome.NotModified : HttpPreconditionOutcome.Failed;
-            }
-        }
-        else if (read && exists && TryDate(request.Headers[HeaderNames.IfModifiedSince], out var modified) && WholeSeconds(lastModified) <= modified)
-        {
-            return HttpPreconditionOutcome.NotModified;
-        }
-
-        return HttpPreconditionOutcome.Proceed;
+        // The Common and Presentation outcomes share the original numeric values.
+        return (HttpPreconditionOutcome)HttpRepresentationHeaders.Evaluate(
+            request, exists, entityTag, lastModified, read, HttpRepresentationHeaderMode.LegacyPresentation);
     }
 
     /// <summary>Compares comma-separated entity tags with a current strong validator, optionally accepting weak candidate tags.</summary>
@@ -58,16 +37,8 @@ public static class HttpRepresentationConditions
     /// <param name="weak">Whether a candidate's case-sensitive W/ prefix can be ignored.</param>
     /// <returns>Whether an ordinal candidate matches. Wildcards are handled separately by precondition evaluation.</returns>
     /// <example><code>var matches = HttpRepresentationConditions.MatchesEntityTag(request.Headers.IfNoneMatch, entityTag, weak: true);</code></example>
-    public static bool MatchesEntityTag(string values, string current, bool weak = false)
-    {
-        if (string.IsNullOrWhiteSpace(values) || current is null) { return false; }
-
-        return values.Split(',').Any(value =>
-        {
-            var tag = value.Trim();
-            return StringComparer.Ordinal.Equals(weak && tag.StartsWith("W/", StringComparison.Ordinal) ? tag[2..] : tag, current);
-        });
-    }
+    public static bool MatchesEntityTag(string values, string current, bool weak = false) =>
+        HttpRepresentationHeaders.MatchesEntityTag(values, current, weak, HttpRepresentationHeaderMode.LegacyPresentation);
 
     /// <summary>Selects one contiguous byte range, or the full representation when Range is absent or If-Range does not match.</summary>
     /// <param name="request">The request containing Range and optional If-Range headers.</param>
@@ -80,39 +51,10 @@ public static class HttpRepresentationConditions
     /// if (range.Outcome == HttpRangeSelectionKind.Partial) { await CopyRangeAsync(range.Offset, range.Length.Value); }</code></example>
     public static HttpRangeSelection SelectRange(HttpRequest request, long length, string entityTag, DateTimeOffset lastModified)
     {
-        ArgumentOutOfRangeException.ThrowIfNegative(length);
-        var raw = request.Headers[HeaderNames.Range].ToString();
-        if (string.IsNullOrEmpty(raw)) { return new(HttpRangeSelectionKind.Full); }
-
-        var ifRange = request.Headers[HeaderNames.IfRange].ToString();
-        if (!string.IsNullOrWhiteSpace(ifRange))
-        {
-            var matches = MatchesEntityTag(ifRange, entityTag, false) ||
-                (TryDate(ifRange, out var date) && WholeSeconds(lastModified) <= date);
-            if (!matches) { return new(HttpRangeSelectionKind.Full); }
-        }
-
-        if (!RangeHeaderValue.TryParse(raw, out var parsed) || parsed.Unit != "bytes" || parsed.Ranges.Count != 1)
-        {
-            return new(HttpRangeSelectionKind.Unsupported);
-        }
-
-        var selected = parsed.Ranges.Single();
-        if (length == 0 || (selected.From.HasValue && selected.From.Value >= length) ||
-            (!selected.From.HasValue && (!selected.To.HasValue || selected.To.Value == 0)))
-        {
-            return new(HttpRangeSelectionKind.Unsatisfiable);
-        }
-
-        var offset = selected.From ?? Math.Max(0, length - selected.To.Value);
-        var end = selected.From.HasValue ? Math.Min(selected.To ?? length - 1, length - 1) : length - 1;
-        return new(HttpRangeSelectionKind.Partial, offset, end - offset + 1);
+        var selection = HttpRepresentationHeaders.SelectRange(
+            request, length, entityTag, lastModified, HttpRepresentationHeaderMode.LegacyPresentation);
+        return new((HttpRangeSelectionKind)selection.Outcome, selection.Offset, selection.Length);
     }
-
-    private static DateTimeOffset WholeSeconds(DateTimeOffset value) => DateTimeOffset.FromUnixTimeSeconds(value.ToUnixTimeSeconds());
-
-    private static bool TryDate(string value, out DateTimeOffset date) => DateTimeOffset.TryParseExact(value, "r", CultureInfo.InvariantCulture,
-        DateTimeStyles.AssumeUniversal | DateTimeStyles.AdjustToUniversal, out date);
 }
 
 /// <summary>Describes the conditional-request decision for a selected representation.</summary>

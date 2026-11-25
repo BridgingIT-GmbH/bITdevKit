@@ -49,42 +49,68 @@ public static class ScalarPropertyBagJson
         try
         {
             using var document = JsonDocument.Parse(json);
-            if (document.RootElement.ValueKind == JsonValueKind.Null)
-            {
-                return Result<PropertyBag>.Success(preserveMissing ? null : new PropertyBag());
-            }
-
-            if (document.RootElement.ValueKind != JsonValueKind.Object)
-            {
-                throw new JsonException("Properties must be an object.");
-            }
-
-            var properties = new PropertyBag();
-            foreach (var property in document.RootElement.EnumerateObject())
-            {
-                if (string.IsNullOrWhiteSpace(property.Name))
-                {
-                    throw new JsonException("Property names must not be blank.");
-                }
-
-                var value = property.Value.ValueKind switch
-                {
-                    JsonValueKind.Null => null,
-                    JsonValueKind.String => property.Value.GetString(),
-                    JsonValueKind.True => true,
-                    JsonValueKind.False => false,
-                    JsonValueKind.Number => ParseNumber(property.Value),
-                    _ => throw new JsonException("Property values must be JSON scalars.")
-                };
-                properties.Set(property.Name, value);
-            }
-
-            return Result<PropertyBag>.Success(properties);
+            return ParseRoot(document.RootElement, preserveMissing);
         }
         catch (Exception ex) when (ex is JsonException or ArgumentException or FormatException)
         {
             return Result<PropertyBag>.Failure(new ValidationError(ex.Message));
         }
+    }
+
+    /// <summary>Reads scalar values from a JSON element into an independent property bag.</summary>
+    /// <param name="json">An object element, a JSON null, or an undefined element.</param>
+    /// <param name="preserveMissing">Whether null and undefined elements yield a null bag. An empty object always yields an empty bag.</param>
+    /// <returns>The parsed bag or a validation failure using the same rules as <see cref="Parse"/>.</returns>
+    /// <exception cref="ObjectDisposedException">The source document has already been disposed.</exception>
+    /// <exception cref="InvalidOperationException">Decoding a property name or value encounters an unpaired surrogate escape.</exception>
+    /// <example><code>using var document = JsonDocument.Parse("""{"sampleCount":42}""");
+    /// var result = ScalarPropertyBagJson.ParseElement(document.RootElement);</code></example>
+    public static Result<PropertyBag> ParseElement(JsonElement json, bool preserveMissing = false)
+    {
+        try
+        {
+            return ParseRoot(json, preserveMissing);
+        }
+        catch (Exception ex) when (ex is JsonException or ArgumentException or FormatException)
+        {
+            return Result<PropertyBag>.Failure(new ValidationError(ex.Message));
+        }
+    }
+
+    private static Result<PropertyBag> ParseRoot(JsonElement root, bool preserveMissing)
+    {
+        if (root.ValueKind is JsonValueKind.Undefined or JsonValueKind.Null)
+        {
+            return Result<PropertyBag>.Success(preserveMissing ? null : new PropertyBag());
+        }
+
+        if (root.ValueKind != JsonValueKind.Object)
+        {
+            throw new JsonException("Properties must be an object.");
+        }
+
+        var properties = new PropertyBag();
+        foreach (var property in root.EnumerateObject())
+        {
+            var name = property.Name;
+            if (string.IsNullOrWhiteSpace(name))
+            {
+                throw new JsonException("Property names must not be blank.");
+            }
+
+            var value = property.Value.ValueKind switch
+            {
+                JsonValueKind.Null => null,
+                JsonValueKind.String => property.Value.GetString(),
+                JsonValueKind.True => true,
+                JsonValueKind.False => false,
+                JsonValueKind.Number => ParseNumber(property.Value),
+                _ => throw new JsonException("Property values must be JSON scalars.")
+            };
+            properties.Set(name, value);
+        }
+
+        return Result<PropertyBag>.Success(properties);
     }
 
     private static object ParseNumber(JsonElement value)

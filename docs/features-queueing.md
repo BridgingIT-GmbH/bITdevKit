@@ -94,6 +94,16 @@ Use Queueing for commands to background workers, document generation, import job
 
 ## Basic Usage
 
+Use `StartupDelayInvariant` to configure a startup delay with friendly duration text such as `500ms`. Invalid text throws `ArgumentException` before changing the builder. [Parse durations](./common-extensions.md#parse-durations)
+
+```csharp
+using BridgingIT.DevKit.Application.Queueing;
+
+var queueingOptions = new QueueingOptionsBuilder()
+    .StartupDelayInvariant("500ms")
+    .Build();
+```
+
 ### <img class="bdk-doc-icon" src="assets/features/provider-inmemory.svg" width="24" height="24" alt=""> In-process broker
 
 ```csharp

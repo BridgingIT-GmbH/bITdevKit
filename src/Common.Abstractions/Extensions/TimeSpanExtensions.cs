@@ -9,8 +9,9 @@ using System.Diagnostics;
 using System.Globalization;
 
 /// <summary>
-/// Provides timeout-token creation, duration comparison, unit construction, truncation, and flexible clock-text parsing.
+/// Provides timeout-token creation, duration comparison, unit construction, truncation, and parsing.
 /// </summary>
+/// <example><code>var parsed = "1.5m".TryParseDuration(out var duration);</code></example>
 public static class TimeSpanExtensions
 {
     /// <param name="source">The optional timeout; a missing value produces a source without scheduled cancellation.</param>
@@ -291,6 +292,59 @@ public static class TimeSpanExtensions
     /// <param name="source">The text to parse.</param>
     extension(string source)
     {
+        /// <summary>Parses invariant duration text or a number followed by ms, s, m, or h.</summary>
+        /// <param name="duration">The parsed duration when successful, or <see cref="TimeSpan.Zero"/> on failure.</param>
+        /// <returns><see langword="true"/> when the text represents a finite duration within the <see cref="TimeSpan"/> range.</returns>
+        /// <remarks>Suffixes are case-insensitive. Numeric values can be signed or fractional. Null and blank text fail to parse.</remarks>
+        /// <example><code>var parsed = "1.5m".TryParseDuration(out var duration); // 00:01:30</code></example>
+        public bool TryParseDuration(out TimeSpan duration)
+        {
+            duration = TimeSpan.Zero;
+            if (string.IsNullOrWhiteSpace(source))
+            {
+                return false;
+            }
+
+            var text = source.Trim();
+            if (TimeSpan.TryParse(text, CultureInfo.InvariantCulture, out duration))
+            {
+                return true;
+            }
+
+            var suffixLength = text.EndsWith("ms", StringComparison.OrdinalIgnoreCase) ? 2 : 1;
+            if (text.Length <= suffixLength)
+            {
+                return false;
+            }
+
+            var suffix = text[^suffixLength..].ToLowerInvariant();
+            if (suffix is not ("ms" or "s" or "m" or "h") ||
+                !double.TryParse(text[..^suffixLength], NumberStyles.Float, CultureInfo.InvariantCulture, out var amount) ||
+                !double.IsFinite(amount))
+            {
+                return false;
+            }
+
+            try
+            {
+                duration = suffix switch
+                {
+                    "ms" => TimeSpan.FromMilliseconds(amount),
+                    "s" => TimeSpan.FromSeconds(amount),
+                    "m" => TimeSpan.FromMinutes(amount),
+                    "h" => TimeSpan.FromHours(amount),
+                    _ => TimeSpan.Zero
+                };
+
+                return true;
+            }
+            catch (OverflowException)
+            {
+                duration = TimeSpan.Zero;
+                return false;
+            }
+        }
+
         /// <summary>Parses duration or clock text, including compact <c>HHmm</c> and <c>HHmmss</c> forms.</summary>
         /// <returns>The parsed duration or time of day; <see cref="TimeSpan.Zero"/> when parsing fails.</returns>
         [DebuggerStepThrough]

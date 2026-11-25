@@ -25,7 +25,8 @@ public class LocalFileStorageProvider(
     TimeSpan? lockTimeout = null) : BaseFileStorageProvider(locationName), IDisposable
 {
     private readonly TimeSpan lockTimeout = lockTimeout ?? TimeSpan.FromSeconds(30);
-    private readonly FileStorageLockPool fileLocks = new();
+    private readonly AsyncKeyedLock<string> fileLocks = new(
+        OperatingSystem.IsWindows() ? StringComparer.OrdinalIgnoreCase : StringComparer.Ordinal);
     private readonly Lock initializateLock = new();
     private bool disposed;
     private bool initialized;
@@ -85,7 +86,7 @@ public class LocalFileStorageProvider(
         }
 
         var fullPath = this.GetFullPath(path);
-        var fileLock = this.fileLocks.Rent(fullPath);
+        var fileLock = this.RentFileLock(fullPath);
 
         try
         {
@@ -134,7 +135,7 @@ public class LocalFileStorageProvider(
         }
 
         var fullPath = this.GetFullPath(path);
-        var fileLock = this.fileLocks.Rent(fullPath);
+        var fileLock = this.RentFileLock(fullPath);
 
         try
         {
@@ -203,7 +204,7 @@ public class LocalFileStorageProvider(
         }
 
         var fullPath = this.GetFullPath(path);
-        var fileLock = this.fileLocks.Rent(fullPath);
+        var fileLock = this.RentFileLock(fullPath);
 
         try
         {
@@ -310,7 +311,7 @@ public class LocalFileStorageProvider(
         }
 
         var fullPath = this.GetFullPath(path);
-        var fileLock = this.fileLocks.Rent(fullPath);
+        var fileLock = this.RentFileLock(fullPath);
 
         try
         {
@@ -410,7 +411,7 @@ public class LocalFileStorageProvider(
         }
 
         var fullPath = this.GetFullPath(path);
-        var fileLock = this.fileLocks.Rent(fullPath);
+        var fileLock = this.RentFileLock(fullPath);
 
         try
         {
@@ -474,7 +475,7 @@ public class LocalFileStorageProvider(
         }
 
         var fullPath = this.GetFullPath(path);
-        var fileLock = this.fileLocks.Rent(fullPath);
+        var fileLock = this.RentFileLock(fullPath);
 
         try
         {
@@ -539,7 +540,7 @@ public class LocalFileStorageProvider(
         }
 
         var fullPath = this.GetFullPath(path);
-        var fileLock = this.fileLocks.Rent(fullPath);
+        var fileLock = this.RentFileLock(fullPath);
 
         try
         {
@@ -615,7 +616,7 @@ public class LocalFileStorageProvider(
         }
 
         var fullPath = this.GetFullPath(path);
-        var fileLock = this.fileLocks.Rent(fullPath);
+        var fileLock = this.RentFileLock(fullPath);
 
         try
         {
@@ -812,8 +813,7 @@ public class LocalFileStorageProvider(
 
         var fullSource = this.GetFullPath(path);
         var fullDest = this.GetFullPath(destinationPath);
-        var sourceLock = this.fileLocks.Rent(fullSource);
-        var destinationLock = this.fileLocks.Rent(fullDest);
+        var (sourceLock, destinationLock) = this.RentFileLocks(fullSource, fullDest);
 
         try
         {
@@ -900,8 +900,7 @@ public class LocalFileStorageProvider(
 
         var fullOld = this.GetFullPath(path);
         var fullNew = this.GetFullPath(destinationPath);
-        var oldLock = this.fileLocks.Rent(fullOld);
-        var newLock = this.fileLocks.Rent(fullNew);
+        var (oldLock, newLock) = this.RentFileLocks(fullOld, fullNew);
 
         try
         {
@@ -988,8 +987,7 @@ public class LocalFileStorageProvider(
 
         var fullOld = this.GetFullPath(path);
         var fullNew = this.GetFullPath(destinationPath);
-        var oldLock = this.fileLocks.Rent(fullOld);
-        var newLock = this.fileLocks.Rent(fullNew);
+        var (oldLock, newLock) = this.RentFileLocks(fullOld, fullNew);
 
         try
         {
@@ -1074,8 +1072,7 @@ public class LocalFileStorageProvider(
 
         var fullSource = this.GetFullPath(path);
         var fullDest = this.GetFullPath(destinationPath);
-        var sourceLock = this.fileLocks.Rent(fullSource);
-        var destinationLock = this.fileLocks.Rent(fullDest);
+        var (sourceLock, destinationLock) = this.RentFileLocks(fullSource, fullDest);
 
         try
         {
@@ -1428,6 +1425,33 @@ public class LocalFileStorageProvider(
         }
 
         this.disposed = true;
+    }
+
+    private AsyncKeyedLock<string>.ILease RentFileLock(string path)
+    {
+        try
+        {
+            return this.fileLocks.Rent(path);
+        }
+        catch (ObjectDisposedException)
+        {
+            // Preserve the disposed object name reported by the original provider.
+            throw new ObjectDisposedException("BridgingIT.DevKit.Infrastructure.FileSystem.FileStorageLockPool");
+        }
+    }
+
+    private (AsyncKeyedLock<string>.ILease First, AsyncKeyedLock<string>.ILease Second) RentFileLocks(string firstPath, string secondPath)
+    {
+        var first = this.RentFileLock(firstPath);
+        try
+        {
+            return (first, this.RentFileLock(secondPath));
+        }
+        catch
+        {
+            first.Dispose();
+            throw;
+        }
     }
 
     private (int BufferSize, int MinBufferSize, int MaxBufferSize) CalculateBufferSize(long fileSize)

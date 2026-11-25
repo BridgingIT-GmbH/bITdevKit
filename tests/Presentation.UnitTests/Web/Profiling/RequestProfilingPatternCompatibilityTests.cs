@@ -6,6 +6,7 @@
 namespace BridgingIT.DevKit.Presentation.UnitTests.Web.Profiling;
 
 /// <summary>Checks the established UTF-16 segment contract around reusable ASCII glob matching.</summary>
+/// <example><code>var matcher = new RequestProfilingPathMatcher(["/reports/*"]);</code></example>
 public sealed class RequestProfilingPatternCompatibilityTests
 {
     /// <summary>Segment matching uses invariant character comparison without changing supplementary-letter behavior.</summary>
@@ -30,5 +31,20 @@ public sealed class RequestProfilingPatternCompatibilityTests
         var sut = new RequestProfilingPathMatcher([path]);
 
         sut.IsMatch(path).ShouldBeTrue();
+    }
+
+    /// <summary>Checks the Presentation API's original results for inputs without a leading slash.</summary>
+    /// <example><code>var matches = new RequestProfilingPathMatcher(["/reports"]).IsMatch("xreports");</code></example>
+    [Theory]
+    [InlineData("/reports", "xreports", true)]
+    [InlineData("/reports", "reports", false)]
+    [InlineData("/", "x///", true)]
+    public void IsMatch_UnrootedPath_PreservesLegacyFirstCodeUnitHandling(string pattern, string path, bool expected)
+    {
+        var sut = new RequestProfilingPathMatcher([pattern]);
+
+        var result = sut.IsMatch(path);
+
+        result.ShouldBe(expected);
     }
 }

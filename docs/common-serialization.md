@@ -274,6 +274,20 @@ Keys compare without regard to case. If the same key appears more than once, the
 
 Missing text, whitespace, and JSON `null` return a fresh empty bag by default. Pass `preserveMissing: true` to receive `null` for those inputs. An explicit `{}` always returns a fresh empty bag.
 
+Call `ParseElement(JsonElement json, bool preserveMissing = false)` when you already have a JSON element. It applies the same scalar validation and treats an undefined element or JSON `null` as missing. An explicit `{}` still yields an empty bag. Keep the source document alive through the call. The returned bag can outlive the document.
+
+```csharp
+using System.Text.Json;
+using BridgingIT.DevKit.Common;
+
+using var document = JsonDocument.Parse("""{"sampleCount":42,"reviewed":true}""");
+var properties = ScalarPropertyBagJson.ParseElement(document.RootElement, preserveMissing: true);
+if (properties.IsSuccess && properties.Value is { } metadata)
+{
+    Console.WriteLine(metadata.Get("sampleCount"));
+}
+```
+
 For stored metadata with explicit CLR type tags, use [`PropertyBagSerialization`](#propertybagserialization). For ordinary JSON with nested values, see [`PropertyBagJsonConverter`](#propertybag).
 
 ### `OpaqueContinuationTokenCodec`

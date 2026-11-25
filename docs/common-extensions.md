@@ -100,7 +100,26 @@ var multiline = "first\nsecond".Match("first*second"); // true
 var literalQuestionMark = "report?".Match("report?"); // true
 ```
 
-Request Profiling reuses prepared glob matchers for ASCII path segments. Its path-specific `**` handling and existing UTF-16 comparisons for non-ASCII segments remain part of the request-path contract; a general text glob does not define path separators.
+### Match anchored path globs
+
+`PathGlobMatcher(IReadOnlyList<string> patterns)` is in the `BridgingIT.DevKit.Common.Abstractions` package and the `BridgingIT.DevKit.Common` namespace. Call `IsMatch(string path)` to check whether any configured pattern matches the complete slash-rooted path.
+
+```csharp
+using BridgingIT.DevKit.Common;
+
+var matcher = new PathGlobMatcher(["/reports/**", "/jobs/archive-*"]);
+var report = matcher.IsMatch("/REPORTS/monthly/sales/"); // true
+var archive = matcher.IsMatch("/jobs/archive-42"); // true
+var nested = matcher.IsMatch("/jobs/archive-42/run"); // false
+```
+
+`*` matches zero or more code units in one segment. `**` matches zero or more segments and must occupy a complete segment. Trailing slashes are ignored, and interior empty segments are significant. Null and empty paths represent the root. A nonempty path without a leading slash returns `false`.
+
+The constructor accepts up to 128 patterns, at most 256 UTF-16 code units each. An empty list matches nothing. A null list throws `ArgumentNullException`. Invalid patterns or exceeded limits throw `ArgumentException` during construction. Patterns must begin with `/` and exclude question marks, hash signs, backslashes, control characters, braces, brackets, and parentheses.
+
+Path literals compare case-insensitively using invariant casing on individual UTF-16 code units. This keeps exact unpaired-surrogate literals and applies casing to BMP letters. Supplementary letters match their exact code units. Use `GlobPatternMatcher` for whole-text matching with Unicode-scalar casing and `?`. The path matcher reuses it for ASCII segments.
+
+Request Profiling uses this matcher through `RequestProfilingPathMatcher` for its blacklist and whitelist. Its facade retains the original behavior for nonempty inputs without a leading slash by skipping the first UTF-16 code unit. Canonical profiling keys are still created by the feature. [Request Profiling setup](./features-profiling.md#operation-and-request-setup)
 
 ## Date and time helpers
 
@@ -120,6 +139,21 @@ Typical use cases:
 - relative date calculations
 - parsing dates from multiple string formats
 - range checks and date/time convenience operations
+
+### Parse durations
+
+`TryParseDuration(this string source, out TimeSpan duration)` is in the `BridgingIT.DevKit.Common.Abstractions` package and the `BridgingIT.DevKit.Common` namespace. It first tries invariant `TimeSpan` text, such as `00:01:30`. It also accepts numbers with case-insensitive suffixes `ms`, `s`, `m`, and `h`. A number can include a sign, a fraction, or an exponent. Use a period for the decimal separator in every culture. Blank text, unsupported units, non-finite numbers, and overflow return `false` with `TimeSpan.Zero`.
+
+```csharp
+using BridgingIT.DevKit.Common;
+
+if ("1.5m".TryParseDuration(out var timeout) && timeout > TimeSpan.Zero)
+{
+    Console.WriteLine(timeout.TotalSeconds); // 90
+}
+```
+
+Check any minimum, maximum, or positivity requirement after parsing. Use `TryParseTime` for clock text such as `02:30 PM`. Profiling's `ProfilingDurationParser.TryParse` uses the Common duration parser. [Profiling console commands](./features-profiling.md#console-commands)
 
 ## Text, enum, and argument helpers
 
@@ -141,6 +175,20 @@ Typical use cases:
 - working with multiple prefixes or tokens
 - enum metadata and helper logic
 - combining object argument arrays
+
+### Truncate text to a UTF-8 byte limit
+
+`TruncateUtf8(this string source, int maximumBytes)` is in the `BridgingIT.DevKit.Common.Abstractions` package and the `BridgingIT.DevKit.Common` namespace. Use it when a field is limited by encoded size. It returns the longest prefix of complete Unicode scalars that fits, without adding a marker. For example, `é` takes two UTF-8 bytes and `😀` takes four. Use `Truncate` for character-count limits.
+
+```csharp
+using BridgingIT.DevKit.Common;
+
+var label = "Café 😀".TruncateUtf8(8); // "Café "
+```
+
+Input that fits is returned as supplied, including null and empty strings. A zero limit returns an empty string for non-null input. A negative limit throws `ArgumentOutOfRangeException`. Byte counting treats each unpaired UTF-16 surrogate as the replacement character U+FFFD. If truncation is needed, retained unpaired surrogates are returned as U+FFFD. Auditing's `AuditCollector.Text` still returns an empty string for non-null input with a negative limit. [Application Auditing](./features-application-auditing.md)
+
+When the UTF-16 length already exceeds the byte limit, truncation skips the full byte count and stops at the first scalar that cannot fit.
 
 ## Stream, task, and async helpers
 
@@ -192,6 +240,45 @@ Typical use cases:
 - finding or locating a registered service descriptor during startup composition
 
 ## HTTP helpers
+
+### Evaluate representation conditions and byte ranges
+
+`HttpRepresentationHeaders` is in the `BridgingIT.DevKit.Common.Extensions.Web` package and the `BridgingIT.DevKit.Common` namespace. It uses ASP.NET Core's `HttpRequest` and requires no service registration. Supply the selected representation's existence, strong quoted ETag, and last modification time.
+
+- `Evaluate(HttpRequest request, bool exists, string entityTag, DateTimeOffset lastModified, bool read)` returns `HttpRepresentationPreconditionOutcome`. `If-Match` takes precedence over `If-Unmodified-Since`. If that check succeeds, `If-None-Match` takes precedence over `If-Modified-Since`. A standalone ETag wildcard checks existence. Date preconditions compare timestamps at whole-second precision. `If-Modified-Since` applies only to reads.
+- `MatchesEntityTag(string values, string current, bool weak = false)` parses a list of quoted tags and compares their opaque values ordinally, preserving commas inside tags. Set `weak: true` to permit candidates with an uppercase `W/` prefix. Invalid lists and wildcard candidates return `false`. `Evaluate` handles standalone wildcard conditions.
+- `SelectRange(HttpRequest request, long length, string entityTag, DateTimeOffset lastModified)` returns an `HttpRepresentationRangeSelection` with an `Outcome` of type `HttpRepresentationRangeKind`. An absent range or an invalid or mismatching `If-Range` returns `Full`. `If-Range` accepts one matching strong ETag or a date equal to the representation's last modification time at whole-second precision. Use an `If-Range` date only when the representation's last modification time is a strong validator. The `bytes` unit is case insensitive. One range can return `Partial` with a zero-based `Offset` and a byte `Length`. Malformed ranges, multiple ranges, and other units return `Unsupported`. A valid range that selects no bytes returns `Unsatisfiable`. Every outcome other than `Partial` has an offset of zero and a null length. Negative representation lengths throw `ArgumentOutOfRangeException`.
+
+```csharp
+using BridgingIT.DevKit.Common;
+using Microsoft.AspNetCore.Http;
+
+var request = new DefaultHttpContext().Request;
+request.Headers.Range = "bytes=-5";
+var entityTag = "\"report-v1\"";
+var lastModified = new DateTimeOffset(2026, 2, 5, 10, 30, 20, TimeSpan.Zero);
+
+var condition = HttpRepresentationHeaders.Evaluate(request, true, entityTag, lastModified, read: true);
+if (condition == HttpRepresentationPreconditionOutcome.Proceed)
+{
+    var selection = HttpRepresentationHeaders.SelectRange(request, 20, entityTag, lastModified);
+    Console.WriteLine(selection); // Partial, offset 15, length 5
+}
+```
+
+Use `NotModified` for a conditional read that can return HTTP 304 and `Failed` for a precondition failure that can return HTTP 412. Your endpoint selects the representation, authorizes access, applies mutation conditions atomically, and writes the response.
+
+The overloads above use `HttpRepresentationHeaderMode.Strict`, which accepts all three HTTP-date formats. The existing Presentation facade selects `HttpRepresentationHeaderMode.LegacyPresentation`. That mode retains raw comma splitting, RFC 1123 date parsing, matching `If-Range` dates at least as recent as the representation, and case-sensitive `bytes` matching. [HTTP date formats](https://www.rfc-editor.org/rfc/rfc9110.html#section-5.6.7), [Application Caching](./features-application-caching.md#apply-http-conditions)
+
+If your timestamp cannot reliably identify a representation, pass `allowIfRangeDate: false`. A date in `If-Range` then selects the full response, and a matching strong ETag can still select a partial response. Requests without `If-Range` use normal range selection.
+
+```csharp
+var etagRange = HttpRepresentationHeaders.SelectRange(
+    request, 20, entityTag, lastModified,
+    mode: HttpRepresentationHeaderMode.Strict, allowIfRangeDate: false);
+```
+
+### Transport opaque version tokens in ETags
 
 `OpaqueVersionETag` is in the `BridgingIT.DevKit.Common.Extensions.Web` package, under the `BridgingIT.DevKit.Common` namespace. Use it in ASP.NET Core endpoints that exchange opaque versions with a provider. `Write` sets one strong ETag. It wraps the UTF-8 version in quotes with a `bdk.` prefix and canonical unpadded Base64Url. For example, the version `"v1"` including its quotes becomes `"bdk.InYxIg"`. A blank version leaves the response header as it is.
 

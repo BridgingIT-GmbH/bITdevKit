@@ -133,7 +133,7 @@ public sealed partial class DocumentStorageMaintenanceEndpoints(DocumentStorageM
 
         var condition = HttpETag.ReadCondition(ifMatchETag);
         if (condition.IsFailure) return MapFailure(condition);
-        var properties = HttpMetadata.ParseProperties(JsonSerializer.Serialize(request.Properties), preserveMissing: true);
+        var properties = ScalarPropertyBagJson.ParseElement(JsonSerializer.SerializeToElement(request.Properties), preserveMissing: true);
         if (properties.IsFailure) return MapFailure(properties);
         var expiration = HttpMetadata.ResolveExpiration(request.ExpiresAt, request.ClearExpiration);
         if (expiration.IsFailure) return MapFailure(expiration);
@@ -158,7 +158,7 @@ public sealed partial class DocumentStorageMaintenanceEndpoints(DocumentStorageM
         if (request is null) return BadRequest("A properties update is required.");
         var condition = HttpETag.ReadCondition(ifMatchETag);
         if (condition.IsFailure) return MapFailure(condition);
-        var properties = HttpMetadata.ParseProperties(JsonSerializer.Serialize(request.Properties), preserveMissing: true);
+        var properties = ScalarPropertyBagJson.ParseElement(JsonSerializer.SerializeToElement(request.Properties), preserveMissing: true);
         if (properties.IsFailure) return MapFailure(properties);
         var expiration = HttpMetadata.ResolveExpiration(request.ExpiresAt, request.ClearExpiration);
         if (expiration.IsFailure) return MapFailure(expiration);

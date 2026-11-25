@@ -242,6 +242,8 @@ services.AddFileMonitoring(builder => builder.UseLocal("inbound", root));
 
 `FileSystemMetrics.Snapshot()` includes process-wide `fileReadOpens`, `fileWriteOpens`, `managedFileOpenAttempts` and native publication counters. Existing `.WithMetrics()` records the File Storage operation metrics separately. Caught filesystem failures retain the existing File Storage errors and additionally expose shared errors such as `FileSystemStoragePermissionError`, `FileSystemStorageCapacityError` and `FileSystemStorageUnavailableError`.
 
+Each local provider uses Common's keyed lock pool for operations on a full path. It compares paths case-insensitively on Windows and case-sensitively on other systems. The provider's lock timeout defaults to 30 seconds. [Keyed asynchronous locks](./common-utilities.md#keyed-asynchronous-locks)
+
 Direct writes keep their direct-write semantics. `OpenWriteFileAsync(..., useTemporaryWrite: true)` uses the common native replacement helper after successful stream disposal, with Buffered acknowledgement. Existing read handles survive replacement. This reuse does not add blob/document TTL, Durable acknowledgement or shared-host ownership guarantees to File Storage. Actual share and power-loss qualification remains pending.
 
 `NetworkFileStorageProvider` remains in `Infrastructure.Windows` because it owns Windows impersonation. That package references `Infrastructure.FileSystem` and inherits the moved local provider. Linux-mounted shares use the local provider with OS-managed mounting and credentials.

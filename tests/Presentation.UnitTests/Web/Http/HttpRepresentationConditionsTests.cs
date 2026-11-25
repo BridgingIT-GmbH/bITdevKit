@@ -10,6 +10,7 @@ using BridgingIT.DevKit.Presentation.Web;
 using Microsoft.AspNetCore.Http;
 
 /// <summary>Checks shared HTTP condition ordering, validator comparisons and byte-range selection.</summary>
+/// <example><code>request.Headers.Range = "bytes=2-4";</code></example>
 public sealed class HttpRepresentationConditionsTests
 {
     private static readonly DateTimeOffset ModifiedAt = new(2026, 2, 5, 10, 30, 20, 900, TimeSpan.Zero);
@@ -150,6 +151,23 @@ public sealed class HttpRepresentationConditionsTests
         HttpRepresentationConditions.MatchesEntityTag(candidates, null, weak).ShouldBeFalse();
     }
 
+    /// <summary>Checks the Presentation API's established comparison of quoted tags containing commas.</summary>
+    /// <example><code>var matches = HttpRepresentationConditions.MatchesEntityTag("\"report,2026\"", "\"report,2026\"");</code></example>
+    [Fact]
+    public void Evaluate_QuotedComma_PreservesPresentationPreconditionResults()
+    {
+        const string tag = "\"report,2026\"";
+        var request = new DefaultHttpContext().Request;
+        request.Headers.IfMatch = tag;
+
+        HttpRepresentationConditions.MatchesEntityTag(tag, tag).ShouldBeFalse();
+        HttpRepresentationConditions.Evaluate(request, true, tag, ModifiedAt, read: false).ShouldBe(HttpPreconditionOutcome.Failed);
+
+        request.Headers.Remove("If-Match");
+        request.Headers.IfNoneMatch = tag;
+        HttpRepresentationConditions.Evaluate(request, true, tag, ModifiedAt, read: false).ShouldBe(HttpPreconditionOutcome.Proceed);
+    }
+
     /// <summary>Closed, open-ended and suffix ranges select the same logical bytes and clamp to the representation length.</summary>
     [Theory]
     [InlineData("bytes=2-4", 2L, 3L)]
@@ -187,6 +205,7 @@ public sealed class HttpRepresentationConditionsTests
     [InlineData("bytes=1-2,4-5")]
     [InlineData("garbage")]
     [InlineData("bytes=5-2")]
+    [InlineData("BYTES=2-4")]
     public void SelectRange_UnsupportedRange_ReportsUnsupported(string range)
     {
         var request = new DefaultHttpContext().Request;
@@ -219,6 +238,9 @@ public sealed class HttpRepresentationConditionsTests
     [InlineData("\"other\"", HttpRangeSelectionKind.Full)]
     [InlineData("Thu, 05 Feb 2026 10:30:20 GMT", HttpRangeSelectionKind.Partial)]
     [InlineData("Thu, 05 Feb 2026 10:30:19 GMT", HttpRangeSelectionKind.Full)]
+    [InlineData("Thu, 05 Feb 2026 10:30:21 GMT", HttpRangeSelectionKind.Partial)]
+    [InlineData(EntityTag + ", \"other\"", HttpRangeSelectionKind.Partial)]
+    [InlineData(" ", HttpRangeSelectionKind.Partial)]
     public void SelectRange_IfRange_UsesStrongValidatorOrRoundedDate(string ifRange, HttpRangeSelectionKind expected)
     {
         var request = new DefaultHttpContext().Request;

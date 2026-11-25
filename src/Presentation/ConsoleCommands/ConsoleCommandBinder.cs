@@ -9,9 +9,11 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Reflection;
+using BridgingIT.DevKit.Common;
 using Spectre.Console;
 
 /// <summary>Command binding utility (reflection + caching).</summary>
+/// <example><code>var (ok, errors) = ConsoleCommandBinder.TryBind(command, ["--timeout", "500ms"]);</code></example>
 public static class ConsoleCommandBinder
 {
     private static readonly Dictionary<Type, ConsoleCommandMeta> Cache = [];
@@ -27,7 +29,7 @@ public static class ConsoleCommandBinder
     {
         var meta = GetMeta(cmd.GetType());
         var errors = new List<string>();
-        var options = ParseOptions(tokens);
+        var options = ParseOptions(tokens, meta);
         var consumedIndices = new HashSet<int>(options.SelectMany(kvp => kvp.Value.Indices));
         var positionals = tokens.Where((t, i) => !consumedIndices.Contains(i)).ToList();
 
@@ -56,7 +58,7 @@ public static class ConsoleCommandBinder
                         continue;
                     }
 
-                    if (!TryConvert(valToken, o.Property.PropertyType, out value))
+                    if (!TryConvert(valToken, o.Property.PropertyType, o.UseFriendlyDuration, out value))
                     {
                         errors.Add($"Invalid value '{valToken}' for --{o.Name} (expected {FriendlyType(o.Property.PropertyType)}). ");
                         continue;
@@ -84,7 +86,7 @@ public static class ConsoleCommandBinder
             if (a.Order < positionals.Count)
             {
                 var raw = positionals[a.Order];
-                if (!TryConvert(raw, a.Property.PropertyType, out var value))
+                if (!TryConvert(raw, a.Property.PropertyType, a.UseFriendlyDuration, out var value))
                 {
                     errors.Add($"Invalid value '{raw}' for argument #{a.Order} ({a.Property.Name}) expected {FriendlyType(a.Property.PropertyType)}.");
                     continue;
@@ -166,6 +168,7 @@ public static class ConsoleCommandBinder
                             Description = opt.Description ?? p.Name,
                             Required = opt.Required,
                             Default = opt.Default,
+                            UseFriendlyDuration = UsesFriendlyDuration(p),
                             Property = p
                         });
                         continue;
@@ -179,6 +182,7 @@ public static class ConsoleCommandBinder
                             Order = arg.Order,
                             Description = arg.Description,
                             Required = arg.Required,
+                            UseFriendlyDuration = UsesFriendlyDuration(p),
                             Property = p
                         });
                     }
@@ -203,7 +207,7 @@ public static class ConsoleCommandBinder
         _ => t.IsEnum ? "enum" : t.Name.ToLowerInvariant()
     };
 
-    private static bool TryConvert(string raw, Type type, out object value)
+    private static bool TryConvert(string raw, Type type, bool useFriendlyDuration, out object value)
     {
         value = null;
         if (type == typeof(string)) { value = raw; return true; }
@@ -218,7 +222,18 @@ public static class ConsoleCommandBinder
 
         if (type == typeof(DateTime) || type == typeof(DateTime?)) { if (DateTime.TryParse(raw, CultureInfo.InvariantCulture, DateTimeStyles.AssumeLocal, out var dt)) { value = dt; return true; } return false; }
 
-        if (type == typeof(TimeSpan) || type == typeof(TimeSpan?)) { if (TimeSpan.TryParse(raw, CultureInfo.InvariantCulture, out var ts)) { value = ts; return true; } return false; }
+        if (type == typeof(TimeSpan) || type == typeof(TimeSpan?))
+        {
+            var parsed = useFriendlyDuration
+                ? raw.TryParseDuration(out var duration)
+                : TimeSpan.TryParse(raw, CultureInfo.InvariantCulture, out duration);
+            if (parsed)
+            {
+                value = duration;
+            }
+
+            return parsed;
+        }
 
         if (type.IsEnum) { if (Enum.TryParse(type, raw, true, out var ev)) { value = ev; return true; } return false; }
         // fallback
@@ -230,55 +245,65 @@ public static class ConsoleCommandBinder
         catch { return false; }
     }
 
-    private static Dictionary<string, ParsedOption> ParseOptions(string[] tokens)
+    private static bool UsesFriendlyDuration(PropertyInfo property) =>
+        (property.PropertyType == typeof(TimeSpan) || property.PropertyType == typeof(TimeSpan?))
+        && property.IsDefined(typeof(ConsoleCommandDurationAttribute), inherit: false);
+
+    private static Dictionary<string, ParsedOption> ParseOptions(string[] tokens, ConsoleCommandMeta meta)
     {
-        var dict = new Dictionary<string, ParsedOption>(StringComparer.OrdinalIgnoreCase);
+        var options = new Dictionary<string, ParsedOption>(StringComparer.OrdinalIgnoreCase);
+        var positionalIndex = 0;
         for (var i = 0; i < tokens.Length; i++)
         {
-            var t = tokens[i];
-            if (t.StartsWith("--"))
+            var token = tokens[i];
+            var longOption = token.StartsWith("--");
+            var shortOption = token.Length > 1 && token.StartsWith('-') && !longOption;
+            if (shortOption && LooksLikeSignedDuration(token)
+                && meta.Arguments.Any(argument => argument.Order == positionalIndex && argument.UseFriendlyDuration)
+                && FindOption(meta, token[1..]) is null)
             {
-                var trimmed = t.Substring(2);
-                string name; string val = null;
-                var eqIdx = trimmed.IndexOf('=');
-                if (eqIdx >= 0)
-                {
-                    name = trimmed[..eqIdx];
-                    val = trimmed[(eqIdx + 1)..];
-                }
-                else
-                {
-                    name = trimmed;
-                    // value maybe next token if not another option
-                    if (i + 1 < tokens.Length && !tokens[i + 1].StartsWith("-"))
-                    {
-                        val = tokens[i + 1];
-                        dict[name] = new ParsedOption(val, [i, i + 1]);
-                        i++;
-                        continue;
-                    }
-                }
+                shortOption = false;
+            }
 
-                dict[name] = new ParsedOption(val, [i]);
-            }
-            else if (t.StartsWith('-') && t.Length > 1 && !t.StartsWith("--"))
+            if (!longOption && !shortOption)
             {
-                var alias = t[1..];
-                if (i + 1 < tokens.Length && !tokens[i + 1].StartsWith("-"))
-                {
-                    var val = tokens[i + 1];
-                    dict[alias] = new ParsedOption(val, [i, i + 1]);
-                    i++;
-                }
-                else
-                {
-                    dict[alias] = new ParsedOption(null, [i]);
-                }
+                positionalIndex++;
+                continue;
             }
+
+            var name = token[(longOption ? 2 : 1)..];
+            var separator = longOption ? name.IndexOf('=') : -1;
+            if (separator >= 0)
+            {
+                options[name[..separator]] = new ParsedOption(name[(separator + 1)..], [i]);
+                continue;
+            }
+
+            if (i + 1 < tokens.Length && CanConsumeOptionValue(tokens[i + 1], name, meta))
+            {
+                options[name] = new ParsedOption(tokens[i + 1], [i, i + 1]);
+                i++;
+                continue;
+            }
+
+            options[name] = new ParsedOption(null, [i]);
         }
 
-        return dict;
+        return options;
     }
+
+    private static bool CanConsumeOptionValue(string token, string name, ConsoleCommandMeta meta) =>
+        !token.StartsWith("-")
+        || (LooksLikeSignedDuration(token) && FindOption(meta, name)?.UseFriendlyDuration == true && FindOption(meta, token[1..]) is null);
+
+    private static OptionMeta FindOption(ConsoleCommandMeta meta, string name) =>
+        meta.Options.FirstOrDefault(option => StringComparer.OrdinalIgnoreCase.Equals(option.Name, name)
+            || StringComparer.OrdinalIgnoreCase.Equals(option.Alias, name));
+
+    // Leave parsing to TryConvert so invalid signed durations produce the usual error.
+    private static bool LooksLikeSignedDuration(string token) =>
+        token.Length > 1 && token[0] == '-'
+        && (char.IsAsciiDigit(token[1]) || (token[1] == '.' && token.Length > 2 && char.IsAsciiDigit(token[2])));
 
     private record ParsedOption(string Value, int[] Indices);
 
@@ -296,6 +321,8 @@ public static class ConsoleCommandBinder
 
         public object Default { get; init; }
 
+        public bool UseFriendlyDuration { get; init; }
+
         public PropertyInfo Property { get; init; } = null!;
     }
 
@@ -306,6 +333,8 @@ public static class ConsoleCommandBinder
         public string Description { get; init; }
 
         public bool Required { get; init; }
+
+        public bool UseFriendlyDuration { get; init; }
 
         public PropertyInfo Property { get; init; } = null!;
     }

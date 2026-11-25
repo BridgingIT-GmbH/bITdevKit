@@ -329,7 +329,7 @@ public sealed partial class BlobStorageMaintenanceEndpoints(
             return MapFailure(condition, $"{request.Container}/{request.Name}");
         }
 
-        var properties = HttpMetadata.ParseProperties(JsonSerializer.Serialize(request.Properties), preserveMissing: true);
+        var properties = ScalarPropertyBagJson.ParseElement(JsonSerializer.SerializeToElement(request.Properties), preserveMissing: true);
         if (properties.IsFailure)
         {
             return MapFailure(properties, $"{request.Container}/{request.Name}");

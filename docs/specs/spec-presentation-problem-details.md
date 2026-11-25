@@ -237,7 +237,7 @@ Apply the shared format to default DevKit exception and Result problems. Retain 
 
 Let `UseExceptionHandler()` own exception capture, dispatch through registered `IExceptionHandler` implementations, and framework fallback. Let `UseStatusCodePages()` own eligibility for empty error responses. DevKit supplies mappings and response preparation through those extension points. Do not reproduce either middleware's general request-processing loop.
 
-Use the framework's `ProblemDetails` types and writers to serialize the shared format. Small adapters may retain headers across response clearing or handle a writer fallback. Use the standard middleware and extend it at the points that need different behavior.
+Use the framework's `ProblemDetails` types and writers to serialize the shared format. DevKit controls the status code, `Content-Type`, and body. ASP.NET Core and application middleware control the other response headers.
 
 Replace Hellang's exception and empty-status behavior together. An empty 400 through 599 response with no content type or content length is eligible under the current library policy. `Content-Length: 0` is different from an unset content length. Preserve explicit bodies, declared content types, successful responses, redirects, and statuses outside that range.
 
@@ -305,7 +305,6 @@ The new options expose these settings:
 - `IncludeExceptionDetails` is a `bool` with a default of `false`. It controls whether the shared `exceptionDetails` extension appears for thrown exceptions and exception-bearing Results when diagnostic preparation applies. Public detail and validation messages are independent of this flag.
 - `ShouldHandleRequest` is an optional `Func<HttpContext, bool>`, default `null`. The default handles eligible requests and leaves native exception-page rewrites to the host. An explicit predicate controls automatic exception and empty-status handling. [Mixed API and HTML hosts](#mixed-api-and-html-hosts)
 - `OnBeforeWriteDetails` is an optional `Action<HttpContext, ProblemDetails>`, default `null`. It enriches a problem immediately before serialization, after applicable default preparation and native customization. It applies during normal writer or MVC formatter preparation for exceptions, failed Results, and eligible framework-generated problems managed by the feature. [Writer fallback](#writer-fallback)
-- `AllowedHeaderNames` is a case-insensitive `ISet<string>` initialized with the compatibility header allowlist. Adding a name retains an existing response header across exception-response clearing. It does not copy a request header into the response.
 - `ShouldLogUnhandledException` is a `bool` with a default of `true`. When enabled, DevKit logs handled exceptions with a selected 5xx status, including those handled by individually registered `ExceptionHandlerBase<TException>` implementations in the combined setup. Set it to `false` to disable the DevKit exception log. ASP.NET Core diagnostics and standalone handlers have separate settings.
 - `ShouldLogResultErrors` is a `bool` with a default of `true`. It logs mapped 5xx Problem Details and custom MVC Result responses at execution. An explicit logger passed to the Result mapper takes precedence.
 
@@ -500,16 +499,9 @@ For mapped Result problems, preserve the native `ProblemHttpResult` JSON fallbac
 
 `UseStatusCodePages()` enables processing of eligible empty error responses. `Configure<StatusCodePagesOptions>(...)` supplies application-specific status-page behavior. Applications can disable it for an individual request through `IStatusCodePagesFeature.Enabled`. Such overrides use the native mechanism and take precedence over DevKit's default empty-status preparation.
 
-The initial response header allowlist contains `CorrelationId`, `FlowId`, `TraceId`, `WWW-Authenticate`, `Strict-Transport-Security`, and the existing `Access-Control-Allow-Credentials`, `Access-Control-Allow-Headers`, `Access-Control-Allow-Methods`, `Access-Control-Allow-Origin`, `Access-Control-Expose-Headers`, and `Access-Control-Max-Age` names. Hosts can extend it:
+ASP.NET Core clears pending response headers before dispatching exceptions. This can remove correlation and security headers set earlier in the request. Set required headers in application middleware through `HttpResponse.OnStarting` so they apply to the final response. Standard CORS middleware applies the policy through this callback for non-preflight requests.
 
-```csharp
-builder.Services.AddResponseProblemDetails(options =>
-{
-	options.AllowedHeaderNames.Add("X-Inventory-Version");
-});
-```
-
-Cache-prevention headers retain the baseline behavior for exception and empty-status responses. This does not introduce a global cache policy for explicit Result or successful responses. Host-specific cache changes use the standard response pipeline.
+Eligible empty-status responses keep existing headers, including `WWW-Authenticate` from authentication challenges and cache headers set by the application. ASP.NET Core exception middleware applies its native cache policy to exception responses.
 
 By default, DevKit logs handled server errors through `ILogger`. ASP.NET Core 10 suppresses its own diagnostics when an `IExceptionHandler` handles the exception. To use framework diagnostics for server errors, disable the DevKit exception log and allow framework diagnostics for responses with status 500 or higher.
 
@@ -551,7 +543,7 @@ Applications with custom propagation requirements can use a standard `IException
 
 ### Option precedence and validation
 
-Apply defaults once. Evaluate `Configure` delegates in registration order, then `PostConfigure` delegates according to the normal options pattern. Later explicit scalar assignments win. Mappings append in declaration order within their precedence group. Header additions accumulate case-insensitively. Assigning a callback replaces that callback. To compose two callbacks, call both from a wrapper.
+Apply defaults once. Evaluate `Configure` delegates in registration order, then `PostConfigure` delegates according to the normal options pattern. Later explicit scalar assignments win. Mappings append in declaration order within their precedence group. Assigning a callback replaces that callback. To compose two callbacks, call both from a wrapper.
 
 With `AddResponseProblemDetails`, both response paths read the final DevKit `ProblemDetailsOptions.IncludeExceptionDetails` value. If the host also calls `AddResultHttpProblemDetails(bool)`, the combined policy takes precedence in either registration order. In a Result-only host, `AddResultHttpProblemDetails(bool)` still controls Result disclosure. A host migrating to the combined registration can remove the Result-only call.
 
@@ -586,7 +578,7 @@ The implementation covers Presentation Problem Details, narrow integration with 
 
 Remove the direct Hellang reference, its central version, obsolete helper overloads exposing Hellang types, host imports, and middleware calls after characterizing the replacement. [Presentation.Web.csproj](../../src/Presentation.Web/Presentation.Web.csproj)
 
-Removing the Hellang-specific public helper is a source and binary API change. Document how to migrate mapping delegates, consolidate diagnostic settings, retain allowed response headers, and migrate write hooks. The generic `Hellang*` assembly-scan exclusion can remain for consumer applications.
+Removing the Hellang-specific public helper is a source and binary API change. Document how to migrate mapping delegates, consolidate diagnostic settings, configure response headers in middleware, and migrate write hooks. The generic `Hellang*` assembly-scan exclusion can remain for consumer applications.
 
 Both hosts migrated by this specification set `IncludeExceptionDetails = builder.Environment.IsDevelopment()` for thrown exceptions and exception-bearing Results. Verify the policy in Development, Staging, and Production.
 
@@ -657,7 +649,7 @@ As a host developer, I want explicit defaults and override rules so that I can m
 1. Given combined, Result-only, and native configuration in either order, when options resolve, then defaults, explicit assignments, and post-configuration follow the documented precedence without duplicate callbacks or handlers.
 2. Given a host override and module default for the same exception, when either registration order is used, then the host override wins. A false predicate lets the next matching mapping run.
 3. Given either value of `IncludeExceptionDetails`, when diagnostic preparation runs, then both responses include or omit the shared `exceptionDetails` array as configured. Catch-all exception detail stays generic and `data.errors` contains validation messages only. A legacy Result-only registration cannot override the combined value.
-4. Given header extensions, native writer or status-page overrides, and logging configuration, when handling runs, then the selected framework extension points remain effective.
+4. Given application header middleware, native writer or status-page overrides, and logging configuration, when handling runs, then the selected framework extension points remain effective.
 5. Given invalid configuration or a failing callback, when startup or response execution occurs, then the failure is explicit and cannot become an empty successful response or a second write.
 6. Given the default combined registration, when a DevKit-mapped Result produces a 5xx problem or a custom MVC 5xx response, then either the explicit mapper logger handles the failure or the HTTP layer logs it once. Successful Results, expected 4xx Results, and responses with HTTP Result logging disabled produce zero entries from this policy. An explicit Minimal API `InternalServerError` arm uses the mapper logger when supplied.
 7. Given an enrichment callback assigns a different status, when a DevKit-managed problem is written, then the HTTP status, JSON `status`, and DevKit log use the selected status. Other callback edits appear in the response.
@@ -697,7 +689,8 @@ The regression set must cover:
 - Every effective exception mapping and its public detail, shadowed mappings, precedence between host and module mappings, null or throwing factories, inner exceptions, and migration from the legacy post-write rethrow policy.
 - Every Minimal API Result error category, message-only failures, mixed failures, custom handlers, serialized error properties, and HTTP-independent Result values.
 - Explicit problems, MVC automatic model validation, empty statuses, `Content-Length: 0`, declared content types, explicit bodies, mixed API and UI routes, and error-page re-execution.
-- Missing correlation middleware, request and ambient correlation, real Activity identifiers, response header retention, cache headers, and callback counts.
+- Missing correlation middleware, request and ambient correlation, real Activity identifiers, and callback counts.
+- Ordinary and Problem Details responses over Kestrel HTTPS with HTTP/2 required. Verify native exception header clearing and cache policy, application headers on empty statuses, authentication challenges on 401 responses, and standard CORS headers on API errors.
 - Missing `Accept`, JSON, problem JSON, HTML, XML, wildcards, configured MVC formatters, and native writer fallback.
 - `HEAD`, cancellation, client disconnects, already-started responses, streaming, logging, and request profiling.
 - Explicit standard middleware setup and the convenience method, native options and writers, and ordinary ASP.NET Core hosts using either endpoint style. Verify that no parallel DevKit exception-dispatch loop is required.

@@ -12,6 +12,7 @@ using Microsoft.Extensions.Options;
 using Problem = Microsoft.AspNetCore.Mvc.ProblemDetails;
 
 /// <summary>Maps unhandled exceptions to DevKit Problem Details within the configured request scope.</summary>
+/// <example><code>builder.Services.AddResponseProblemDetails();</code></example>
 public sealed class ResponseProblemDetailsExceptionHandler(
     IOptions<ProblemDetailsOptions> options,
     IProblemDetailsService service,
@@ -23,6 +24,7 @@ public sealed class ResponseProblemDetailsExceptionHandler(
     private readonly ProblemDetailsOptions.Registration[] mappings = [.. options.Value.HostMappings, .. options.Value.ModuleMappings];
 
     /// <inheritdoc />
+    /// <example><code>await handler.TryHandleAsync(httpContext, exception, httpContext.RequestAborted);</code></example>
     public async ValueTask<bool> TryHandleAsync(HttpContext httpContext, Exception exception, CancellationToken cancellationToken)
     {
         if (ResponseProblemDetailsService.HasFailedWrite(httpContext) || !this.ShouldHandleException(httpContext))
@@ -36,7 +38,6 @@ public sealed class ResponseProblemDetailsExceptionHandler(
         httpContext.Response.StatusCode = problem.Status.Value;
         LogHandledException(this.logger, this.options, exception, httpContext.Response.StatusCode);
 
-        ResponseProblemDetailsHeaderSnapshot.Restore(httpContext);
         var context = new ProblemDetailsContext
         {
             HttpContext = httpContext,

@@ -85,6 +85,7 @@ public abstract class ExceptionHandlerBase<TException>(
     /// <returns>
     ///     <c>true</c> if the exception was handled; otherwise, <c>false</c>.
     /// </returns>
+    /// <example><code>await handler.TryHandleAsync(httpContext, exception, httpContext.RequestAborted);</code></example>
     public async virtual ValueTask<bool> TryHandleAsync(
         HttpContext httpContext,
         Exception exception,
@@ -128,7 +129,6 @@ public abstract class ExceptionHandlerBase<TException>(
         {
             var options = httpContext.RequestServices.GetRequiredService<IOptions<Errors.ProblemDetailsOptions>>().Value;
             ResponseProblemDetailsExceptionHandler.LogHandledException(this.Logger, options, exception, httpContext.Response.StatusCode);
-            ResponseProblemDetailsHeaderSnapshot.Restore(httpContext);
             var written = await httpContext.RequestServices.GetRequiredService<IProblemDetailsService>().TryWriteAsync(new ProblemDetailsContext
             {
                 HttpContext = httpContext,

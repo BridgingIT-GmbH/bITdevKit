@@ -14,6 +14,7 @@ using Microsoft.Extensions.Options;
 using Problem = Microsoft.AspNetCore.Mvc.ProblemDetails;
 
 /// <summary>Configures the default DevKit response for eligible empty HTTP error statuses.</summary>
+/// <example><code>builder.Services.AddResponseProblemDetails(); app.UseResponseProblemDetails();</code></example>
 public sealed class ResponseProblemDetailsStatusCodeHandler : IPostConfigureOptions<StatusCodePagesOptions>
 {
     private static readonly Func<StatusCodeContext, Task> DefaultHandler = new StatusCodePagesOptions().HandleAsync;
@@ -58,16 +59,6 @@ public sealed class ResponseProblemDetailsStatusCodeHandler : IPostConfigureOpti
             Type = $"https://httpstatuses.io/{status}"
         };
         ProblemDetailsPayload.SetCorrelation(problem, http, automatic: true);
-        var headers = http.Response.Headers;
-        foreach (var name in headers.Keys.Where(name => !options.AllowedHeaderNames.Contains(name)).ToArray())
-        {
-            headers.Remove(name);
-        }
-
-        headers.CacheControl = "no-cache, no-store";
-        headers.Pragma = "no-cache";
-        headers.Expires = "-1";
-
         var service = http.RequestServices.GetRequiredService<IProblemDetailsService>();
         if (!await service.TryWriteAsync(new ProblemDetailsContext { HttpContext = http, ProblemDetails = problem }))
         {

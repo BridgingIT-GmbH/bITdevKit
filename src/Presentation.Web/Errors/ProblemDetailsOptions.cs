@@ -23,14 +23,6 @@ public sealed class ProblemDetailsOptions
     /// <summary>Gets or sets the final enrichment callback for accepted problem writes.</summary>
     public Action<HttpContext, Problem> OnBeforeWriteDetails { get; set; }
 
-    /// <summary>Gets response header names to preserve when automatic error handling clears a response.</summary>
-    public ISet<string> AllowedHeaderNames { get; } = new HashSet<string>(StringComparer.OrdinalIgnoreCase)
-    {
-        "CorrelationId", "FlowId", "TraceId", "WWW-Authenticate", "Strict-Transport-Security",
-        "Access-Control-Allow-Credentials", "Access-Control-Allow-Headers", "Access-Control-Allow-Methods",
-        "Access-Control-Allow-Origin", "Access-Control-Expose-Headers", "Access-Control-Max-Age"
-    };
-
     /// <summary>Gets or sets whether DevKit logs handled server exceptions. Defaults to true.</summary>
     public bool ShouldLogUnhandledException { get; set; } = true;
 

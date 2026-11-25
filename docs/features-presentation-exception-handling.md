@@ -127,7 +127,6 @@ When a registered writer accepts a problem, DevKit applies native customization 
 | `IncludeExceptionDetails` | `false` | Enables the shared diagnostic array for exceptions and exception-bearing Results. |
 | `ShouldHandleRequest` | Unset | Overrides which requests get automatic exception or empty-status handling. By default, DevKit honors native exception-page rewrites. |
 | `OnBeforeWriteDetails` | None | Enriches an accepted write after native customization and shared preparation. |
-| `AllowedHeaderNames` | Correlation, authentication challenge, HSTS, and standard CORS headers | Retains selected response headers after native exception handling clears them. |
 | `ShouldLogUnhandledException` | `true` | Writes a DevKit log for handled server exceptions. |
 | `ShouldLogResultErrors` | `true` | Logs mapped 5xx Problem Details and custom MVC Result responses when they execute. An explicit mapper logger takes precedence. Set to `false` to disable HTTP Result logging. |
 
@@ -146,6 +145,14 @@ For optional Entity Framework handlers, register `GlobalExceptionHandlerOptions`
 The host can configure native `Microsoft.AspNetCore.Http.ProblemDetailsOptions.CustomizeProblemDetails`. Install a custom `IProblemDetailsWriter` ahead of the framework JSON writer if it should handle an accepted format first. DevKit logs through `ILogger` subject to host log levels. ASP.NET Core diagnostics for a handled exception are controlled separately by native `ExceptionHandlerOptions.SuppressDiagnosticsCallback`. If using framework logging for handled server errors, set `ShouldLogUnhandledException = false` to avoid double logging.
 
 Use `ProblemHttpResult` as the Minimal API server error arm to get HTTP Result logging. If the endpoint declares the native `InternalServerError` arm, pass a logger to the mapper to log the failure.
+
+### Manage response headers in middleware
+
+DevKit Problem Details writes the status code, `Content-Type`, and body. Empty-status responses keep their existing headers, including authentication challenges and any cache policy set by the host. ASP.NET Core clears pending response headers before invoking exception handlers and applies its own cache policy to exception responses.
+
+For custom headers on exception responses, register an `HttpResponse.OnStarting` callback in application middleware before calling the next middleware. Set the headers in the callback so they apply to the final response.
+
+Place `UseResponseProblemDetails()` before authentication and authorization so status-code pages can process their responses. Place `UseCors()` after routing and before authentication and authorization.
 
 ### Preserve HTML error pages in mixed hosts
 
@@ -208,7 +215,7 @@ app.MapPost("/api/inventory", CreateInventoryItem)
 
 ### Migrate from Hellang
 
-Replace the Hellang service registration, `Configure.ProblemDetails(...)`, and `UseProblemDetails()` with the combined DevKit registration and middleware. The combined registration also supplies Result HTTP preparation. Set one disclosure policy, move exception mappings into `Map<TException>`, and transfer any custom header names and response enrichment into DevKit options. Use request scope for hosts with native HTML error pages. Update tests and generated clients for grouped validation, structured diagnostics, and the MVC Result status changes.
+Replace the Hellang service registration, `Configure.ProblemDetails(...)`, and `UseProblemDetails()` with the combined DevKit registration and middleware. The combined registration also supplies Result HTTP preparation. Set one disclosure policy, move exception mappings into `Map<TException>`, and move problem payload enrichment into `OnBeforeWriteDetails`. Configure custom headers in application middleware. Use request scope for hosts with native HTML error pages. Update tests and generated clients for grouped validation, structured diagnostics, and the MVC Result status changes.
 
 ## Key concepts
 

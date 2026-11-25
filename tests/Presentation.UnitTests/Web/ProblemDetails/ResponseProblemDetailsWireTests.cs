@@ -3,27 +3,34 @@ namespace BridgingIT.DevKit.Presentation.UnitTests.Web;
 using System.Collections.Concurrent;
 using System.Net;
 using System.Net.Http.Json;
+using System.Security.Cryptography;
+using System.Security.Cryptography.X509Certificates;
 using System.Text.Json;
 using BridgingIT.DevKit.Domain;
 using BridgingIT.DevKit.Presentation.Web;
 using BridgingIT.DevKit.Presentation.Web.Host;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.HttpResults;
+using Microsoft.AspNetCore.Server.Kestrel.Core;
 using Microsoft.AspNetCore.TestHost;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
+using Microsoft.Net.Http.Headers;
 using global::Presentation.TestHost.ProblemDetails;
 using DevKitOptions = BridgingIT.DevKit.Presentation.Web.Errors.ProblemDetailsOptions;
 using HttpResult = Microsoft.AspNetCore.Http.IResult;
 using NativeOptions = Microsoft.AspNetCore.Http.ProblemDetailsOptions;
 using Problem = Microsoft.AspNetCore.Mvc.ProblemDetails;
 
+/// <summary>Verifies how the registered Problem Details services and middleware produce HTTP responses.</summary>
+/// <example><code>await new ResponseProblemDetailsWireTests().Get_KestrelHttpsHttp2_UsesMiddlewareResponseHeaders();</code></example>
 [Collection(ResultMapTestCollection.Name)]
 public sealed class ResponseProblemDetailsWireTests
 {
@@ -84,12 +91,14 @@ public sealed class ResponseProblemDetailsWireTests
         app.Services.GetServices<IExceptionHandler>().Count().ShouldBe(1);
     }
 
+    /// <summary>Verifies that post-configuration runs after configuration binding.</summary>
+    /// <example><code>await new ResponseProblemDetailsWireTests().Start_BoundOptions_AppliesPostConfigure();</code></example>
     [Fact]
-    public async Task Start_BoundOptions_UsesPostConfigureAndCaseInsensitiveHeaders()
+    public async Task Start_BoundOptions_AppliesPostConfigure()
     {
         var builder = CreateBuilder();
         builder.Configuration["ProblemDetails:IncludeExceptionDetails"] = "true";
-        builder.Services.AddResponseProblemDetails(options => options.AllowedHeaderNames.Add("X-Inventory-Version"));
+        builder.Services.AddResponseProblemDetails();
         builder.Services.Configure<DevKitOptions>(builder.Configuration.GetSection("ProblemDetails"));
         builder.Services.PostConfigure<DevKitOptions>(options =>
         {
@@ -101,7 +110,6 @@ public sealed class ResponseProblemDetailsWireTests
 
         var options = app.Services.GetRequiredService<IOptions<DevKitOptions>>().Value;
         options.IncludeExceptionDetails.ShouldBeFalse();
-        options.AllowedHeaderNames.Contains("x-inventory-version").ShouldBeTrue();
     }
 
     [Theory]
@@ -890,6 +898,125 @@ public sealed class ResponseProblemDetailsWireTests
         using var canceled = await client.GetAsync("/canceled");
         ((int)canceled.StatusCode).ShouldBe(499);
         (await canceled.Content.ReadAsStringAsync()).ShouldBeEmpty();
+    }
+
+    /// <summary>Verifies a public HTML response, empty statuses, challenges, and exceptions over HTTPS with HTTP/2.</summary>
+    /// <example><code>await new ResponseProblemDetailsWireTests().Get_KestrelHttpsHttp2_UsesMiddlewareResponseHeaders();</code></example>
+    [Fact]
+    public async Task Get_KestrelHttpsHttp2_UsesMiddlewareResponseHeaders()
+    {
+        const string origin = "https://inventory.example";
+        const string versionHeader = "X-Inventory-Version";
+        const string indexHtml = "<!doctype html><title>Inventory</title><p>Inventory is available.</p>";
+        var finishIndexResponse = new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously);
+        using var key = RSA.Create(2048);
+        var certificateRequest = new CertificateRequest("CN=localhost", key, HashAlgorithmName.SHA256, RSASignaturePadding.Pkcs1);
+        using var certificate = certificateRequest.CreateSelfSigned(DateTimeOffset.UtcNow.AddMinutes(-5), DateTimeOffset.UtcNow.AddHours(1));
+
+        var builder = WebApplication.CreateBuilder(new WebApplicationOptions { EnvironmentName = "Production" });
+        builder.WebHost.ConfigureKestrel(options => options.Listen(IPAddress.Loopback, 0, endpoint =>
+        {
+            endpoint.Protocols = HttpProtocols.Http2;
+            endpoint.UseHttps(certificate);
+        }));
+        builder.Services.AddResponseProblemDetails(options => options.ShouldLogUnhandledException = false);
+        builder.Services.AddCors(options => options.AddDefaultPolicy(policy => policy
+            .WithOrigins(origin, "https://warehouse.example")
+            .AllowCredentials()
+            .WithExposedHeaders(versionHeader)));
+        builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer();
+        builder.Services.AddAuthorization();
+
+        await using var app = builder.Build();
+        app.UseResponseProblemDetails();
+        app.UseRouting();
+        app.UseCors();
+        app.Use(async (context, next) =>
+        {
+            context.Response.Headers["FlowId"] = "inventory-flow";
+            context.Response.OnStarting(() =>
+            {
+                context.Response.Headers[versionHeader] = "42";
+                return Task.CompletedTask;
+            });
+            await next(context);
+        });
+        app.UseAuthentication();
+        app.UseAuthorization();
+        app.MapGet("/index.html", async (HttpContext context) =>
+        {
+            context.Response.ContentType = "text/html; charset=utf-8";
+            await context.Response.WriteAsync(indexHtml, context.RequestAborted);
+            // Kestrel must send the headers while the request pipeline is still active.
+            await finishIndexResponse.Task.WaitAsync(context.RequestAborted);
+        });
+        app.MapGet("/api/inventory/missing", (HttpContext context) =>
+        {
+            context.Response.Headers.CacheControl = "private, max-age=60";
+            context.Response.Headers["X-Inventory-State"] = "missing";
+            return TypedResults.NotFound();
+        });
+        app.MapGet("/api/inventory/private", () => TypedResults.Ok()).RequireAuthorization();
+        app.MapGet("/api/inventory/failure", HttpResult () => throw new InvalidOperationException("Inventory failure."));
+        await app.StartAsync();
+
+        using var sut = new HttpClient(new HttpClientHandler
+        {
+            ServerCertificateCustomValidationCallback = (_, remoteCertificate, _, _) => certificate.Equals(remoteCertificate)
+        })
+        {
+            BaseAddress = new Uri(app.Urls.Single()),
+            DefaultRequestVersion = HttpVersion.Version20,
+            DefaultVersionPolicy = HttpVersionPolicy.RequestVersionExact
+        };
+        sut.DefaultRequestHeaders.Add(HeaderNames.Origin, origin);
+
+        using var indexTimeout = new CancellationTokenSource(TimeSpan.FromSeconds(10));
+        HttpResponseMessage indexResponse;
+        try
+        {
+            indexResponse = await sut.GetAsync("/index.html", HttpCompletionOption.ResponseHeadersRead, indexTimeout.Token);
+        }
+        finally
+        {
+            finishIndexResponse.TrySetResult();
+        }
+
+        using var success = indexResponse;
+        using var missing = await sut.GetAsync("/api/inventory/missing");
+        using var challenge = await sut.GetAsync("/api/inventory/private");
+        using var failure = await sut.GetAsync("/api/inventory/failure");
+
+        foreach (var response in new[] { success, missing, challenge, failure })
+        {
+            response.Version.ShouldBe(HttpVersion.Version20);
+            response.Headers.GetValues(HeaderNames.AccessControlAllowOrigin).ShouldBe([origin]);
+            response.Headers.GetValues(HeaderNames.AccessControlAllowCredentials).ShouldBe(["true"]);
+            response.Headers.GetValues(HeaderNames.AccessControlExposeHeaders).ShouldBe([versionHeader]);
+            response.Headers.Vary.ShouldContain(HeaderNames.Origin);
+            response.Headers.GetValues(versionHeader).ShouldBe(["42"]);
+        }
+
+        success.StatusCode.ShouldBe(HttpStatusCode.OK);
+        success.Content.Headers.ContentType.MediaType.ShouldBe("text/html");
+        (await success.Content.ReadAsStringAsync()).ShouldBe(indexHtml);
+        success.Headers.GetValues("FlowId").ShouldBe(["inventory-flow"]);
+
+        using var missingBody = await PresentationProblemDetailsHostTests.ReadProblemAsync(missing, HttpStatusCode.NotFound);
+        missing.Headers.GetValues("FlowId").ShouldBe(["inventory-flow"]);
+        missing.Headers.GetValues("X-Inventory-State").ShouldBe(["missing"]);
+        missing.Headers.CacheControl.Private.ShouldBeTrue();
+        missing.Headers.CacheControl.MaxAge.ShouldBe(TimeSpan.FromMinutes(1));
+        missing.Headers.CacheControl.NoStore.ShouldBeFalse();
+
+        using var challengeBody = await PresentationProblemDetailsHostTests.ReadProblemAsync(challenge, HttpStatusCode.Unauthorized);
+        challenge.Headers.WwwAuthenticate.Single().Scheme.ShouldBe(JwtBearerDefaults.AuthenticationScheme);
+        challenge.Headers.GetValues("FlowId").ShouldBe(["inventory-flow"]);
+        challenge.Headers.CacheControl.ShouldBeNull();
+
+        using var failureBody = await PresentationProblemDetailsHostTests.ReadProblemAsync(failure, HttpStatusCode.InternalServerError);
+        failure.Headers.Contains("FlowId").ShouldBeFalse();
+        failure.Headers.CacheControl.NoStore.ShouldBeTrue();
     }
 
     private static WebApplicationBuilder CreateBuilder(string environment = "Production")

@@ -8,10 +8,12 @@ using Microsoft.AspNetCore.Diagnostics;
 using HttpResult = Microsoft.AspNetCore.Http.IResult;
 
 /// <summary>Configures the optional API and mixed-host Problem Details probes.</summary>
+/// <example><code>new ProblemDetailsScenario(builder.Configuration).AddServices(builder.Services);</code></example>
 public sealed class ProblemDetailsScenario(IConfiguration configuration)
 {
     /// <summary>The configuration section for the fixture.</summary>
     public const string Settings = "TestScenarios:ProblemDetails";
+
     /// <summary>The API path prefix used by the fixture.</summary>
     public const string ApiPrefix = "/api/problem-details";
     private const string ErrorPath = "/problem-details/error";
@@ -20,6 +22,7 @@ public sealed class ProblemDetailsScenario(IConfiguration configuration)
     private bool Enabled => this.profile is "Api" or "ApiDefaults" or "Mixed";
 
     /// <summary>Registers services for the selected profile.</summary>
+    /// <example><code>scenario.AddServices(builder.Services);</code></example>
     public void AddServices(IServiceCollection services)
     {
         if (!this.Enabled)
@@ -38,7 +41,6 @@ public sealed class ProblemDetailsScenario(IConfiguration configuration)
             }
 
             o.Map<InventoryConflictException>(409, "Inventory item conflict", "https://inventory.example/problems/item-conflict");
-            o.AllowedHeaderNames.Add("X-Inventory-Version");
             if (this.profile == "Mixed")
             {
                 o.ShouldHandleRequest = IsApiRequest;
@@ -63,6 +65,7 @@ public sealed class ProblemDetailsScenario(IConfiguration configuration)
     }
 
     /// <summary>Maps the fixture endpoints for the selected profile.</summary>
+    /// <example><code>scenario.MapEndpoints(app);</code></example>
     public void MapEndpoints(WebApplication app)
     {
         if (!this.Enabled)
@@ -78,7 +81,6 @@ public sealed class ProblemDetailsScenario(IConfiguration configuration)
         api.MapGet("/throw/server", HttpResult (HttpContext context) =>
         {
             context.Response.Headers["X-Inventory-Version"] = "42";
-            context.Response.Headers["X-Discard"] = "obsolete";
             throw CreateServerException();
         }).ProducesResultProblem(500);
         api.MapGet("/result/server", () => CreateServerResult().MapHttpNoContent()).ProducesResultProblem(500);

@@ -8,7 +8,6 @@ namespace BridgingIT.DevKit.Presentation.Web;
 using BridgingIT.DevKit.Presentation.Web.Errors;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Diagnostics;
-using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
@@ -24,6 +23,7 @@ public static class ResponseProblemDetailsExtensions
         "AddResponseProblemDetails and the full DevKit AddExceptionHandler registration cannot be used together. Choose one.";
 
     /// <summary>Registers automatic exception and empty-status handling and shared Result problem preparation.</summary>
+    /// <example><code>builder.Services.AddResponseProblemDetails();</code></example>
     public static IServiceCollection AddResponseProblemDetails(this IServiceCollection services) =>
         services.AddResponseProblemDetails(static _ => { });
 
@@ -42,7 +42,6 @@ public static class ResponseProblemDetailsExtensions
             services.AddSingleton<IValidateOptions<DevKitOptions>, RegistrationValidator>();
             services.TryAddEnumerable(ServiceDescriptor.Singleton<IExceptionHandler, ResponseProblemDetailsExceptionHandler>());
             services.TryAddEnumerable(ServiceDescriptor.Singleton<IPostConfigureOptions<StatusCodePagesOptions>, ResponseProblemDetailsStatusCodeHandler>());
-            services.TryAddEnumerable(ServiceDescriptor.Singleton<IStartupFilter, ResponseProblemDetailsHeaderSnapshot>());
         }
 
         return services.Configure(configure);
@@ -57,6 +56,7 @@ public static class ResponseProblemDetailsExtensions
     }
 
     /// <summary>Registers shared Problem Details preparation without activating automatic exception or status handling.</summary>
+    /// <example><code>builder.Services.AddSharedProblemDetails();</code></example>
     public static void AddSharedProblemDetails(this IServiceCollection services)
     {
         services.AddProblemDetails();

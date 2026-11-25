@@ -6,6 +6,8 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
 using global::Presentation.TestHost;
 
+/// <summary>Verifies Problem Details in API and mixed API and HTML host profiles.</summary>
+/// <example><code>await using var host = PresentationProblemDetailsHostTests.CreateHost("Mixed");</code></example>
 public sealed class PresentationProblemDetailsHostTests
 {
     private const string Prefix = "/api/problem-details";
@@ -28,6 +30,8 @@ public sealed class PresentationProblemDetailsHostTests
         openApi.StatusCode.ShouldBe(HttpStatusCode.NotFound);
     }
 
+    /// <summary>Checks the shared payload and native exception response headers for each host profile.</summary>
+    /// <example><code>await new PresentationProblemDetailsHostTests().Get_ValidationAndServerFailures_ShareTheContract("Api", false);</code></example>
     [Theory]
     [InlineData("Api", false)]
     [InlineData("Api", true)]
@@ -64,8 +68,7 @@ public sealed class PresentationProblemDetailsHostTests
 
             if (path == "throw/server")
             {
-                response.Headers.GetValues("X-Inventory-Version").ShouldBe(["42"]);
-                response.Headers.Contains("X-Discard").ShouldBeFalse();
+                response.Headers.Contains("X-Inventory-Version").ShouldBeFalse();
                 response.Headers.CacheControl.NoStore.ShouldBeTrue();
             }
         }
@@ -144,6 +147,8 @@ public sealed class PresentationProblemDetailsHostTests
         (await declaredLength.Content.ReadAsStringAsync()).ShouldBeEmpty();
     }
 
+    /// <summary>Compares responses against the legacy capture and checks the current empty-status cache policy.</summary>
+    /// <example><code>await new PresentationProblemDetailsHostTests().Get_StableResponses_MatchCapturedStatusAndWireHeaders();</code></example>
     [Fact]
     public async Task Get_StableResponses_MatchCapturedStatusAndWireHeaders()
     {
@@ -159,7 +164,11 @@ public sealed class PresentationProblemDetailsHostTests
             using var response = await client.GetAsync(Prefix + "/" + entry.Name);
             ((int)response.StatusCode).ShouldBe(entry.Value.GetProperty("status").GetInt32());
             response.Content.Headers.ContentType?.MediaType.ShouldBe(entry.Value.GetProperty("type").GetString());
-            if (entry.Value.TryGetProperty("noCache", out var noCache))
+            if (entry.Name == "empty")
+            {
+                response.Headers.CacheControl.ShouldBeNull();
+            }
+            else if (entry.Value.TryGetProperty("noCache", out var noCache))
             {
                 (response.Headers.CacheControl?.NoStore == true).ShouldBe(noCache.GetBoolean());
             }

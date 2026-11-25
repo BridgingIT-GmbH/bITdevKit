@@ -398,7 +398,7 @@ A successful outer Result means the batch finished, not that every upload succee
 
 Keep each stream open until the awaited call completes or cancellation is observed; the caller disposes it. Uploads use the existing per-item validation and behavior pipeline, including ETag conditions, Properties, Dimensions and transforms. The batch never retries the whole collection. Unexpected item exceptions can report `BlobStoreIndeterminateOperationError`; reconcile the item's key before replay.
 
-Cancellation throws `OperationCanceledException` after active work observes cancellation and does not return a complete outcome collection. Earlier commits remain committed. This is bounded parallel coordination over `UploadAsync`, not a native database bulk transaction or an all-or-nothing batch. See [ADR-0045](adr/0045-bounded-attempt-all-blob-upload-batches.md) for the contract.
+Cancellation throws `OperationCanceledException` after active work observes cancellation and does not return a complete outcome collection. Earlier commits remain committed. The batch coordinates individual `UploadAsync` calls with bounded parallelism.
 
 ## HTTP endpoints
 
@@ -712,7 +712,7 @@ public sealed class AppDbContext(DbContextOptions<AppDbContext> options)
 
 ### Optional UUIDv7 ordering
 
-If a deployment needs UUIDv7 timestamp order across distinct milliseconds regardless of the database default, call `modelBuilder.UseBlobRowIdCollation(this.Database.ProviderName)` in `OnModelCreating` before creating the schema. It applies `Latin1_General_100_BIN2` on SQL Server, `C` on PostgreSQL, or `BINARY` on SQLite to all three key columns. [ADR-0033](adr/0033-time-ordered-ef-blob-row-ids.md)
+If a deployment needs UUIDv7 timestamp order across distinct milliseconds regardless of the database default, call `modelBuilder.UseBlobRowIdCollation(this.Database.ProviderName)` in `OnModelCreating` before creating the schema. It applies `Latin1_General_100_BIN2` on SQL Server, `C` on PostgreSQL, or `BINARY` on SQLite to all three key columns.
 
 ## Azure commit semantics
 
@@ -905,9 +905,9 @@ The EF provider reads blobs up to `ChunkSize` (4 MB by default) with a single qu
 
 `DownloadBytesAsync` returns the buffer of a small blob without an extra copy, and pre-sizes its buffer from the blob length for other streams. Blobs of at most 100 KB are the best case, because the read is dominated by the round trip, not the transfer.
 
-This applies to SQL Server, PostgreSQL and SQLite. The read query is compiled once per provider instance. See [ADR-0031](adr/0031-single-query-ef-blob-read-for-small-blobs.md).
+This applies to SQL Server, PostgreSQL, and SQLite. EF compiles the read query once per provider instance.
 
-Blobs are found through a unique index on the SHA-256 hashes of the container and the name, so a lookup stays an index seek as the table grows. With a warm cache, 1,000,000 blobs read as fast as 1,000. New blob rows get time-ordered GUID ids, which keeps the clustered keys unfragmented and stores blobs written together close together. See [ADR-0033](adr/0033-time-ordered-ef-blob-row-ids.md).
+The provider finds blobs through a unique index on the SHA-256 hashes of the container and name. In SQL Server tests with a warm cache, lookups over 1,000,000 blobs were as fast as lookups over 1,000. Time-ordered row IDs reduced clustered-index fragmentation in those tests and kept blobs written around the same time close together in the index.
 
 ## <img class="bdk-doc-icon" src="assets/features/storage-integrity.svg" width="24" height="24" alt=""> Verified download
 
@@ -1243,7 +1243,7 @@ The result has one item per requested key in input order. A missing blob is a `B
 
 A provider can implement the optional `IBlobStoreBatchDownloadProvider` capability. The Entity Framework provider does, and reads the keys with a few multi-key queries (`DownloadBatchSize` keys per query, 25 by default) instead of one query per key. Every key still passes through the complete client behavior pipeline on its own, so compression, encryption, caching, retry, and other behaviors keep working per blob. Providers without the capability, and blobs larger than `ChunkSize`, are read one key at a time with the same bounded parallelism. Duplicate keys are read once per occurrence, but only the first occurrence is batched.
 
-Configure the batch size with `BlobStoreOptions.DownloadBatchSize` (1 to 1000). See [ADR-0032](adr/0032-batched-ef-blob-reads-for-many-keys.md).
+Configure the batch size with `BlobStoreOptions.DownloadBatchSize` (1 to 1000).
 
 ## Queryable Dimensions
 
@@ -1304,7 +1304,7 @@ Diagnostics expose local cache and registration counters without scanning the di
 
 Dimensions are plaintext metadata indexed for filtering. Payload encryption does not encrypt their snapshot or indexed values. Avoid placing secrets in Dimensions.
 
-See the [Dimensions specification](specs/spec-storage-dimensions.md) for the schema and qualification requirements. See the [performance and scaling](#appendix-a-performance-and-scaling) for measured behavior as the collection grows. SQLite retains functional support with informational performance diagnostics; parity with SQL Server/PostgreSQL is not a target. Server performance targets remain subject to volume qualification; index presence does not promise constant latency as data grows. SQLite retention compares normalized UTC expiry values through the existing expiry index, including exact-tick cutoffs.
+See [Read by Dimensions](#read-by-dimensions) for measurements as the collection grows. SQLite supports Dimension queries, with performance diagnostics reported separately from the SQL Server and PostgreSQL measurements. Server performance depends on data volume and filter selectivity. SQLite retention compares normalized UTC expiry values through the existing expiry index, including exact-tick cutoffs.
 
 ### Filter metadata with FilterModel
 

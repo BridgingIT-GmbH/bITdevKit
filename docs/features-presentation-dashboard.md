@@ -76,7 +76,7 @@ app.Run();
 
 ## Core contracts
 
-- `DashboardEndpointsOptions` ([src/Presentation.Web/Dashboard/DashboardEndpointsOptions.cs](../src/Presentation.Web/Dashboard/DashboardEndpointsOptions.cs))
+- `DashboardEndpointsOptions` (`src/Presentation.Web/Dashboard/DashboardEndpointsOptions.cs`)
   - `Enabled`: Enables or disables the dashboard.
   - `GroupPath`: Base dashboard path. Defaults to `/_bdk/dashboard`.
   - `GroupTag`: Endpoint group tag.
@@ -85,35 +85,35 @@ app.Run();
   - `SignOutAuthenticationSchemes`: Authentication schemes used by the dashboard sign-out route. If empty, sign-out uses the dashboard authentication schemes.
   - `DisabledPageKeys`: Stable page keys hidden from sidebar navigation and dashboard index cards.
   - `PluginAssemblies`: Additional assemblies to scan for dashboard plugins.
-- `DashboardAuthorizationOptionsBuilder` ([src/Presentation.Web/Dashboard/DashboardEndpointsOptionsBuilder.cs](../src/Presentation.Web/Dashboard/DashboardEndpointsOptionsBuilder.cs))
+- `DashboardAuthorizationOptionsBuilder` (`src/Presentation.Web/Dashboard/DashboardEndpointsOptionsBuilder.cs`)
   - `UseCookie(...)`: Reuses an existing host cookie scheme for dashboard access.
   - `UseExistingScheme(...)`: Reuses another host-owned authentication scheme.
   - `UseOpenIdConnect(authority, ...)`: Registers dashboard-owned cookie and OIDC schemes with dashboard conventions.
   - `UseOpenIdConnect(Action<OpenIdConnectOptions>, ...)`: Registers dashboard-owned cookie and OIDC schemes with raw ASP.NET Core handler configuration.
-- `DashboardOpenIdConnectOptionsBuilder` ([src/Presentation.Web/Dashboard/DashboardEndpointsOptionsBuilder.cs](../src/Presentation.Web/Dashboard/DashboardEndpointsOptionsBuilder.cs))
+- `DashboardOpenIdConnectOptionsBuilder` (`src/Presentation.Web/Dashboard/DashboardEndpointsOptionsBuilder.cs`)
   - `WithClientId(...)`: Overrides the default dashboard client id.
   - `WithMetadataAddress(...)`: Overrides the default discovery document address.
   - `RequireHttpsMetadata(...)`: Controls whether OIDC metadata must be loaded over HTTPS.
   - `RequireSignedTokens()`: Enables signed-token and issuer-signing-key validation.
   - `Configure(...)`: Applies low-level `OpenIdConnectOptions` customization after dashboard conventions.
-- `DashboardAuthenticationDefaults` ([src/Presentation.Web/Dashboard/DashboardAuthenticationDefaults.cs](../src/Presentation.Web/Dashboard/DashboardAuthenticationDefaults.cs))
+- `DashboardAuthenticationDefaults` (`src/Presentation.Web/Dashboard/DashboardAuthenticationDefaults.cs`)
   - Provides the dashboard-owned authentication scheme names and the default OIDC client id `dashboard`.
-- `IDashboardEndpoints` ([src/Presentation.Web/Dashboard/IDashboardEndpoints.cs](../src/Presentation.Web/Dashboard/IDashboardEndpoints.cs))
+- `IDashboardEndpoints` (`src/Presentation.Web/Dashboard/IDashboardEndpoints.cs`)
   - Marker contract for dashboard-specific endpoint sets.
   - Extends the regular presentation `IEndpoints` contract.
-- `IDashboardPageProvider` ([src/Presentation.Web/Dashboard/IDashboardPageProvider.cs](../src/Presentation.Web/Dashboard/IDashboardPageProvider.cs))
+- `IDashboardPageProvider` (`src/Presentation.Web/Dashboard/IDashboardPageProvider.cs`)
   - Provides `DashboardPage` descriptors for sidebar navigation and optional index cards.
-- `DashboardPageSet` ([src/Presentation.Web/Dashboard/DashboardPageSet.cs](../src/Presentation.Web/Dashboard/DashboardPageSet.cs))
+- `DashboardPageSet` (`src/Presentation.Web/Dashboard/DashboardPageSet.cs`)
   - Recommended base for module dashboards that own one or more pages.
   - Implements endpoint mapping and page metadata from a single `DashboardPageSetBuilder` declaration.
-- `DashboardPage` ([src/Presentation.Web/Dashboard/DashboardPage.cs](../src/Presentation.Web/Dashboard/DashboardPage.cs))
+- `DashboardPage` (`src/Presentation.Web/Dashboard/DashboardPage.cs`)
   - Defines title, icon, URL, group, ordering, sidebar visibility, optional badge, and optional card provider.
-- `DashboardPageCard` ([src/Presentation.Web/Dashboard/DashboardPage.cs](../src/Presentation.Web/Dashboard/DashboardPage.cs))
+- `DashboardPageCard` (`src/Presentation.Web/Dashboard/DashboardPage.cs`)
   - Defines compact card content for the dashboard index.
-- Route helpers ([src/Presentation.Web/Dashboard/DashboardRouteBuilderExtensions.cs](../src/Presentation.Web/Dashboard/DashboardRouteBuilderExtensions.cs))
+- Route helpers (`src/Presentation.Web/Dashboard/DashboardRouteBuilderExtensions.cs`)
   - `MapDashboardPage<TPage>(...)`: Maps a typed RazorSlice page.
   - `MapDashboardPage(..., razorIdentifier, assembly, ...)`: Maps a compiled RazorSlice by identifier from a plugin assembly.
-- Path helper ([src/Presentation.Web/Dashboard/DashboardPath.cs](../src/Presentation.Web/Dashboard/DashboardPath.cs))
+- Path helper (`src/Presentation.Web/Dashboard/DashboardPath.cs`)
   - `DashboardPath.Combine(...)`: Combines route segments with one slash.
 
 ## Architecture details

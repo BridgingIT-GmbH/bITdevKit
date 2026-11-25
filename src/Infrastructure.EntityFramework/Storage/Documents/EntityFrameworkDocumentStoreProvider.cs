@@ -754,7 +754,6 @@ public partial class EntityFrameworkDocumentStoreProvider<TContext>(IServiceScop
     private static bool Visible(StorageDocument entity, DateTimeOffset cutoff) => entity.ExpiresAtUnixMilliseconds is null || entity.ExpiresAtUnixMilliseconds > cutoff.ToUnixTimeMilliseconds();
     private static bool Matches(StorageDocument entity, string etag) => string.IsNullOrWhiteSpace(etag) || (entity is not null && string.Equals(entity.ConcurrencyVersion.ToString("N"), etag, StringComparison.Ordinal));
 
-    // The row id is left empty on purpose: EF generates it on add with the generator of the database provider.
     private static StorageDocument Create(DocumentTypeIdentity type, DocumentKey key, DateTimeOffset now) => new()
     {
         Type = type.Value,

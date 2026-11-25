@@ -723,6 +723,4 @@ bdk host run --host commerce-api-5001 -- status
 - [DevKit MCP](./features-cli-mcp.md)
 - [MCP Client Configuration](./features-cli-mcp-clients.md)
 - [Console Commands](./features-presentation-console-commands.md)
-- [DevKit CLI Specification](./specs/spec-presentation-cli.md)
 - [Worktree Development Isolation](./development-worktrees-support.md)
-- [DevKit STDIO MCP Specification](./specs/spec-presentation-web-mcp-diagnostics.md)

@@ -29,13 +29,19 @@ public enum DocumentBenchmarkSpread
 }
 
 /// <summary>How the internal row ids of a bulk seeded table are generated.</summary>
+/// <example><code>var strategy = DocumentBenchmarkIdStrategy.Random;</code></example>
 public enum DocumentBenchmarkIdStrategy
 {
     /// <summary>Random GUIDs, the behavior of the provider before sequential ids.</summary>
     Random,
 
-    /// <summary>GUIDs that increase in SQL Server sort order, the behavior of the EF generator on SQL Server.</summary>
+#if DOC_BASELINE
+    /// <summary>GUIDs that increase in the historical SQL Server native GUID order.</summary>
     SqlServerSequential
+#else
+    /// <summary>UUIDv7 values with successive millisecond timestamps.</summary>
+    UuidVersion7
+#endif
 }
 
 /// <summary>Which keys a simulated large table request reads.</summary>
@@ -69,8 +75,11 @@ public enum DocumentBenchmarkExpirationIndex
 }
 
 /// <summary>The document read by the benchmarks. The length of <see cref="Value" /> sets the payload size.</summary>
-internal sealed class BenchmarkDocument
+/// <example><code>var document = new BenchmarkDocument { Value = "sample" };</code></example>
+public sealed class BenchmarkDocument
 {
+    /// <summary>Gets or sets the text used as the benchmark payload.</summary>
+    /// <example><code>var length = document.Value.Length;</code></example>
     public string Value { get; set; }
 }
 
@@ -81,21 +90,35 @@ internal sealed class BenchmarkWriteDocument
 }
 
 /// <summary>The benchmark context. It carries the filtered expiration index when the provider supports it.</summary>
-internal sealed class BenchmarkDocumentDbContext(DbContextOptions<BenchmarkDocumentDbContext> options)
+/// <param name="options">The SQL Server benchmark context options.</param>
+/// <example><code>services.AddDbContext&lt;BenchmarkDocumentDbContext&gt;(options => options.UseSqlServer(connectionString));</code></example>
+public sealed class BenchmarkDocumentDbContext(DbContextOptions<BenchmarkDocumentDbContext> options)
     : DbContext(options), IDocumentStoreContext
 {
+    /// <inheritdoc/>
+    /// <example><code>var count = await context.StorageDocuments.CountAsync();</code></example>
     public DbSet<StorageDocument> StorageDocuments { get; set; }
 
 #if !DOC_BASELINE
-    protected override void OnModelCreating(ModelBuilder modelBuilder) => modelBuilder.ApplyDocumentStoreConfiguration();
+    protected override void OnModelCreating(ModelBuilder modelBuilder)
+        => modelBuilder.ApplyDocumentStoreConfiguration().UseDocumentRowIdCollation(this.Database.ProviderName);
 #endif
 }
 
 /// <summary>A benchmark context that keeps the unfiltered expiration index.</summary>
-internal sealed class BenchmarkPlainDocumentDbContext(DbContextOptions<BenchmarkPlainDocumentDbContext> options)
+/// <param name="options">The SQL Server benchmark context options.</param>
+/// <example><code>services.AddDbContext&lt;BenchmarkPlainDocumentDbContext&gt;(options => options.UseSqlServer(connectionString));</code></example>
+public sealed class BenchmarkPlainDocumentDbContext(DbContextOptions<BenchmarkPlainDocumentDbContext> options)
     : DbContext(options), IDocumentStoreContext
 {
+    /// <inheritdoc/>
+    /// <example><code>var count = await context.StorageDocuments.CountAsync();</code></example>
     public DbSet<StorageDocument> StorageDocuments { get; set; }
+
+#if !DOC_BASELINE
+    protected override void OnModelCreating(ModelBuilder modelBuilder)
+        => modelBuilder.UseDocumentRowIdCollation(this.Database.ProviderName);
+#endif
 }
 
 /// <summary>
@@ -103,22 +126,30 @@ internal sealed class BenchmarkPlainDocumentDbContext(DbContextOptions<Benchmark
 /// once per process (requires Docker). Set DOC_BENCH_SQL_CONNECTION (or BLOB_BENCH_SQL_CONNECTION) to benchmark an
 /// existing server instead. Set DOC_BENCH_RESEED=1 to drop and reseed the benchmark databases.
 /// </summary>
-internal static class DocumentStorageEfSqlServerBenchmarkEnvironment
+/// <example><code>var database = DocumentStorageEfSqlServerBenchmarkEnvironment.DatabaseName("docbench");</code></example>
+public static class DocumentStorageEfSqlServerBenchmarkEnvironment
 {
+#if DOC_BASELINE
+    private const string SchemaSuffix = "";
+#else
+    private const string SchemaSuffix = "_uuidv7";
+#endif
+
     private static readonly SemaphoreSlim Gate = new(1, 1);
     private static readonly Dictionary<int, DocumentStorageEfSqlServerSmallTableStore> Stores = [];
     private static MsSqlContainer container;
     private static string serverConnectionString;
 
+    /// <summary>Gets whether the benchmark should recreate its seed database.</summary>
+    /// <example><code>var reseed = DocumentStorageEfSqlServerBenchmarkEnvironment.Reseed;</code></example>
     public static bool Reseed => Environment.GetEnvironmentVariable("DOC_BENCH_RESEED") == "1";
 
-    /// <summary>
-    /// Appended to every database name (DOC_BENCH_DB_SUFFIX) so a run on new code gets freshly created databases
-    /// with the current schema instead of reusing databases created by an older version.
-    /// </summary>
-    public static string DatabaseName(string name) => name + Environment.GetEnvironmentVariable("DOC_BENCH_DB_SUFFIX");
+    /// <summary>Appends the schema version and optional <c>DOC_BENCH_DB_SUFFIX</c> to the database name.</summary>
+    /// <param name="name">The base name of the benchmark database.</param>
+    /// <example><code>var database = DocumentStorageEfSqlServerBenchmarkEnvironment.DatabaseName("docbench");</code></example>
+    public static string DatabaseName(string name) => name + SchemaSuffix + Environment.GetEnvironmentVariable("DOC_BENCH_DB_SUFFIX");
 
-    public static async Task<DocumentStorageEfSqlServerSmallTableStore> GetSmallStoreAsync(int payloadBytes)
+    internal static async Task<DocumentStorageEfSqlServerSmallTableStore> GetSmallStoreAsync(int payloadBytes)
     {
         await Gate.WaitAsync().ConfigureAwait(false);
         try
@@ -141,6 +172,8 @@ internal static class DocumentStorageEfSqlServerBenchmarkEnvironment
         }
     }
 
+    /// <summary>Returns the connection string for the shared benchmark SQL Server.</summary>
+    /// <example><code>var connectionString = await DocumentStorageEfSqlServerBenchmarkEnvironment.GetServerConnectionStringAsync();</code></example>
     public static async Task<string> GetServerConnectionStringAsync()
     {
         await Gate.WaitAsync().ConfigureAwait(false);
@@ -193,7 +226,8 @@ internal static class DocumentStorageEfSqlServerBenchmarkEnvironment
 /// One benchmark database: the DI container, the EF provider under test, a SQL command counter and the helpers shared by
 /// the small and the large table stores.
 /// </summary>
-internal sealed class DocumentBenchmarkDatabase : IDisposable
+/// <example><code>using var database = DocumentBenchmarkDatabase.Create&lt;BenchmarkDocumentDbContext&gt;(connectionString, "docbench");</code></example>
+public sealed class DocumentBenchmarkDatabase : IDisposable
 {
     private readonly ServiceProvider serviceProvider;
     private readonly Func<Task<int>> ensureCreated;
@@ -220,12 +254,20 @@ internal sealed class DocumentBenchmarkDatabase : IDisposable
         this.providerFactory = providerFactory;
     }
 
+    /// <summary>Gets the isolated benchmark database name.</summary>
+    /// <example><code>var name = database.Name;</code></example>
     public string Name { get; }
 
+    /// <summary>Gets the connection string scoped to the benchmark database.</summary>
+    /// <example><code>await using var connection = new SqlConnection(database.ConnectionString);</code></example>
     public string ConnectionString { get; }
 
+    /// <summary>Gets the EF document store provider for the benchmark context.</summary>
+    /// <example><code>var sweeper = (IDocumentStoreRetentionProvider)database.Provider;</code></example>
     public IDocumentStoreProvider Provider { get; }
 
+    /// <summary>Gets the interceptor that counts reader commands for this database.</summary>
+    /// <example><code>database.Counter.Reset();</code></example>
     public SqlQueryCounter Counter { get; }
 
     public static DocumentBenchmarkDatabase Create<TContext>(string serverConnectionString, string databaseName)
@@ -425,10 +467,14 @@ internal sealed class DocumentBenchmarkDatabase : IDisposable
 
     public void Dispose() => this.serviceProvider.Dispose();
 
-    internal sealed class SqlQueryCounter : DbCommandInterceptor
+    /// <summary>Counts reader commands issued by the benchmark's EF context.</summary>
+    /// <example><code>var count = database.Counter.Count;</code></example>
+    public sealed class SqlQueryCounter : DbCommandInterceptor
     {
         private int count;
 
+        /// <summary>Gets the number of reader commands since the last reset.</summary>
+        /// <example><code>var queries = database.Counter.Count;</code></example>
         public int Count => Volatile.Read(ref this.count);
 
         public void Reset() => Volatile.Write(ref this.count, 0);

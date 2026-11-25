@@ -224,7 +224,7 @@ A new request has no implicit cursor, replay, deduplication, or gap recovery. No
 
 ## Validation
 
-See the [specification](specs/spec-presentation-ndjson-streaming.md). The .NET suites cover exact bytes, limits, strict parsing, timers, ownership, ambiguous writes, cleanup, network delivery, compression, proxy forwarding, authorization, and consumer contracts. Verify browser interaction in the consuming host when needed; keep captures outside the documentation and test source trees.
+The .NET suites cover exact bytes, limits, strict parsing, timers, ownership, ambiguous writes, cleanup, network delivery, compression, proxy forwarding, authorization, and consumer contracts. Verify browser interaction in the consuming host when needed and keep captures outside the documentation and test source trees.
 
 ## Performance experiments
 

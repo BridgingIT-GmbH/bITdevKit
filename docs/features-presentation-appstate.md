@@ -810,7 +810,7 @@ Establish host context before attachment and transfer only explicitly approved d
 
 The integration is verified against the repository's .NET 10.0.15 component APIs. Its imperative native persistence uses JSON strings and requires `JsonSerializerIsReflectionEnabledByDefault` to remain enabled in the host. The model itself uses the supplied generated metadata. A reflection-disabled host receives an explicit configuration error on attachment. AOT compilation is outside the required support scope. Plain in-memory AppState and explicit `CloneState` copying do not require this adapter or serialization.
 
-Advanced owner adapters can use `CaptureHandoff()` and `TryRestoreHandoff(handoff, expectedVersion)` directly. They retain responsibility for approved serialization, native lifecycle placement, context establishment and cleanup. See [ADR-0043](adr/0043-native-blazor-appstate-lifecycle.md) for the design and alternatives.
+Advanced owner adapters can use `CaptureHandoff()` and `TryRestoreHandoff(handoff, expectedVersion)` directly. They retain responsibility for approved serialization, native lifecycle placement, context establishment and cleanup.
 
 ## Storage provider contract
 

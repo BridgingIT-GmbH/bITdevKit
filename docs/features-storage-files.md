@@ -246,7 +246,7 @@ Direct writes keep their direct-write semantics. `OpenWriteFileAsync(..., useTem
 
 `NetworkFileStorageProvider` remains in `Infrastructure.Windows` because it owns Windows impersonation. That package references `Infrastructure.FileSystem` and inherits the moved local provider. Linux-mounted shares use the local provider with OS-managed mounting and credentials.
 
-See [ADR-0038](adr/0038-shared-filesystem-infrastructure-for-file-storage.md) for the dependency and migration decisions.
+See [Filesystem storage providers](storage-filesystem-providers.md) for shared file operations and recovery.
 
 ### Setting up a provider with dependency injection
 

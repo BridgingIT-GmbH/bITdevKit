@@ -12,7 +12,9 @@ using System.Text.Json;
 /// <summary>
 /// Represents a persisted document row for the Entity Framework document store provider.
 /// </summary>
+/// <example><code>var document = new StorageDocument { Type = "invoice", PartitionKey = "sales", RowKey = "1001" };</code></example>
 [Table("__Storage_Documents")]
+[EntityTypeConfiguration(typeof(DocumentRowIdConfiguration.Owner))]
 [Index(nameof(TypeHash), nameof(PartitionKeyHash), nameof(RowKeyHash), IsUnique = true)]
 [Index(nameof(TypeHash), nameof(PartitionKeyHash), nameof(RowKey))]
 [Index(nameof(TypeHash), nameof(PartitionKey), nameof(RowKey))]
@@ -33,18 +35,14 @@ public class StorageDocument
     /// </summary>
     public const int MaximumKeyLength = 256;
 
-    /// <summary>
-    /// Gets or sets the internal row identifier. It is generated on add by the Entity Framework value generator of the
-    /// database provider, which is sequential on SQL Server and keeps the clustered index append-only.
-    /// </summary>
-    /// <example>
-    /// <code>
-    /// var row = new StorageDocument();
-    /// // row.Id stays Guid.Empty until the entity is added to a DbContext.
-    /// </code>
-    /// </example>
+    /// <summary>Gets or sets the internal row identifier, initialized to a UUIDv7 when the row is created.</summary>
+    /// <example><code>var document = new StorageDocument { Id = suppliedId };</code></example>
     [Key]
-    public Guid Id { get; set; }
+    public Guid Id { get; set; } = CreateId();
+
+    /// <summary>Creates a UUIDv7 for a document row.</summary>
+    /// <example><code>var documentId = StorageDocument.CreateId();</code></example>
+    public static Guid CreateId() => Guid.CreateVersion7();
 
     /// <summary>
     /// Gets or sets the normalized document type name.

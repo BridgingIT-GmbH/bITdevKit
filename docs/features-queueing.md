@@ -76,16 +76,16 @@ sequenceDiagram
 
 ### Core contracts
 
-- `IQueueBroker` ([src/Common.Abstractions/Queueing/IQueueBroker.cs](../src/Common.Abstractions/Queueing/IQueueBroker.cs))
+- `IQueueBroker` (`src/Common.Abstractions/Queueing/IQueueBroker.cs`)
   - Enqueue messages and optionally wait for provider-specific confirmation.
-- `IQueueBrokerRuntime` ([src/Application.Queueing/IQueueBrokerRuntime.cs](../src/Application.Queueing/IQueueBrokerRuntime.cs))
+- `IQueueBrokerRuntime` (`src/Application.Queueing/IQueueBrokerRuntime.cs`)
   - Subscribe or unsubscribe queue handlers and process messages through the shared dispatch pipeline.
-- `IQueueBrokerService` ([src/Application.Queueing/IQueueBrokerService.cs](../src/Application.Queueing/IQueueBrokerService.cs))
+- `IQueueBrokerService` (`src/Application.Queueing/IQueueBrokerService.cs`)
   - Inspect queue summary, subscriptions, and waiting messages.
   - Pause or resume queues and specific message types.
-- `QueueBrokerBase` ([src/Application.Queueing/QueueBrokerBase.cs](../src/Application.Queueing/QueueBrokerBase.cs))
+- `QueueBrokerBase` (`src/Application.Queueing/QueueBrokerBase.cs`)
   - Validates messages, runs behaviors, resolves handlers, and enforces queue semantics.
-- `QueueingService` ([src/Application.Queueing/QueueingService.cs](../src/Application.Queueing/QueueingService.cs))
+- `QueueingService` (`src/Application.Queueing/QueueingService.cs`)
   - The single hosted service for the whole feature.
 
 ## Use Cases
@@ -237,7 +237,7 @@ Diagnostics collects completed one-second intervals from the application process
 
 ## Operational endpoints
 
-The retained-message operational surface lives in [src/Presentation.Web.Queueing/QueueingEndpoints.cs](../src/Presentation.Web.Queueing/QueueingEndpoints.cs).
+The retained-message operational surface lives in `src/Presentation.Web.Queueing/QueueingEndpoints.cs`.
 
 When you reference `Presentation.Web.Queueing`, you can register it directly from the fluent queueing builder:
 

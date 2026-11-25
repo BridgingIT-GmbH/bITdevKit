@@ -5,6 +5,8 @@ using Infrastructure.EntityFramework;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Data.Sqlite;
 
+/// <summary>Verifies the relational Dimension schema and the Cosmos document model.</summary>
+/// <example><code>dotnet test --filter FullyQualifiedName~StorageDimensionsSchemaProofTests</code></example>
 public class StorageDimensionsSchemaProofTests
 {
     [Theory]
@@ -46,14 +48,41 @@ public class StorageDimensionsSchemaProofTests
         sut.Database.GenerateCreateScript().ShouldContain(visibility.GetDatabaseName());
     }
 
+    /// <summary>Checks that the Cosmos model keeps its conventional document key and excludes Dimension entities.</summary>
+    /// <example><code>dotnet test --filter FullyQualifiedName~CosmosModel_WithExplicitExclusions_PreservesExistingStorageShape</code></example>
     [Fact]
     public void CosmosModel_WithExplicitExclusions_PreservesExistingStorageShape()
     {
+        // Arrange
+        const string endpoint = "https://localhost:8081";
+        const string database = "dimensions_model";
+        var accountKey = Convert.ToBase64String(new byte[64]);
         var options = new DbContextOptionsBuilder<ExcludedDocumentContext>()
-            .UseCosmos("https://localhost:8081", Convert.ToBase64String(new byte[64]), "dimensions_model").Options;
-        using var sut = new ExcludedDocumentContext(options);
-        sut.Model.FindEntityType(typeof(StorageDocument)).FindProperty("DimensionsJson").ShouldBeNull();
-        sut.Model.GetEntityTypes().ShouldNotContain(entity => entity.ClrType == typeof(StorageDocumentDimension));
+            .UseCosmos(endpoint, accountKey, database).Options;
+        var baselineOptions = new DbContextOptionsBuilder<ConventionalCosmosContext>()
+            .UseCosmos(endpoint, accountKey, database).Options;
+        using var context = new ExcludedDocumentContext(options);
+        using var baseline = new ConventionalCosmosContext(baselineOptions);
+        var expected = baseline.Model.FindEntityType(typeof(ConventionalCosmosDocument));
+        var expectedKey = expected.FindProperty(nameof(ConventionalCosmosDocument.Id));
+
+        // Act
+        var sut = context.Model.FindEntityType(typeof(StorageDocument));
+        var key = sut.FindProperty(nameof(StorageDocument.Id));
+
+        // Assert
+        sut.FindProperty(nameof(StorageDocument.DimensionsJson)).ShouldBeNull();
+        context.Model.FindEntityType(typeof(StorageDocumentDimension)).ShouldBeNull();
+        context.Model.FindEntityType(typeof(StorageDocumentDimensionName)).ShouldBeNull();
+        key.ClrType.ShouldBe(expectedKey.ClrType);
+        key.GetValueConverter().ShouldBeNull();
+        CosmosPropertyExtensions.GetJsonPropertyName(key).ShouldBe(CosmosPropertyExtensions.GetJsonPropertyName(expectedKey));
+        var converterType = key.GetTypeMapping().Converter?.GetType();
+        converterType.ShouldBe(expectedKey.GetTypeMapping().Converter?.GetType());
+        var jsonId = sut.GetProperties().Single(property => CosmosPropertyExtensions.GetJsonPropertyName(property) == "id");
+        var expectedJsonId = expected.GetProperties().Single(property => CosmosPropertyExtensions.GetJsonPropertyName(property) == "id");
+        jsonId.ClrType.ShouldBe(expectedJsonId.ClrType);
+        jsonId.IsShadowProperty().ShouldBe(expectedJsonId.IsShadowProperty());
     }
 
     [Fact]
@@ -136,4 +165,17 @@ public class StorageDimensionsSchemaProofTests
         }
     }
 
+    private sealed class ConventionalCosmosContext(DbContextOptions<ConventionalCosmosContext> options) : DbContext(options)
+    {
+        /// <summary>Registers a reference entity that uses the Cosmos GUID convention.</summary>
+        /// <example><code>var query = context.Documents.AsNoTracking();</code></example>
+        public DbSet<ConventionalCosmosDocument> Documents => this.Set<ConventionalCosmosDocument>();
+    }
+
+    private sealed class ConventionalCosmosDocument
+    {
+        /// <summary>Gets or sets the conventional Cosmos primary key.</summary>
+        /// <example><code>var id = new ConventionalCosmosDocument { Id = Guid.NewGuid() }.Id;</code></example>
+        public Guid Id { get; set; }
+    }
 }

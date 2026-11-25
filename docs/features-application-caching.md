@@ -1302,18 +1302,18 @@ These test groups exercise the contracts illustrated by the ten loading diagrams
 
 | Loading diagram | Test group and scope |
 | --- | --- |
-| Node-local sharing over a central provider | [CacheMultiInstanceTests](../tests/Infrastructure.IntegrationTests/EntityFramework/Caching/CacheMultiInstanceTests.cs), `NodeLocal_CentralPersistenceDoesNotImplicitlyEnableSharedSourceOwnership` on real local SQLite; [CacheMultiProcessTests](../tests/Infrastructure.UnitTests/FileSystem/Caching/CacheMultiProcessTests.cs) covers separate local native processes |
-| Shared-store loading across web nodes | [CacheMultiInstanceTests](../tests/Infrastructure.IntegrationTests/EntityFramework/Caching/CacheMultiInstanceTests.cs), `SharedStore_OneSourceServesAllNodesAndTheirLocalFollowers`; independent application containers share a real local SQLite file. [CacheMultiProcessTests](../tests/Infrastructure.UnitTests/FileSystem/Caching/CacheMultiProcessTests.cs) covers two/four local native OS processes, not independent hosts |
-| Explicit independent loading | [Portable CacheProviderContractTestsBase](../tests/Shared/Caching/CacheProviderContractTestsBase.cs), `IndependentLoading_SeparatesSourceExecutionsAndFencesBothLatePublications`, reused by complete provider hosts |
-| Successful typed load without retention | [CacheMultiInstanceTests](../tests/Infrastructure.IntegrationTests/EntityFramework/Caching/CacheMultiInstanceTests.cs), `UncachedPositiveCompletion_DoesNotHandOffAnOwnerGraphToAnotherNode` |
-| Caller departure and last-interest cancellation | [CacheEngineTests](../tests/Application.UnitTests/Caching/CacheEngineTests.cs), initiating-caller cancellation; [CacheLoadingLifetimeTests](../tests/Application.UnitTests/Caching/CacheLoadingLifetimeTests.cs), default versus opt-in continuation and unchanged deadline; [CacheApplicationCoordinationTests](../tests/Infrastructure.UnitTests/EntityFramework/Caching/CacheApplicationCoordinationTests.cs), all-node interest and actual source termination |
-| Shared failure and optional source resilience | [CacheSourceResilienceTests](../tests/Application.UnitTests/Caching/CacheSourceResilienceTests.cs), shared dependency policy and total attempt budget; [CacheProviderResilienceTests](../tests/Infrastructure.IntegrationTests/EntityFramework/Caching/CacheProviderResilienceTests.cs), separate source/provider failure domains |
-| Overlapping batches | [CacheBatchTests](../tests/Application.UnitTests/Caching/CacheBatchTests.cs), `OverlappingGroupedBatches_CompleteOwnedKeysBeforeJoiningForeignWork` |
-| Shared success and publication fencing | [CacheEngineTests](../tests/Application.UnitTests/Caching/CacheEngineTests.cs), retained owner metadata and removal during source; [CacheMultiInstanceTests](../tests/Infrastructure.IntegrationTests/EntityFramework/Caching/CacheMultiInstanceTests.cs), owner loss fencing |
-| Refresh with a valid old version | [CacheRefreshTests](../tests/Application.UnitTests/Caching/CacheRefreshTests.cs), selected version and expiry during refresh; [CacheMultiInstanceTests](../tests/Infrastructure.IntegrationTests/EntityFramework/Caching/CacheMultiInstanceTests.cs), cross-instance valid reads during refresh |
-| Readiness and bounded warm-up | [CacheBackgroundServiceTests](../tests/Application.UnitTests/Caching/CacheBackgroundServiceTests.cs), host/startup gating; [CacheWarmupTests](../tests/Application.UnitTests/Caching/CacheWarmupTests.cs), unready loader isolation and bounded warm-up |
+| Node-local sharing over a central provider | `CacheMultiInstanceTests`, `NodeLocal_CentralPersistenceDoesNotImplicitlyEnableSharedSourceOwnership` on real local SQLite; `CacheMultiProcessTests` covers separate local native processes |
+| Shared-store loading across web nodes | `CacheMultiInstanceTests`, `SharedStore_OneSourceServesAllNodesAndTheirLocalFollowers`; independent application containers share a real local SQLite file. `CacheMultiProcessTests` covers two/four local native OS processes, not independent hosts |
+| Explicit independent loading | the portable `CacheProviderContractTestsBase` suite, `IndependentLoading_SeparatesSourceExecutionsAndFencesBothLatePublications`, reused by complete provider hosts |
+| Successful typed load without retention | `CacheMultiInstanceTests`, `UncachedPositiveCompletion_DoesNotHandOffAnOwnerGraphToAnotherNode` |
+| Caller departure and last-interest cancellation | `CacheEngineTests`, initiating-caller cancellation; `CacheLoadingLifetimeTests`, default versus opt-in continuation and unchanged deadline; `CacheApplicationCoordinationTests`, all-node interest and actual source termination |
+| Shared failure and optional source resilience | `CacheSourceResilienceTests`, shared dependency policy and total attempt budget; `CacheProviderResilienceTests`, separate source/provider failure domains |
+| Overlapping batches | `CacheBatchTests`, `OverlappingGroupedBatches_CompleteOwnedKeysBeforeJoiningForeignWork` |
+| Shared success and publication fencing | `CacheEngineTests`, retained owner metadata and removal during source; `CacheMultiInstanceTests`, owner loss fencing |
+| Refresh with a valid old version | `CacheRefreshTests`, selected version and expiry during refresh; `CacheMultiInstanceTests`, cross-instance valid reads during refresh |
+| Readiness and bounded warm-up | `CacheBackgroundServiceTests`, host/startup gating; `CacheWarmupTests`, unready loader isolation and bounded warm-up |
 
-The additional hot diagram maps to [CacheHotEntryTests](../tests/Application.UnitTests/Caching/CacheHotEntryTests.cs), [CacheHotEntryOwnershipTests](../tests/Application.UnitTests/Caching/CacheHotEntryOwnershipTests.cs), [CacheHotFootprintTests](../tests/Application.UnitTests/Caching/CacheHotFootprintTests.cs), and the real cross-instance strict-hot case in `CacheMultiInstanceTests`.
+The additional hot diagram maps to `CacheHotEntryTests`, `CacheHotEntryOwnershipTests`, `CacheHotFootprintTests`, and the real cross-instance strict-hot case in `CacheMultiInstanceTests`.
 
 The benchmark suite includes ordinary provider reads/writes, misses and negative hits, batches, streams, metadata queries, shared bursts, hot retention, and maintenance. Setup and prefill stay outside timed work; decoding, integrity, publication, and Result handling remain inside the measured operation.
 
@@ -1329,11 +1329,11 @@ Operations/s, successful entries/s, actual source invocations, and joined caller
 
 Use the operating system's temporary directory for isolated local Windows/Linux checks. A Linux container qualifies the filesystem actually exposed inside that container. Record its kernel and filesystem type. Results from local temporary storage do not establish behavior on an ext4/XFS device, an SMB/NFS share, another host, or during power loss. Each deployment profile requires its own measurements and recovery checks. Select a provider by its required ownership and deployment contract first, then compare matching measured workloads. Do not fill an unmeasured profile with inferred throughput.
 
-## Source and decisions
+## Source and related documentation
 
-- [Cache contracts](../src/Application.Caching/IApplicationCache.cs) and [registration](../src/Application.Caching/Configuration/ServiceCollectionExtensions.cs).
-- [Complete provider contract](../src/Application.Caching/Providers/ICacheStoreProvider.cs) and [EF context capability](../src/Infrastructure.EntityFramework/Caching/IApplicationCachingContext.cs).
-- [Value codec contract](../src/Common.Serialization/Codecs/IValueCodec.cs) and [Common Serialization](common-serialization.md) for typed representation, serializer adapters, and [continuation token protection](common-serialization.md#continuation-token-protection).
+- `IApplicationCache` and the registration extensions in `src/Application.Caching/Configuration/ServiceCollectionExtensions.cs`.
+- `ICacheStoreProvider` and the EF context contract `IApplicationCachingContext`.
+- `IValueCodec` and [Common Serialization](common-serialization.md) for typed representation, serializer adapters, and [continuation token protection](common-serialization.md#continuation-token-protection).
 - [Results](features-results.md) for explicit cache, provider, source, and partial-operation outcomes.
 - [Requester and Notifier](features-requester-notifier.md) for the common management request pipeline used by presentation adapters.
 - [Common Utilities: storage-neutral utilities](common-utilities.md#storage-neutral-utilities) for periodic worker hosting and background-service health checks.
@@ -1350,8 +1350,3 @@ Use the operating system's temporary directory for isolated local Windows/Linux 
 - [HTTP representation conditions and byte ranges](features-presentation-endpoints.md#http-representation-conditions-and-byte-ranges) for shared header evaluation. Cache HTTP adapters retain authoritative reads, representation validators and atomic write conditions.
 - [Console Commands](features-presentation-console-commands.md) and [DevKit MCP](features-cli-mcp.md) for optional operational access to cache management.
 - [Common Caching](common-caching.md) for the separate basic cache API and providers.
-- [ADR-0039: independent advanced caching](adr/0039-independent-advanced-application-caching.md) records the boundaries between advanced caching, Common Caching, and Key/Value Storage.
-- [ADR-0040: complete provider ownership](adr/0040-complete-cache-provider-per-collection.md) records publication, resource, stream, and recovery guarantees within one selected store.
-- [ADR-0041: authoritative hot validation](adr/0041-strict-authoritative-hot-cache-validation.md) records validation, admission, and memory ownership for local retained representations.
-- [ADR-0042: cache-owned workers](adr/0042-cache-owned-background-workers.md) records refresh, warm-up, maintenance, and host lifecycle ownership.
-- [ADR-0038: shared filesystem infrastructure](adr/0038-shared-filesystem-infrastructure-for-file-storage.md) records the filesystem primitives reused by the native cache provider.

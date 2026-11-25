@@ -22,8 +22,6 @@ ChangeHistory can capture:
 - owned values, identifiable collections, and configured object graphs
 - restore operations as new history rows
 
-For a design-level view of the implemented requirements, see [ChangeHistory Specification](./specs/change-history.md).
-
 ## Challenges
 
 Audit timestamps show that a record changed, but they do not identify the changed values or group

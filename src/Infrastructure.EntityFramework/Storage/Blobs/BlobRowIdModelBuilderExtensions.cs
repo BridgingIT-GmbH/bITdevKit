@@ -32,13 +32,7 @@ public static class BlobRowIdModelBuilderExtensions
     {
         ArgumentNullException.ThrowIfNull(modelBuilder);
 
-        var collation = providerName switch
-        {
-            "Microsoft.EntityFrameworkCore.SqlServer" => "Latin1_General_100_BIN2",
-            "Npgsql.EntityFrameworkCore.PostgreSQL" => "C",
-            "Microsoft.EntityFrameworkCore.Sqlite" => "BINARY",
-            _ => null
-        };
+        var collation = StorageRowIdConfiguration.GetBytewiseCollation(providerName);
 
         if (collation is not null)
         {

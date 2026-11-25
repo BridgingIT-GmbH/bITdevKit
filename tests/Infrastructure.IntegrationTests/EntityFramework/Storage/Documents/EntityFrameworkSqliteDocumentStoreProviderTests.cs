@@ -10,6 +10,10 @@ using Infrastructure.EntityFramework;
 using Infrastructure.EntityFramework.Storage;
 using Microsoft.EntityFrameworkCore;
 
+/// <summary>Runs the EF document storage contract on SQLite.</summary>
+/// <param name="output">The test output sink.</param>
+/// <param name="fixture">The provider test fixture.</param>
+/// <example><code>dotnet test --filter FullyQualifiedName~EntityFrameworkSqliteDocumentStoreProviderTests</code></example>
 [IntegrationTest("Infrastructure")]
 [Collection(nameof(TestEnvironmentCollection))] // https://xunit.net/docs/shared-context#collection-fixture
 public class EntityFrameworkSqliteDocumentStoreProviderTests(ITestOutputHelper output, TestEnvironmentFixture fixture) : EntityFrameworkDocumentStoreProviderTestsBase
@@ -112,10 +116,12 @@ public class EntityFrameworkSqliteDocumentStoreProviderTests(ITestOutputHelper o
         await base.GetManyAsync_WithExpiredDocument_ReturnsNotFound();
     }
 
+    /// <inheritdoc/>
+    /// <example><code>dotnet test --filter FullyQualifiedName~UpsertResultAsync_GeneratesDistinctUuidVersion7RowIds</code></example>
     [Fact]
-    public override async Task UpsertResultAsync_GeneratesDistinctRowIdsInInsertOrder()
+    public override async Task UpsertResultAsync_GeneratesDistinctUuidVersion7RowIds()
     {
-        await base.UpsertResultAsync_GeneratesDistinctRowIdsInInsertOrder();
+        await base.UpsertResultAsync_GeneratesDistinctUuidVersion7RowIds();
     }
 
     [Fact]

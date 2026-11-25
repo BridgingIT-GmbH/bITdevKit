@@ -12,6 +12,8 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Storage;
 
+/// <summary>Defines the document storage contract shared by the EF provider tests.</summary>
+/// <example><code>dotnet test --filter FullyQualifiedName~EntityFrameworkSqliteDocumentStoreProviderTests</code></example>
 public abstract class EntityFrameworkDocumentStoreProviderTestsBase
 {
     public virtual async Task CountResultAsync_ReturnsDocumentCount()
@@ -461,27 +463,39 @@ public abstract class EntityFrameworkDocumentStoreProviderTestsBase
         (await client.GetAsync(keepWithExpiry)).IsSuccess.ShouldBeTrue();
     }
 
-    public virtual async Task UpsertResultAsync_GeneratesDistinctRowIdsInInsertOrder()
+    /// <summary>Checks row ID generation on single and batch inserts and ID stability on overwrite.</summary>
+    /// <example><code>dotnet test --filter FullyQualifiedName~UpsertResultAsync_GeneratesDistinctUuidVersion7RowIds</code></example>
+    public virtual async Task UpsertResultAsync_GeneratesDistinctUuidVersion7RowIds()
     {
         // Arrange
         await this.ResetStoreAsync();
-        var ticks = DateTime.UtcNow.Ticks;
-        var sut = this.CreateProvider();
-        var keys = Enumerable.Range(0, 50).Select(i => new DocumentKey("partition", $"row{ticks}-{i:D3}")).ToArray();
+        var partition = $"uuid-{Guid.NewGuid():N}";
+        var first = new DocumentKey(partition, "first");
+        var second = new DocumentKey(partition, "second");
+        var third = new DocumentKey(partition, "third");
+        var sut = new DocumentStoreClient<PersonStub>(this.CreateProvider());
 
         // Act
-        foreach (var key in keys)
-        {
-            (await sut.UpsertResultAsync(key, this.CreatePerson("Person"))).IsSuccess.ShouldBeTrue();
-        }
+        (await sut.UpsertAsync(first, this.CreatePerson("First"))).IsSuccess.ShouldBeTrue();
+        var originalId = await this.ExecuteDbContextAsync(dbContext => dbContext.StorageDocuments
+            .Where(row => row.PartitionKey == partition && row.RowKey == first.RowKey)
+            .Select(row => row.Id)
+            .SingleAsync());
+        var batch = await sut.UpsertManyAsync([
+            new(first, this.CreatePerson("Updated")),
+            new(second, this.CreatePerson("Second")),
+            new(third, this.CreatePerson("Third"))]);
 
         // Assert
-        var rows = await this.ExecuteDbContextAsync(async dbContext =>
-            await dbContext.StorageDocuments.AsNoTracking().Where(e => e.PartitionKey == "partition").ToListAsync());
-        var ids = keys.Select(k => rows.Single(r => r.RowKey == k.RowKey).Id).ToArray();
-        ids.ShouldNotContain(Guid.Empty);
-        ids.Distinct().Count().ShouldBe(keys.Length);
-        this.AssertRowIdsInInsertOrder(ids);
+        batch.IsSuccess.ShouldBeTrue(string.Join(Environment.NewLine, batch.Errors.Select(error => error.Message)));
+        batch.Value.Items.Select(item => item.Key).ShouldBe([first, second, third]);
+        var ids = await this.ExecuteDbContextAsync(dbContext => dbContext.StorageDocuments
+            .Where(row => row.PartitionKey == partition)
+            .ToDictionaryAsync(row => row.RowKey, row => row.Id));
+        ids[first.RowKey].ShouldBe(originalId);
+        ids.Values.ShouldNotContain(Guid.Empty);
+        ids.Values.Select(id => id.Version).ShouldAllBe(version => version == 7);
+        ids.Values.Distinct().Count().ShouldBe(3);
     }
 
     public virtual async Task UpsertManyAsync_WithInsertsOverwritesAndDuplicates_AppliesInOrder()
@@ -616,11 +630,6 @@ public abstract class EntityFrameworkDocumentStoreProviderTestsBase
         (await client.GetAsync(first)).IsFailure.ShouldBeTrue();
         (await client.GetAsync(guarded)).IsSuccess.ShouldBeTrue();
         (await client.GetAsync(last)).IsSuccess.ShouldBeTrue();
-    }
-
-    // Providers whose generator is sequential override this. The default accepts random ids (SQLite).
-    protected virtual void AssertRowIdsInInsertOrder(IReadOnlyList<Guid> ids)
-    {
     }
 
     protected virtual async Task ResetStoreAsync()

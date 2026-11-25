@@ -583,4 +583,3 @@ A login that returns to the ordinary port means an absolute callback or a hard-c
 - [DevKit CLI](./features-cli.md)
 - [Fake Identity Provider](./features-identityprovider.md)
 - [Startup Tasks](./features-startuptasks.md)
-- [Worktree development isolation specification](./specs/spec-worktree-development-isolation.md)

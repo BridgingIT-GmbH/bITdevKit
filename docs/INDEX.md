@@ -68,7 +68,7 @@ Browse the [feature icon catalog](./site/feature-icons.md) for the complete set 
 - <img class="bdk-doc-icon" src="assets/features/cli.svg" width="20" height="20" alt=""> [DevKit CLI](./features-cli.md): Use the `bdk` command-line tool for host discovery, workspace-scoped host selection and host Console Command forwarding.
 - <img class="bdk-doc-icon" src="assets/features/mcp.svg" width="20" height="20" alt=""> [DevKit MCP](./features-cli-mcp.md): Use `bdk mcp` from local coding agents to inspect and operate running DevKit applications.
 - <img class="bdk-doc-icon" src="assets/features/mcp-clients.svg" width="20" height="20" alt=""> [MCP Client Configuration](./features-cli-mcp-clients.md): Configure common MCP clients to start the `bdk mcp` STDIO server.
-- [Bundled MCP Documentation specification](./specs/spec-presentation-cli-mcp-documentation.md): Embedded documentation and API lookups shipped with the CLI, with no fallback source.
+- [Bundled MCP documentation and API tools](./features-cli-mcp.md#documentation-and-api-tools): Search the documentation and API reference shipped with the CLI.
 - <img class="bdk-doc-icon" src="assets/features/dashboard.svg" width="20" height="20" alt=""> [Presentation Dashboard](./features-presentation-dashboard.md): Host modular developer dashboard pages with RazorSlice content, grouped navigation and live cards.
 - <img class="bdk-doc-icon" src="assets/features/entities.svg" width="20" height="20" alt=""> [Entities Dashboard](./features-presentation-dashboard-entities.md): Browse and maintain discovered repository and ActiveEntity records from the dashboard under explicit edit authorization.
 - <img class="bdk-doc-icon" src="assets/features/console-commands.svg" width="20" height="20" alt=""> [Console Commands](./features-presentation-console-commands.md): Expose operational and administrative actions through discoverable console commands and an interactive shell.
@@ -79,13 +79,12 @@ Browse the [feature icon catalog](./site/feature-icons.md) for the complete set 
 ## Storage, Scheduling and Utilities
 
 - [LiteDB Infrastructure](./features-infrastructure-litedb.md)
-- [LiteDB Storage Providers specification](./specs/spec-infrastructure-litedb-providers.md)
 - <img class="bdk-doc-icon" src="assets/features/startup-tasks.svg" width="20" height="20" alt=""> [StartupTasks](./features-startuptasks.md): Run application startup work in a structured, observable and dependency-aware way.
 - <img class="bdk-doc-icon" src="assets/features/jobs.svg" width="20" height="20" alt=""> [Jobs](./features-jobs.md): Schedule durable background work through code-first jobs, triggers, batches, history and source-level integrations.
 - <img class="bdk-doc-icon" src="assets/features/job-scheduling.svg" width="20" height="20" alt=""> [JobScheduling](./features-jobscheduling.md): Legacy Quartz-backed scheduling feature for existing applications that have not migrated yet.
 - <img class="bdk-doc-icon" src="assets/features/storage-blobs.svg" width="20" height="20" alt=""> [BlobStorage](./features-storage-blobs.md): Store binary content through Result-native, stream-first, named blob clients.
 - <img class="bdk-doc-icon" src="assets/features/storage-documents.svg" width="20" height="20" alt=""> [DocumentStorage](./features-storage-documents.md): Store typed documents with metadata, ETags, integrity, transforms, expiration/retention, named clients, and managed provider resources.
-- [Storage Dimensions specification](./specs/spec-storage-dimensions.md): EF-only Dimensions with independent blob/document dictionaries, three search columns, and bounded typed queries. Implementation is in progress; volume qualification remains incomplete. Usage is documented in the [blob](./features-storage-blobs.md#queryable-dimensions) and [document](./features-storage-documents.md#queryable-dimensions) guides.
+- Queryable Dimensions for [Blob Storage](./features-storage-blobs.md#queryable-dimensions) and [Document Storage](./features-storage-documents.md#queryable-dimensions) support bounded, typed queries through the EF providers.
 - <img class="bdk-doc-icon" src="assets/features/storage-permalinks.svg" width="20" height="20" alt=""> [StoragePermalinks](./features-storage-permalinks.md): Give Blob, Document, and File Storage resources stable opaque download links with optional expiration.
 - <img class="bdk-doc-icon" src="assets/features/storage-files.svg" width="20" height="20" alt=""> [FileStorage](./features-storage-files.md): Read, write, move and monitor files through extensible providers, with local files and watchers in the optional Infrastructure.FileSystem package.
 - [Filesystem storage providers](./storage-filesystem-providers.md): Implementation status, native persistence, operator recovery, local tests and disabled-by-default share qualification.
@@ -95,8 +94,6 @@ Browse the [feature icon catalog](./site/feature-icons.md) for the complete set 
 - <img class="bdk-doc-icon" src="assets/features/log-entries.svg" width="20" height="20" alt=""> [Log Entries](./features-log-entries.md): Query, stream, export and manage persisted application logs through a stable application API.
 
 ## Testing and Test Utilities
-
-- [Worktree Development Isolation specification](./specs/spec-worktree-development-isolation.md): Worktree-aware startup with predictable ports and isolated resources, preserving ordinary-checkout configuration.
 
 - <img class="bdk-doc-icon" src="assets/features/fake-authentication.svg" width="20" height="20" alt=""> [Fake Authentication for Integration Tests](./testing-fake-authentication.md): Simulate authenticated ASP.NET Core requests in integration tests with a lightweight fake-auth scheme.
 - <img class="bdk-doc-icon" src="assets/features/testing.svg" width="20" height="20" alt=""> [Testing Common XUnit](./testing-common-xunit.md): Reuse shared xUnit test helpers for setup, web hosts, fake time, traits and `Result` assertions.

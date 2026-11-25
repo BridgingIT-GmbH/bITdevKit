@@ -1335,7 +1335,7 @@ Requester, Notifier, and Pipeline integrations remain ordinary jobs registered t
 | `Application.Jobs` | `WithPipelineExecuteJob(...)` | Execute a packaged pipeline through `IPipelineFactory`. |
 | `Application.Orchestrations` | `WithOrchestrationExecuteJob(...)` | Execute or dispatch a code-first orchestration through `IOrchestrationService` through Common.Abstractions job contracts. |
 
-The paired names are equivalent. The spec-shaped aliases exist for readability and migration clarity; the scheduler runtime and stored job definitions are the same either way.
+The paired route names use the same scheduler runtime and stored job definitions.
 
 Notifier jobs look like this:
 
@@ -1444,10 +1444,10 @@ Dispatch, pause and disable actions operate on job definitions. Occurrences expo
 | `GET` | `/_bdk/api/jobs/definitions/{jobName}` | Canonical definition route for one job definition. |
 | `GET` | `/_bdk/api/jobs/triggers` | List triggers across all jobs. |
 | `GET` | `/_bdk/api/jobs/triggers/recurring` | List recurring triggers across all jobs. |
-| `GET` | `/_bdk/api/jobs/recurring` | Spec-shaped alias for recurring triggers. |
+| `GET` | `/_bdk/api/jobs/recurring` | Alias for listing recurring triggers. |
 | `GET` | `/_bdk/api/jobs/recurring/{jobName}/{triggerName}` | Get one recurring trigger projection. |
 | `GET` | `/_bdk/api/jobs/{jobName}/triggers` | List triggers for one job. |
-| `GET` | `/_bdk/api/jobs/{jobName}/triggers/{triggerName}` | Get one trigger using the spec-shaped route. |
+| `GET` | `/_bdk/api/jobs/{jobName}/triggers/{triggerName}` | Get one trigger for the named job. |
 | `GET` | `/_bdk/api/jobs/definitions/{jobName}/triggers/{triggerName}` | Canonical definition route for one trigger. |
 | `GET` | `/_bdk/api/jobs/occurrences` | List materialized occurrences. |
 | `GET` | `/_bdk/api/jobs/occurrences/{occurrenceId}` | Get one occurrence by internal identifier. |
@@ -1485,7 +1485,7 @@ Dashboard projections:
 
 | Method | Route | Description |
 | --- | --- | --- |
-| `POST` | `/_bdk/api/jobs/{jobName}/dispatch` | Dispatch a registered job using the spec-shaped route. |
+| `POST` | `/_bdk/api/jobs/{jobName}/dispatch` | Dispatch a registered job. |
 | `POST` | `/_bdk/api/jobs/definitions/{jobName}/dispatch` | Dispatch a registered job using the canonical definition route. |
 | `POST` | `/_bdk/api/jobs/{jobName}/enable` | Enable a job through durable runtime state. |
 | `POST` | `/_bdk/api/jobs/definitions/{jobName}/enable` | Canonical route for enabling a job. |

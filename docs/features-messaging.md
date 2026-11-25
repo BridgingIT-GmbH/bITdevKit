@@ -77,13 +77,13 @@ sequenceDiagram
 
 ### Core contracts
 
-- `IMessageBroker` ([src/Common.Abstractions/Messaging/IMessageBroker.cs](../src/Common.Abstractions/Messaging/IMessageBroker.cs))
+- `IMessageBroker` (`src/Common.Abstractions/Messaging/IMessageBroker.cs`)
   - **Publish(IMessage, CancellationToken):** Publish through the configured broker.
-- `IMessageBrokerRuntime` ([src/Application.Messaging/IMessageBrokerRuntime.cs](../src/Application.Messaging/IMessageBrokerRuntime.cs))
+- `IMessageBrokerRuntime` (`src/Application.Messaging/IMessageBrokerRuntime.cs`)
   - **Subscribe<TMessage,THandler>() / Subscribe(Type,Type):** Bind a message type to a handler type.
   - **Unsubscribe<TMessage,THandler>() / Unsubscribe(Type,Type) / Unsubscribe():** Remove bindings.
   - **Process(MessageRequest):** Resolve subscriptions, run handler behaviors and invoke each `IMessageHandler<T>`.
-- `IMessageBrokerService` ([src/Application.Messaging/IMessageBrokerService.cs](../src/Application.Messaging/IMessageBrokerService.cs))
+- `IMessageBrokerService` (`src/Application.Messaging/IMessageBrokerService.cs`)
   - Query persisted broker messages, payloads, handler states, and aggregate statistics.
   - Retry a full message or a single failed handler, release a lease, archive terminal rows, and purge old rows.
 - `MessageRequest`: Envelope carrying the message and cancellation for processing (created by brokers when messages are consumed).
@@ -201,9 +201,9 @@ The behavior only publishes when a broker is registered. If no `IMessageBroker` 
 
 Use the transactional outbox for "at least once" delivery. The same transaction persists the domain changes and the outbox record. A background worker publishes the message from the outbox until a handler processes it.
 
-- Entity: [src/Domain.Outbox/Message/OutboxMessage.cs](../src/Domain.Outbox/Message/OutboxMessage.cs)
+- Entity: `src/Domain.Outbox/Message/OutboxMessage.cs`
   - Fields: `AggregateId`, `AggregateType`, `EventType`, `Aggregate`, `AggregateEvent`, `TimeStamp`, `IsProcessed`, `RetryAttempt`, `MessageId`.
-- Registration: `.WithOutbox<TContext>(...)` wires the publisher behavior, hosted service, and worker. See [src/Infrastructure.EntityFramework/Messaging/Outbox/ServiceCollectionExtensions.cs](../src/Infrastructure.EntityFramework/Messaging/Outbox/ServiceCollectionExtensions.cs).
+- Registration: `.WithOutbox<TContext>(...)` wires the publisher behavior, hosted service, and worker. See `src/Infrastructure.EntityFramework/Messaging/Outbox/ServiceCollectionExtensions.cs`.
   - Common options: `ProcessingInterval`, `StartupDelay` (advanced: `ProcessingModeImmediate`, use cautiously).
 
 Outbox flow:
@@ -248,7 +248,7 @@ Best practices:
 
 - Ordered, single-threaded handling using TPL Dataflow (`ActionBlock` with `EnsureOrdered=true`).
 - Options: `ProcessDelay` (simulated work), `MessageExpiration` (drop before processing).
-- See [src/Application.Messaging/Brokers/InProcessMessageBroker.cs](../src/Application.Messaging/Brokers/InProcessMessageBroker.cs).
+- See `src/Application.Messaging/Brokers/InProcessMessageBroker.cs`.
 
 ### `EntityFrameworkMessageBroker`
 
@@ -257,7 +257,7 @@ Best practices:
 - Stores per-handler execution state inside the broker row, enabling aggregate status, handler-level retry, expiration, dead-lettering, and auto-archiving.
 - Exposes the persisted work through `IMessageBrokerService` and the optional server endpoints from `Presentation.Web.Messaging`.
 - Supports **runtime pause/resume per message type** via `MessageBrokerControlState`. When a type is paused, the worker skips messages of that type without claiming leases; resumed types pick up pending work on the next tick.
-- See [src/Infrastructure.EntityFramework/Messaging/EntityFrameworkMessageBroker{TContext}.cs](../src/Infrastructure.EntityFramework/Messaging/EntityFrameworkMessageBroker%7BTContext%7D.cs), [src/Infrastructure.EntityFramework/Messaging/EntityFrameworkMessageBrokerWorker{TContext}.cs](../src/Infrastructure.EntityFramework/Messaging/EntityFrameworkMessageBrokerWorker%7BTContext%7D.cs), and [src/Presentation.Web.Messaging/MessagingEndpoints.cs](../src/Presentation.Web.Messaging/MessagingEndpoints.cs).
+- See `src/Infrastructure.EntityFramework/Messaging/EntityFrameworkMessageBroker{TContext}.cs`, `src/Infrastructure.EntityFramework/Messaging/EntityFrameworkMessageBrokerWorker{TContext}.cs`, and `src/Presentation.Web.Messaging/MessagingEndpoints.cs`.
 
 Multi-host deployment notes:
 
@@ -303,7 +303,7 @@ The RabbitMQ messaging broker uses a **single fanout exchange** (default name: `
 - **Expiration:** per-message TTL via AMQP `Expiration` property.
 - **Correlation:** `CorrelationId` propagates from the publisher's application scope, with Activity baggage as a fallback when no scope exists.
 - **ProcessDelay:** artificial delay before invoking handlers (useful for testing or throttling).
-- See [src/Infrastructure.RabbitMQ/Messaging/RabbitMQMessageBroker.cs](../src/Infrastructure.RabbitMQ/Messaging/RabbitMQMessageBroker.cs).
+- See `src/Infrastructure.RabbitMQ/Messaging/RabbitMQMessageBroker.cs`.
 
 RabbitMQ topology (fanout exchange with one queue per subscriber):
 
@@ -341,7 +341,7 @@ flowchart LR
 - TTL: defaults to ~60 minutes unless overridden.
 - On success: completes messages. On failure: abandons messages so they can be redelivered.
 - Correlation: `CorrelationId` propagates from the publisher's application scope, with Activity baggage as a fallback when no scope exists.
-- See [src/Infrastructure.Azure.ServiceBus/ServiceBusMessageBroker.cs](../src/Infrastructure.Azure.ServiceBus/Messaging/ServiceBusMessageBroker.cs).
+- See `src/Infrastructure.Azure.ServiceBus/Messaging/ServiceBusMessageBroker.cs`.
 
 Service Bus topology (topic/subscriptions):
 
@@ -363,7 +363,7 @@ Because Azure Queue Storage does not support native topics or subscriptions, thi
 - **TTL:** `MessageExpiration` controls the time-to-live for messages in the queue (default: 7 days).
 - **Auto-create:** queues are created automatically at runtime when `AutoCreateQueue` is `true`.
 - **Correlation:** `CorrelationId` propagates from the publisher's application scope, with Activity baggage as a fallback when no scope exists.
-- **See:** [src/Infrastructure.Azure.Storage/Messaging/AzureQueueStorageMessageBroker.cs](../src/Infrastructure.Azure.Storage/Messaging/AzureQueueStorageMessageBroker.cs).
+- **See:** `src/Infrastructure.Azure.Storage/Messaging/AzureQueueStorageMessageBroker.cs`.
 
 Azure Queue Storage topology (one queue per message type, shared by all handlers):
 
@@ -518,9 +518,9 @@ These endpoints are intended for support and operations workflows. In production
 - InProcess broker for unit/integration tests: deterministic ordering and simple setup.
 - Entity Framework broker tests: validate claim/finalize, lease renewal, retry state transitions, and endpoint operations with focused broker and store-service tests, including SQLite, SQL Server, and PostgreSQL integration coverage for the durable worker paths.
 - RabbitMQ broker tests: validate publish/subscribe, multi-type filtering, exchange isolation, and handler invocation. Run against a local RabbitMQ container.
-  - [tests/Infrastructure.IntegrationTests/RabbitMQ/Messaging/RabbitMQMessageBrokerTests.cs](../tests/Infrastructure.IntegrationTests/RabbitMQ/Messaging/RabbitMQMessageBrokerTests.cs)
+  - `tests/Infrastructure.IntegrationTests/RabbitMQ/Messaging/RabbitMQMessageBrokerTests.cs`
 - Azure Queue Storage broker tests: validate publish/subscribe, multi-handler fan-out, message type isolation, no-subscriber behavior, and batch handling. Run against Azurite (local Azure Storage emulator).
-  - [tests/Infrastructure.IntegrationTests/Azure.Storage/Messaging/AzureQueueStorageMessageBrokerTests.cs](../tests/Infrastructure.IntegrationTests/Azure.Storage/Messaging/AzureQueueStorageMessageBrokerTests.cs)
+  - `tests/Infrastructure.IntegrationTests/Azure.Storage/Messaging/AzureQueueStorageMessageBrokerTests.cs`
 - Transport-backed integration tests: run RabbitMQ/Service Bus/Azure Queue Storage locally (containers/emulators), ensure subscriptions exist before publishing, and assert side-effects and idempotency.
 
 ## Minimal examples

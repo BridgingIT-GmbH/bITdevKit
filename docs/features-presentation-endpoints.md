@@ -93,31 +93,31 @@ public sealed class EchoEndpointsOptions : EndpointsOptionsBase
 
 ## Core contracts
 
-- `IEndpoints` ([src/Presentation.Web/Endpoints/IEndpoints.cs](../src/Presentation.Web/Endpoints/IEndpoints.cs))
+- `IEndpoints` (`src/Presentation.Web/Endpoints/IEndpoints.cs`)
   - `Enabled`: Toggle endpoint availability.
   - `IsRegistered`: Prevent duplicate mapping.
   - `Map(IEndpointRouteBuilder)`: Define routes.
-- `EndpointsBase` ([src/Presentation.Web/Endpoints/EndpointsBase.cs](../src/Presentation.Web/Endpoints/EndpointsBase.cs))
+- `EndpointsBase` (`src/Presentation.Web/Endpoints/EndpointsBase.cs`)
   - `MapGroup(app, options)`: Build a `RouteGroupBuilder` with path, tags, OpenAPI metadata, authorization, CORS, rate limiting, and custom metadata.
   - `BuildRouteName(options, name)`: Build endpoint names with an optional group-level route name prefix.
   - Common properties: `Enabled`, `IsRegistered`.
-- Endpoint naming extensions ([src/Presentation.Web/Endpoints/EndpointConventionBuilderExtensions.cs](../src/Presentation.Web/Endpoints/EndpointConventionBuilderExtensions.cs))
+- Endpoint naming extensions (`src/Presentation.Web/Endpoints/EndpointConventionBuilderExtensions.cs`)
   - `WithName(options, name)`: Assign an endpoint name after internally calling `BuildRouteName(options, name)`.
-- `EndpointsOptionsBase` ([src/Presentation.Web/Endpoints/EndpointsOptionsBase.cs](../src/Presentation.Web/Endpoints/EndpointsOptionsBase.cs))
+- `EndpointsOptionsBase` (`src/Presentation.Web/Endpoints/EndpointsOptionsBase.cs`)
   - Routing and docs: `GroupPath`, `NormalizeGroupPath`, `GroupTag`, `GroupTags`, `GroupName`, `Summary`, `Description`, `Deprecated`, `ExcludeFromDescription`.
   - Authorization: `RequireAuthorization`, `AllowAnonymous`, `RequireRoles`, `RequirePolicy`, `RequireAuthenticationSchemes`.
   - Cross-cutting group policies: `RequireCorsPolicy`, `DisableCors`, `RequireRateLimitingPolicy`, `DisableRateLimiting`.
   - Extensibility: `RouteNamePrefix`, `Metadata`.
-- `EndpointsOptionsBuilderBase<TOptions,TBuilder>` ([src/Presentation.Web/Endpoints/EndpointsOptionsBuilderBase.cs](../src/Presentation.Web/Endpoints/EndpointsOptionsBuilderBase.cs))
+- `EndpointsOptionsBuilderBase<TOptions,TBuilder>` (`src/Presentation.Web/Endpoints/EndpointsOptionsBuilderBase.cs`)
   - Fluent builder base for concrete endpoint options builders.
   - Exposes shared methods such as `GroupPath(...)`, `GroupTag(...)`, `RequirePolicy(...)`, `RequireCorsPolicy(...)`, and `WithMetadata(...)`.
-- `EndpointRouteNamePrefixMetadata` ([src/Presentation.Web/Endpoints/EndpointRouteNamePrefixMetadata.cs](../src/Presentation.Web/Endpoints/EndpointRouteNamePrefixMetadata.cs))
+- `EndpointRouteNamePrefixMetadata` (`src/Presentation.Web/Endpoints/EndpointRouteNamePrefixMetadata.cs`)
   - Stores the configured route-name prefix as endpoint metadata.
   - Endpoint implementations still call `BuildRouteName(options, name)` when assigning names with `WithName(...)`.
-- Registration helpers ([src/Presentation.Web/Endpoints/ServiceCollectionExtensions.cs](../src/Presentation.Web/Endpoints/ServiceCollectionExtensions.cs))
+- Registration helpers (`src/Presentation.Web/Endpoints/ServiceCollectionExtensions.cs`)
   - `AddEndpoints(assemblies)` / `AddEndpoints(assembly)` / `AddEndpoints<T>()` / `AddEndpoints(endpoints)`.
   - Logs added endpoint types for visibility.
-- Mapping extension ([src/Presentation.Web/Endpoints/ApplicationBuilderExtensions.cs](../src/Presentation.Web/Endpoints/ApplicationBuilderExtensions.cs))
+- Mapping extension (`src/Presentation.Web/Endpoints/ApplicationBuilderExtensions.cs`)
   - `MapEndpoints(WebApplication, RouteGroupBuilder?)`: Iterates `IEndpoints` in DI and calls `Map` when `Enabled && !IsRegistered`.
 
 ## Architecture details
@@ -272,14 +272,14 @@ var options = new MyEndpointsOptionsBuilder()
 
 ## Built-in endpoints
 
-- `SystemEndpoints` ([src/Presentation.Web/Endpoints/SystemEndpoints.cs](../src/Presentation.Web/Endpoints/SystemEndpoints.cs))
+- `SystemEndpoints` (`src/Presentation.Web/Endpoints/SystemEndpoints.cs`)
   - Grouped under a configurable `GroupPath`; provides a root discovery route plus optional `echo`, `info`, and `modules` routes.
   - `HideSensitiveInformation` hides host, network, process, runtime, memory, URL, and timezone values from the `info` response.
-  - Options: `SystemEndpointsOptions` ([src/Presentation.Web/Endpoints/SystemEndpointsOptions.cs](../src/Presentation.Web/Endpoints/SystemEndpointsOptions.cs)).
-- `LogEntryEndpoints` ([src/Presentation.Web/Logging/LogEntryEndpoints.cs](../src/Presentation.Web/Logging/LogEntryEndpoints.cs))
+  - Options: `SystemEndpointsOptions` (`src/Presentation.Web/Endpoints/SystemEndpointsOptions.cs`).
+- `LogEntryEndpoints` (`src/Presentation.Web/Logging/LogEntryEndpoints.cs`)
   - Minimal logging-related endpoints; configured via `LogEntryEndpointsOptions`.
 
-- `JobSchedulingEndpoints` ([src/Presentation.Web.JobScheduling/JobSchedulingEndpoints.cs](../src/Presentation.Web.JobScheduling/JobSchedulingEndpoints.cs))
+- `JobSchedulingEndpoints` (`src/Presentation.Web.JobScheduling/JobSchedulingEndpoints.cs`)
   - Job management endpoints: list jobs, get job details, runs (with filters), run stats, triggers.
   - Control endpoints: trigger, pause, resume, interrupt, purge runs.
   - Uses Minimal API method chains: `Produces<T>()`, `WithName(...)`, `WithDescription(...)` for metadata.
@@ -428,7 +428,7 @@ This lifecycle keeps endpoint classes modular while still making duplicate mappi
 
 ### Endpoint system test coverage
 
-The endpoint system is covered by focused unit tests in [tests/Presentation.UnitTests/Web/Endpoints](../tests/Presentation.UnitTests/Web/Endpoints):
+The endpoint system is covered by focused unit tests in `tests/Presentation.UnitTests/Web/Endpoints`:
 
 - `EndpointsBaseTests`: group metadata, authorization precedence, path normalization, CORS, rate limiting, route-name prefix metadata, and custom metadata.
 - `EndpointsOptionsBuilderBaseTests`: fluent builder methods and null-array normalization.
@@ -443,8 +443,8 @@ The endpoint system is covered by focused unit tests in [tests/Presentation.Unit
 
 The endpoint examples above use the built-in mapping helpers that convert `Result` and `Result<T>` to typed Minimal API responses. These live in:
 
-- Result helpers: [src/Presentation.Web/Result/Map/ResultMapExtensions.cs](../src/Presentation.Web/Result/Map/ResultMapExtensions.cs)
-- Core mapping: [src/Presentation.Web/Result/Map/ResultMapHttpExtensions.cs](../src/Presentation.Web/Result/Map/ResultMapHttpExtensions.cs)
+- Result helpers: `src/Presentation.Web/Result/Map/ResultMapExtensions.cs`
+- Core mapping: `src/Presentation.Web/Result/Map/ResultMapHttpExtensions.cs`
 
 #### Helper overview
 

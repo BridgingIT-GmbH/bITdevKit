@@ -137,8 +137,6 @@ The log-entries feature needs more than just `ILogEntryService`. A working setup
 3. the host must register `ILogEntryService` plus the maintenance queue and hosted service
 4. the web host can optionally expose `LogEntryEndpoints`
 
-The DoFiesta example wires those pieces together in [Program.cs](../examples/DoFiesta/DoFiesta.Presentation.Web.Server/Program.cs) and [CoreDbContext.cs](../examples/DoFiesta/DoFiesta.Infrastructure/Modules/Core/EntityFramework/CoreDbContext.cs).
-
 ### 1. Persist logs
 
 The query feature only works if your logging pipeline writes log events into a durable store. Serilog needs to be configured with the [MSSQL](https://github.com/serilog-mssql/serilog-sinks-mssqlserver) sink in appsettings.json.

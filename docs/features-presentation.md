@@ -535,4 +535,3 @@ Do not add broad feature package references to `Presentation.Web` just to expose
 - [DevKit MCP](./features-cli-mcp.md)
 - [Console Commands](./features-presentation-console-commands.md)
 - [Presentation Endpoints](./features-presentation-endpoints.md)
-- [DevKit Host Specification](./specs/spec-presentation-devkit-web-host.md)

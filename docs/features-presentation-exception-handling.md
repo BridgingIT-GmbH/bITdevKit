@@ -208,7 +208,7 @@ app.MapPost("/api/inventory", CreateInventoryItem)
 
 ### Migrate from Hellang
 
-Replace the Hellang service registration, `Configure.ProblemDetails(...)`, and `UseProblemDetails()` with the combined DevKit registration and middleware. The combined registration also supplies Result HTTP preparation. Set one disclosure policy, move exception mappings into `Map<TException>`, and transfer any custom header names and response enrichment into DevKit options. Use request scope for hosts with native HTML error pages. Update tests and generated clients for grouped validation, structured diagnostics, and the MVC Result status changes. [ADR-0046](adr/0046-shared-http-problem-details.md#breaking-changes)
+Replace the Hellang service registration, `Configure.ProblemDetails(...)`, and `UseProblemDetails()` with the combined DevKit registration and middleware. The combined registration also supplies Result HTTP preparation. Set one disclosure policy, move exception mappings into `Map<TException>`, and transfer any custom header names and response enrichment into DevKit options. Use request scope for hosts with native HTML error pages. Update tests and generated clients for grouped validation, structured diagnostics, and the MVC Result status changes.
 
 ## Key concepts
 

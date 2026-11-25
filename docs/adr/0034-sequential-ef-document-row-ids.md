@@ -2,7 +2,7 @@
 
 ## Status
 
-Accepted
+Superseded on 2026-11-25 by the [Document Storage follow-up to ADR-0033](0033-time-ordered-ef-blob-row-ids.md#document-storage-follow-up-2026-11-25).
 
 ## Date
 

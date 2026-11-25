@@ -6,7 +6,7 @@
 
 ## Implementation status
 
-Implemented as of 2026-11-02, including the File Storage and monitoring migration. The implementation plan and requirements record code/tooling completion. Untested share, power-loss and full reference-performance acceptance remain in the separate [qualification checklist](storage-filesystem-qualification.md).
+The providers share filesystem infrastructure with File Storage and Storage Monitoring. For share, power-loss, and reference performance checks, see [Filesystem deployment qualification](storage-filesystem-qualification.md).
 
 `Infrastructure.FileSystem` implements `IBlobStoreProvider`, `IDocumentStoreProvider` and ordinary-file `LocalFileStorageProvider` with direct file I/O. It also owns `LocalLocationHandler`. Existing client/provider contracts, transforms, behaviors, factories, health checks and retention workers remain in use.
 
@@ -161,5 +161,3 @@ For genuine cross-host load, both hosts use external profiles and share opt-in. 
 - [Storage Monitoring](features-storage-monitoring.md)
 - [Blob Storage](features-storage-blobs.md)
 - [Document Storage](features-storage-documents.md)
-- [Filesystem provider composition](adr/0037-filesystem-storage-provider-composition.md)
-- [Shared filesystem infrastructure](adr/0038-shared-filesystem-infrastructure-for-file-storage.md)

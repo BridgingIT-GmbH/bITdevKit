@@ -5,6 +5,9 @@
 
 namespace BridgingIT.DevKit.Infrastructure.EntityFramework;
 
+using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
+
 /// <summary>
 /// Provides model configuration for the <see cref="StorageDocument" /> entity that cannot be expressed with annotations.
 /// </summary>
@@ -46,7 +49,29 @@ public static class DocumentStoreModelBuilderExtensions
         return modelBuilder;
     }
 
-    /// <summary>Excludes relational Dimensions members from a Cosmos document model.</summary>
+    /// <summary>
+    /// Applies matching bytewise collations to the document owner and Dimension keys. Use this on a fresh relational
+    /// schema to sort UUIDv7 keys by timestamp across distinct milliseconds regardless of the database's default collation.
+    /// </summary>
+    /// <param name="modelBuilder">The document store context model builder.</param>
+    /// <param name="providerName">The provider name from <see cref="DatabaseFacade.ProviderName"/>.</param>
+    /// <returns>The same model builder. Other providers retain their default configuration.</returns>
+    /// <example><code>modelBuilder.UseDocumentRowIdCollation(this.Database.ProviderName);</code></example>
+    public static ModelBuilder UseDocumentRowIdCollation(this ModelBuilder modelBuilder, string providerName)
+    {
+        ArgumentNullException.ThrowIfNull(modelBuilder);
+
+        var collation = StorageRowIdConfiguration.GetBytewiseCollation(providerName);
+        if (collation is not null)
+        {
+            modelBuilder.Entity<StorageDocument>().Property(row => row.Id).UseCollation(collation);
+            modelBuilder.Entity<StorageDocumentDimension>().Property(row => row.DocumentId).UseCollation(collation);
+        }
+
+        return modelBuilder;
+    }
+
+    /// <summary>Excludes relational Dimensions and restores the provider's GUID mapping in a Cosmos document model.</summary>
     /// <param name="modelBuilder">The Cosmos context model builder.</param>
     /// <returns>The model builder for chaining.</returns>
     /// <remarks>Call only for Cosmos. SQL providers discover Dimensions through annotations.</remarks>
@@ -54,9 +79,17 @@ public static class DocumentStoreModelBuilderExtensions
     public static ModelBuilder ExcludeDocumentDimensions(this ModelBuilder modelBuilder)
     {
         ArgumentNullException.ThrowIfNull(modelBuilder);
-        modelBuilder.Entity<StorageDocument>().Ignore(owner => owner.DimensionValues);
-        modelBuilder.Entity<StorageDocument>().Ignore(owner => owner.DimensionsJson);
+        var document = modelBuilder.Entity<StorageDocument>();
+        document.Ignore(owner => owner.DimensionValues);
+        document.Ignore(owner => owner.DimensionsJson);
+
+        var id = document.Property(owner => owner.Id).Metadata;
+        id.SetValueConverter((ValueConverter)null);
+        id.SetColumnType(null);
+        id.SetMaxLength(null);
+        id.SetIsUnicode(null);
+        id.SetIsFixedLength(null);
+
         return modelBuilder;
     }
-
 }

@@ -316,7 +316,7 @@ The provider implements every `IJobStoreProvider` facet. It persists job and tri
 
 Occurrence keys and accepted-event idempotency keys retain the existing case-insensitive semantics. Batch creation and child membership commit together. Conflicting child IDs or keys fail before inserting any child. Duplicate external batch identities fail without creating a second batch. Lease renewal and ownership verification compare the current owner, token, and expiry. An old owner cannot release its replacement's lease.
 
-Collection names use the `jobs` prefix by default. Legacy `Application.JobScheduling` and Quartz persistence are excluded under COV-018.
+Collection names use the `jobs` prefix by default. For Quartz-backed scheduling, see [JobScheduling](features-jobscheduling.md).
 
 ## Orchestrations
 
@@ -726,7 +726,7 @@ One application process owns each Direct-mode file. Concurrent workers within th
 
 ## Other feature providers
 
-The remaining work is tracked in the [LiteDB Storage Providers specification](specs/spec-infrastructure-litedb-providers.md). Blob storage is deferred. Further document-storage work is also deferred; the existing document provider remains available. Log-entry persistence is excluded by user direction because the host keeps its SQL Server logging sink. Key/Value Storage waits for its owning contract. Any later LiteDB setup and behavior documentation belongs in feature sections on this page.
+The LiteDB document provider remains available. For other persistence options, see [Blob Storage provider registration](features-storage-blobs.md#registration) and [Log Entries](features-log-entries.md). Key/Value Storage is outside the current LiteDB provider set.
 
 ## Engine baseline and v5 files
 
@@ -734,4 +734,4 @@ The current package is pinned to upstream commit `b3c4406231908c6ca29f6d4b2769aa
 
 That result applies to the checked samples. It does not establish compatibility for every v5 file or determine whether the engine changes its internal format on open. Use disposable copies for further compatibility checks. A deployed-consumer migration service and historical model compatibility framework are outside the current extension's scope.
 
-General repository and ActiveEntity concepts are documented in [Domain Repositories](features-domain-repositories.md) and [ActiveEntity](features-domain-activeentity.md). LiteDB-specific usage remains on this page. The [provider specification](../docs/specs/spec-infrastructure-litedb-providers.md) and [COV-002 implementation record](../docs/plan/pln-feature-litedb-activeentity-1.md) retain requirements and delivery history.
+For general repository and ActiveEntity usage, see [Domain Repositories](features-domain-repositories.md) and [ActiveEntity](features-domain-activeentity.md).

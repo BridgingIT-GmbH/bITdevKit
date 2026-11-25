@@ -9,6 +9,7 @@ This changelog includes unreleased changes on `main` and the full tagged release
 - EF Blob Storage uses the host's `TimeProvider` for timestamps, expiration checks, and leases.
 - Added opt-in tracing for named blob clients with operation, store, and error type information.
 - Changed EF blob row IDs and their foreign keys to C# `Guid`, stored as 32-character UUID text. Fresh schemas can use `UseBlobRowIdCollation` to preserve UUIDv7 timestamp order.
+- Aligned EF Document Storage with Blob Storage. New document rows use UUIDv7 IDs, and fresh relational schemas store the document key and Dimension foreign key as lowercase `char(32)` text. Use `UseDocumentRowIdCollation` to opt into bytewise ordering.
 
 ## [10.0.131] - 2026-11-24
 

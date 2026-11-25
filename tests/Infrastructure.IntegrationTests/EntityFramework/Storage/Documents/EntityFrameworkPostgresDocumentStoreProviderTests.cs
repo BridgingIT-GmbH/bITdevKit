@@ -8,6 +8,10 @@ namespace BridgingIT.DevKit.Infrastructure.IntegrationTests.EntityFramework;
 using Application.Storage;
 using Infrastructure.EntityFramework.Storage;
 
+/// <summary>Runs the EF document storage contract on PostgreSQL.</summary>
+/// <param name="output">The test output sink.</param>
+/// <param name="fixture">The provider test fixture.</param>
+/// <example><code>dotnet test --filter FullyQualifiedName~EntityFrameworkPostgresDocumentStoreProviderTests</code></example>
 [IntegrationTest("Infrastructure")]
 [Collection(nameof(TestEnvironmentCollection))] // https://xunit.net/docs/shared-context#collection-fixture
 public class EntityFrameworkPostgresDocumentStoreProviderTests(ITestOutputHelper output, TestEnvironmentFixture fixture) : EntityFrameworkDocumentStoreProviderTestsBase
@@ -110,10 +114,12 @@ public class EntityFrameworkPostgresDocumentStoreProviderTests(ITestOutputHelper
         await base.GetManyAsync_WithExpiredDocument_ReturnsNotFound();
     }
 
+    /// <inheritdoc/>
+    /// <example><code>dotnet test --filter FullyQualifiedName~UpsertResultAsync_GeneratesDistinctUuidVersion7RowIds</code></example>
     [Fact]
-    public override async Task UpsertResultAsync_GeneratesDistinctRowIdsInInsertOrder()
+    public override async Task UpsertResultAsync_GeneratesDistinctUuidVersion7RowIds()
     {
-        await base.UpsertResultAsync_GeneratesDistinctRowIdsInInsertOrder();
+        await base.UpsertResultAsync_GeneratesDistinctUuidVersion7RowIds();
     }
 
     [Fact]
@@ -156,12 +162,6 @@ public class EntityFrameworkPostgresDocumentStoreProviderTests(ITestOutputHelper
     public override async Task SweepExpiredAsync_RemovesOnlyExpiredDocuments()
     {
         await base.SweepExpiredAsync_RemovesOnlyExpiredDocuments();
-    }
-
-    // Postgres uuid sorts byte-wise.
-    protected override void AssertRowIdsInInsertOrder(IReadOnlyList<Guid> ids)
-    {
-        ids.Select(x => Convert.ToHexString(x.ToByteArray(bigEndian: true))).ShouldBeInOrder(SortDirection.Ascending);
     }
 
     protected override async Task ExecuteDbContextAsync(Func<StubDbContext, Task> action)

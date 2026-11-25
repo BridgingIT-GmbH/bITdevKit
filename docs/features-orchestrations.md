@@ -1548,12 +1548,10 @@ For most developers, the practical takeaway is simple: keep orchestration contex
 
 The examples used in this guide are based on the runnable unit-test orchestrations in:
 
-- [OrderApprovalOrchestration.cs](../tests/Application.UnitTests/Orchestrations/OrderApprovalOrchestration.cs)
-- [TelephoneCallOrchestration.cs](../tests/Application.UnitTests/Orchestrations/TelephoneCallOrchestration.cs)
-- [OrderApprovalOrchestrationTests.cs](../tests/Application.UnitTests/Orchestrations/OrderApprovalOrchestrationTests.cs)
-- [TelephoneCallOrchestrationTests.cs](../tests/Application.UnitTests/Orchestrations/TelephoneCallOrchestrationTests.cs)
-
-The original design is documented in [spec-application-orchestration.md](./specs/spec-application-orchestration.md).
+- `OrderApprovalOrchestration.cs`
+- `TelephoneCallOrchestration.cs`
+- `OrderApprovalOrchestrationTests.cs`
+- `TelephoneCallOrchestrationTests.cs`
 
 ## Optional Operation Profiling
 

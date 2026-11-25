@@ -10,13 +10,15 @@ using System.ComponentModel.DataAnnotations.Schema;
 /// <summary>A typed, automatically indexed document dimension value.</summary>
 /// <example><code>var page = await context.Set&lt;StorageDocumentDimension&gt;().AsNoTracking().Where(row =&gt; row.NameId == nameId).Take(100).ToListAsync();</code></example>
 [Table("__Storage_DocumentDimensions")]
+[EntityTypeConfiguration(typeof(DocumentRowIdConfiguration.Dimension))]
 [PrimaryKey(nameof(DocumentId), nameof(NameId))]
 [Index(nameof(NameId), nameof(ValueType), nameof(IntegralValue), nameof(DocumentId))]
 [Index(nameof(NameId), nameof(ValueType), nameof(DecimalValue), nameof(DocumentId))]
 [Index(nameof(NameId), nameof(ValueType), nameof(StringValue), nameof(DocumentId))]
 public sealed class StorageDocumentDimension
 {
-    /// <summary>Gets or sets the owning record identity.</summary>
+    /// <summary>Gets or sets the owning document's row ID.</summary>
+    /// <example><code>var dimension = new StorageDocumentDimension { DocumentId = document.Id, NameId = nameId };</code></example>
     public Guid DocumentId { get; set; }
 
     /// <summary>Gets or sets the scoped dictionary identity.</summary>

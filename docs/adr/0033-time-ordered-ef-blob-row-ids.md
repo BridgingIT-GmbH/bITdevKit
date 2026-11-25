@@ -84,6 +84,12 @@ The standard setup discovers the key mappings from the entity annotations and us
 
 The measurements above compare the original random and time-ordered text keys. The follow-up verifies the mapping and order on fresh databases. The SQL Server benchmark opts into bytewise collation to control key ordering when comparing the two strategies.
 
+## Document Storage follow-up (2026-11-25)
+
+Fresh relational Document Storage schemas use the same UUIDv7 representation as blobs. `StorageDocument` creates its own UUIDv7 key. EF uses the shared converter for `StorageDocument.Id` and `StorageDocumentDimension.DocumentId`, with both columns stored as lowercase `char(32)` text.
+
+`UseDocumentRowIdCollation` sets both columns to the same bytewise collation as Blob Storage for each provider. The default remains the database collation. This replaces the provider-native ID generation described in [ADR-0034](0034-sequential-ef-document-row-ids.md). The measurements above are from the blob workload.
+
 ## References
 
 - `benchmarks/Application.Benchmarks/BlobStorageEfSqlServerLargeTableReadBenchmarks.cs`

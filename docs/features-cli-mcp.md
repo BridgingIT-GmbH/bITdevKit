@@ -752,7 +752,7 @@ Start with a source returned by search, or a known public document path:
 
 ### Add documentation to the embedded set
 
-The website and MCP share `docs/public-documentation.props` for the public-documentation selection. It includes root-level `INDEX.md`, `introduction-ddd-guide.md`, `common-*.md`, `development-*.md`, `features-*.md`, `storage-*.md`, and `testing-*.md`. ADRs, specifications, PRDs, presentations, generated site content, and binary assets are excluded.
+The website and MCP share the public documentation selection in `docs/public-documentation.props`. It includes `INDEX.md`, `introduction-ddd-guide.md`, `common-*.md`, `development-*.md`, `features-*.md`, `storage-*.md`, and `testing-*.md` directly under `docs/`.
 
 1. Add or edit a matching public document under `docs/`.
 2. Build the CLI. Matching additions, edits, renames, and removals are embedded automatically, without a clean build, manual sync, or per-file registration.
@@ -840,5 +840,3 @@ Documentation tools do not require a running app. Runtime tools do. Start the ap
 - [DevKit CLI](./features-cli.md)
 - [MCP Client Configuration](./features-cli-mcp-clients.md)
 - [Presentation Host](./features-presentation.md)
-- [DevKit STDIO MCP Specification](./specs/spec-presentation-web-mcp-diagnostics.md)
-- [ADR-0023: STDIO MCP Server with SDK-Free App Handlers](./adr/0023-stdio-mcp-server-with-sdk-free-app-handlers.md)

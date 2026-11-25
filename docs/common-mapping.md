@@ -77,7 +77,7 @@ Prefer Mapster for normal application mapping. `ObjectMapper` is intentionally s
 
 ## Caveats
 
-- Keep mapping at layer boundaries. The ADR guidance for the devkit places mapping in presentation/application boundary code, not in the domain model. See [ADR-0010: Mapster for Object Mapping](./adr/0010-mapster-object-mapping.md).
+- Map DTOs at the application and presentation boundaries.
 - `ObjectMapper` expects the target type to be constructible and its mapped members to be writable by name.
 - `ObjectMapperConfiguration` is intentionally simple. If you need complex conversions, custom constructors, or rich nested object handling, use Mapster registrations instead.
 - Mapping failures are usually configuration problems, so each module should have tests that exercise its mapper registrations.
@@ -87,6 +87,3 @@ Prefer Mapster for normal application mapping. `ObjectMapper` is intentionally s
 - [Application Commands and Queries](./features-application-commands-queries.md)
 - [Presentation Endpoints](./features-presentation-endpoints.md)
 - [Results](./features-results.md)
-- [ADR-0010: Mapster for Object Mapping](./adr/0010-mapster-object-mapping.md)
-- [ADR-0011: Application Logic in Commands/Queries](./adr/0011-application-logic-in-commands-queries.md)
-- [ADR-0014: Minimal API Endpoints and DTO Exposure](./adr/0014-minimal-api-endpoints-dto-exposure.md)

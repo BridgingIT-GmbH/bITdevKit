@@ -73,7 +73,7 @@ The default EF mapping contains three audit data tables and one singleton techni
 - `__Auditing_EntityChanges`
 - `__Auditing_StoreState`
 
-The control row retains store identity, epoch, publication progress, lifecycle and retention boundaries even in an empty store. It is not an audit execution. Business actors/resources and causal links are non-owning references, so deleting a live resource does not cascade into retained evidence. See [ADR-0031](adr/0031-audit-store-publication-and-control-state.md).
+The control row retains store identity, epoch, publication progress, lifecycle, and retention boundaries even in an empty store. Business actors, resources, and causal links are non-owning references. Retained evidence survives deletion of the live resource.
 
 ## Use cases
 
@@ -424,7 +424,7 @@ A compatible host restart preserves EF store identity/epoch and can resume prote
 var rotated = await provider.RotateStoreEpochAsync(expectedOldEpoch, cancellationToken);
 ```
 
-Here `provider` is the configured `EntityFrameworkAuditStorageProvider<TContext>`. Rotation is operator-controlled and rejects an unexpected epoch. Native backup/restore procedures, database permissions, key/backup custody, host clocks and legal retention policy remain deployment responsibilities. See [ADR-0031](adr/0031-audit-store-publication-and-control-state.md).
+Here `provider` is the configured `EntityFrameworkAuditStorageProvider<TContext>`. Rotation is operator-controlled and rejects an unexpected epoch. The host owns database permissions, backup and restore procedures, key and backup custody, clock configuration, and legal retention policy.
 
 ## Export contracts
 
@@ -605,13 +605,9 @@ if (present.IsFailure || privateDataAbsent.IsFailure)
 
 The host/test supplies `customerService` and collects `capturedAuditIds` from actual instrumentation or the HTTP correlation header. The helper creates no hidden root and does not make missing instrumentation appear covered. Supply an `IAuditIntegrityVerifier` to verify protected original evidence. Absence assertions fail when flush/evidence is unconfirmed. Original-evidence access belongs to isolated tests and must never become a public payload route.
 
-## Source and decisions
+## Source locations
 
-- [Core contracts and registration](../src/Application.Auditing/ServiceCollectionExtensions.cs)
-- [Query contract](../src/Application.Auditing/Query/IAuditQueryService.cs)
-- [Export contract](../src/Application.Auditing/Export/IAuditExportService.cs)
-- [Formatter contract](../src/Application.Auditing/Export/IAuditExportFormatter.cs)
-- [EF entity mappings](../src/Infrastructure.EntityFramework/Auditing/Entities/AuditRecordEntity.cs)
-- [Auditing specification](specs/spec-application-auditing.md)
-- [ADR-0031: publication/control state](adr/0031-audit-store-publication-and-control-state.md)
-- [ADR-0032: business execution auditing](adr/0032-business-execution-auditing.md)
+- Core registration in `src/Application.Auditing/ServiceCollectionExtensions.cs`
+- Query contract in `IAuditQueryService`
+- Export and formatting contracts in `IAuditExportService` and `IAuditExportFormatter`
+- EF entity mappings in `AuditRecordEntity`

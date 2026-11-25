@@ -31,7 +31,8 @@ public enum DocumentBenchmarkPageDepth
 /// A bulk seeded document table (1 KB documents over 20 partitions with sequential row keys) and the DevKit access to it.
 /// The rows are copies of one row written through the client, so only the key and id columns differ.
 /// </summary>
-internal sealed class DocumentStorageEfSqlServerLargeTableStore
+/// <example><code>var store = await DocumentStorageEfSqlServerLargeTableStore.GetAsync(1000, DocumentBenchmarkIdStrategy.Random);</code></example>
+public sealed class DocumentStorageEfSqlServerLargeTableStore
 {
     private const int PayloadBytes = 1024;
     private const int RequestSize = 100;
@@ -59,12 +60,22 @@ internal sealed class DocumentStorageEfSqlServerLargeTableStore
         this.Client = database.CreateClient<BenchmarkDocument>();
     }
 
+    /// <summary>Gets the SQL Server database containing the seeded documents.</summary>
+    /// <example><code>await store.Database.ReportIndexesAsync();</code></example>
     public DocumentBenchmarkDatabase Database { get; }
 
+    /// <summary>Gets the number of documents in the seed dataset.</summary>
+    /// <example><code>var rows = store.Rows;</code></example>
     public int Rows { get; }
 
+    /// <summary>Gets the client used to read the seeded documents.</summary>
+    /// <example><code>var result = await store.Client.GetAsync(key);</code></example>
     public IDocumentStoreClient<BenchmarkDocument> Client { get; }
 
+    /// <summary>Returns the seeded benchmark store for the selected row count and ID strategy.</summary>
+    /// <param name="rows">The number of documents to seed.</param>
+    /// <param name="ids">The seed row ID strategy.</param>
+    /// <example><code>var store = await DocumentStorageEfSqlServerLargeTableStore.GetAsync(1000, DocumentBenchmarkIdStrategy.Random);</code></example>
     public static async Task<DocumentStorageEfSqlServerLargeTableStore> GetAsync(int rows, DocumentBenchmarkIdStrategy ids)
     {
         await Gate.WaitAsync().ConfigureAwait(false);
@@ -164,9 +175,13 @@ internal sealed class DocumentStorageEfSqlServerLargeTableStore
         ? length
         : throw new InvalidOperationException($"Expected {PayloadBytes} characters but read {length}.");
 
-    private static Guid CreateId(DocumentBenchmarkIdStrategy ids, int row) => ids == DocumentBenchmarkIdStrategy.SqlServerSequential
-        ? Guid.Parse($"00000000-0000-0000-0000-{row:x12}")
-        : Guid.NewGuid();
+    private static Guid CreateId(DocumentBenchmarkIdStrategy ids, int row, DateTimeOffset timestamp) => ids == DocumentBenchmarkIdStrategy.Random
+        ? Guid.NewGuid()
+#if DOC_BASELINE
+        : Guid.Parse($"00000000-0000-0000-0000-{row:x12}");
+#else
+        : Guid.CreateVersion7(timestamp);
+#endif
 
     private static async Task<DocumentStorageEfSqlServerLargeTableStore> CreateAsync(
         DocumentBenchmarkDatabase database,
@@ -249,7 +264,8 @@ internal sealed class DocumentStorageEfSqlServerLargeTableStore
             var table = template.CreateTable();
             for (var row = start; row < start + count; row++)
             {
-                template.AddRow(table, CreateId(ids, row), DocumentBenchmarkDatabase.KeyFor(row), origin.AddMilliseconds(row), null);
+                var timestamp = origin.AddMilliseconds(row);
+                template.AddRow(table, CreateId(ids, row, timestamp), DocumentBenchmarkDatabase.KeyFor(row), timestamp, null);
             }
 
             await this.Database.BulkInsertAsync(table).ConfigureAwait(false);
@@ -264,7 +280,8 @@ internal sealed class DocumentStorageEfSqlServerLargeTableStore
 }
 
 /// <summary>A document row written through the client and read back raw, used to bulk copy new rows.</summary>
-internal sealed class DocumentBenchmarkTemplate
+/// <example><code>var template = await DocumentBenchmarkTemplate.CreateAsync(database, client);</code></example>
+public sealed class DocumentBenchmarkTemplate
 {
     private readonly string[] names;
     private readonly Type[] types;
@@ -303,10 +320,18 @@ internal sealed class DocumentBenchmarkTemplate
         return table;
     }
 
+    /// <summary>Adds a seed row with the ID represented in the database's column type.</summary>
+    /// <param name="table">The table prepared for bulk copy.</param>
+    /// <param name="id">The seed row's assigned ID.</param>
+    /// <param name="key">The logical document key.</param>
+    /// <param name="createdAt">The creation timestamp.</param>
+    /// <param name="expiresAtUnixMilliseconds">The optional expiration timestamp in Unix milliseconds.</param>
+    /// <example><code>template.AddRow(table, Guid.CreateVersion7(), key, DateTimeOffset.UtcNow, null);</code></example>
     public void AddRow(DataTable table, Guid id, DocumentKey key, DateTimeOffset createdAt, long? expiresAtUnixMilliseconds)
     {
         var row = (object[])this.values.Clone();
-        row[this.Index("Id")] = id;
+        var idIndex = this.Index("Id");
+        row[idIndex] = this.types[idIndex] == typeof(string) ? id.ToString("N") : id;
         row[this.Index("PartitionKey")] = key.PartitionKey;
         row[this.Index("PartitionKeyHash")] = HashHelper.ComputeSha256(key.PartitionKey);
         row[this.Index("RowKey")] = key.RowKey;
@@ -328,6 +353,7 @@ internal sealed class DocumentBenchmarkTemplate
 /// Needs a persistent SQL Server (set DOC_BENCH_SQL_CONNECTION), otherwise every benchmark process would start a
 /// new container and reseed. Run with: dotnet run -c Release --project benchmarks/Application.Benchmarks/Application.Benchmarks.csproj -- --filter *DocumentStorageEfSqlServerLargeTableReadBenchmarks*
 /// </remarks>
+/// <example><code>var benchmark = new DocumentStorageEfSqlServerLargeTableReadBenchmarks { Rows = 1000 };</code></example>
 [MemoryDiagnoser]
 [SimpleJob(RunStrategy.Monitoring, launchCount: 1, warmupCount: 2, iterationCount: 12)]
 public class DocumentStorageEfSqlServerLargeTableReadBenchmarks
@@ -338,7 +364,9 @@ public class DocumentStorageEfSqlServerLargeTableReadBenchmarks
     [Params(1_000, 1_000_000)]
     public int Rows { get; set; }
 
-    [Params(DocumentBenchmarkIdStrategy.Random, DocumentBenchmarkIdStrategy.SqlServerSequential)]
+    /// <summary>Gets or sets the ID strategy for the seed dataset.</summary>
+    /// <example><code>benchmark.Ids = DocumentBenchmarkIdStrategy.Random;</code></example>
+    [ParamsAllValues]
     public DocumentBenchmarkIdStrategy Ids { get; set; }
 
     [Params(DocumentBenchmarkAccess.Random, DocumentBenchmarkAccess.Recent)]
@@ -405,12 +433,13 @@ public class DocumentStorageEfSqlServerPagingBenchmarks
 }
 
 /// <summary>
-/// Measures inserting 1000 new 1 KB documents into a large table. The provider generates the row ids, which are
-/// random before sequential ids and increasing afterwards, so the same benchmark shows the effect of the id change.
+/// Measures inserting 1000 new 1 KB documents into a large table. The seed strategy controls the initial index layout.
+/// The provider assigns the row IDs for measured inserts.
 /// </summary>
 /// <remarks>
 /// Run with: dotnet run -c Release --project benchmarks/Application.Benchmarks/Application.Benchmarks.csproj -- --filter *DocumentStorageEfSqlServerInsertBenchmarks*
 /// </remarks>
+/// <example><code>var benchmark = new DocumentStorageEfSqlServerInsertBenchmarks { Rows = 1000 };</code></example>
 [MemoryDiagnoser]
 [SimpleJob(RunStrategy.Monitoring, launchCount: 1, warmupCount: 2, iterationCount: 12)]
 public class DocumentStorageEfSqlServerInsertBenchmarks
@@ -425,7 +454,9 @@ public class DocumentStorageEfSqlServerInsertBenchmarks
     [Params(1_000, 1_000_000)]
     public int Rows { get; set; }
 
-    [Params(DocumentBenchmarkIdStrategy.Random, DocumentBenchmarkIdStrategy.SqlServerSequential)]
+    /// <summary>Gets or sets the ID strategy for the existing rows.</summary>
+    /// <example><code>benchmark.Ids = DocumentBenchmarkIdStrategy.Random;</code></example>
+    [ParamsAllValues]
     public DocumentBenchmarkIdStrategy Ids { get; set; }
 
     [GlobalSetup]
@@ -481,6 +512,7 @@ public class DocumentStorageEfSqlServerInsertBenchmarks
 /// <remarks>
 /// Run with: dotnet run -c Release --project benchmarks/Application.Benchmarks/Application.Benchmarks.csproj -- --filter *DocumentStorageEfSqlServerSustainedInsertBenchmarks*
 /// </remarks>
+/// <example><code>var benchmark = new DocumentStorageEfSqlServerSustainedInsertBenchmarks { Rows = 1000000 };</code></example>
 [MemoryDiagnoser]
 [SimpleJob(RunStrategy.Monitoring, launchCount: 1, warmupCount: 0, iterationCount: 3)]
 public class DocumentStorageEfSqlServerSustainedInsertBenchmarks
@@ -495,7 +527,9 @@ public class DocumentStorageEfSqlServerSustainedInsertBenchmarks
     [Params(1_000_000)]
     public int Rows { get; set; }
 
-    [Params(DocumentBenchmarkIdStrategy.Random, DocumentBenchmarkIdStrategy.SqlServerSequential)]
+    /// <summary>Gets or sets the ID strategy for the existing rows.</summary>
+    /// <example><code>benchmark.Ids = DocumentBenchmarkIdStrategy.Random;</code></example>
+    [ParamsAllValues]
     public DocumentBenchmarkIdStrategy Ids { get; set; }
 
     [GlobalSetup]

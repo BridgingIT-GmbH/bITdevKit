@@ -6201,6 +6201,14 @@
 <li>Missing required options/arguments produce binder errors and detailed help output.</li>
 <li>Unrecognized tokens yield validation feedback.</li>
 </ul>
+<p>Apply <code>[ConsoleCommandDuration]</code> to an option or argument of type <code>TimeSpan</code> or <code>TimeSpan?</code> to accept friendly values such as <code>500ms</code>. Unannotated duration properties continue to use standard invariant <code>TimeSpan</code> parsing. Invalid values use the regular binder error messages. <a href="../common-extensions/#parse-durations">Parse durations</a></p>
+<p>Annotated properties also accept signed values such as <code>-1.5m</code> in a positional argument and <code>--timeout -500ms</code> for an option. A registered option name or alias takes precedence over a separate signed value. Use <code>--timeout=-500ms</code> to supply an option value explicitly.</p>
+<div class="highlight"><pre><span></span><code><span class="na">[ConsoleCommandOption("timeout"), ConsoleCommandDuration]</span>
+<span class="k">public</span><span class="w"> </span><span class="n">TimeSpan</span><span class="w"> </span><span class="n">Timeout</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="k">get</span><span class="p">;</span><span class="w"> </span><span class="k">set</span><span class="p">;</span><span class="w"> </span><span class="p">}</span>
+
+<span class="na">[ConsoleCommandArgument(0), ConsoleCommandDuration]</span>
+<span class="k">public</span><span class="w"> </span><span class="n">TimeSpan</span><span class="o">?</span><span class="w"> </span><span class="n">Delay</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="k">get</span><span class="p">;</span><span class="w"> </span><span class="k">set</span><span class="p">;</span><span class="w"> </span><span class="p">}</span>
+</code></pre></div>
 <h3 id="example-simple-echo-command">Example: simple echo command<a class="headerlink" href="#example-simple-echo-command" title="Permanent link">&para;</a></h3>
 <div class="highlight"><pre><span></span><code><span class="k">public</span><span class="w"> </span><span class="k">class</span><span class="w"> </span><span class="nc">EchoConsoleCommand</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="n">ConsoleCommandBase</span>
 <span class="p">{</span>

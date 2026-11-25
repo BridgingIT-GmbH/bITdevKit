@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+      <title>Class AsyncKeyedLock&lt;TKey&gt; | bITdevKit API Reference </title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta name="title" content="Class AsyncKeyedLock&lt;TKey&gt; | bITdevKit API Reference ">
+      
+      <meta name="description" content="Serializes asynchronous work for equal keys within one lock pool.">
+      <link rel="icon" href="../../favicon.ico">
+      <link rel="stylesheet" href="../../public/docfx.min.css">
+      <link rel="stylesheet" href="../../public/main.css">
+      <meta name="docfx:navrel" content="../../toc.html">
+      <meta name="docfx:tocrel" content="toc.html">
+      
+      
+      
+      
+      
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+      <meta name="loc:downloadPdf" content="Download PDF">
+
+      <script type="module" src="./../../public/docfx.min.js"></script>
+
+      <script>
+        const theme = localStorage.getItem('theme') || 'auto'
+        document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+      </script>
+
+  </head>
+
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="ManagedReference">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="../../index.html">
+            <img id="logo" class="svg" src="../../logo.svg" alt="bITdevKit API Reference">
+            bITdevKit API Reference
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+            </div>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <main class="container-xxl">
+      <div class="toc-offcanvas">
+        <div class="offcanvas-md offcanvas-start" tabindex="-1" id="tocOffcanvas" aria-labelledby="tocOffcanvasLabel">
+          <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="tocOffcanvasLabel">Table of Contents</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#tocOffcanvas" aria-label="Close"></button>
+          </div>
+          <div class="offcanvas-body">
+            <nav class="toc" id="toc"></nav>
+          </div>
+        </div>
+      </div>
+
+      <div class="content">
+        <div class="actionbar">
+          <button class="btn btn-lg border-0 d-md-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#tocOffcanvas" aria-controls="tocOffcanvas" aria-expanded="false" aria-label="Show table of contents">
+            <i class="bi bi-list"></i>
+          </button>
+
+          <nav id="breadcrumb"></nav>
+        </div>
+
+        <article data-uid="BridgingIT.DevKit.Common.AsyncKeyedLock`1">
+
+
+
+  <h1 id="BridgingIT_DevKit_Common_AsyncKeyedLock_1" data-uid="BridgingIT.DevKit.Common.AsyncKeyedLock`1" class="text-break">
+Class AsyncKeyedLock&lt;TKey&gt;  
+  </h1>
+
+  <div class="facts text-secondary">
+    <dl><dt>Namespace</dt><dd><span class="xref">BridgingIT</span>.<span class="xref">DevKit</span>.<a class="xref" href="BridgingIT.DevKit.Common.html">Common</a></dd></dl>
+  <dl><dt>Assembly</dt><dd>BridgingIT.DevKit.Common.Utilities.dll</dd></dl>
+  </div>
+
+  <div class="markdown summary"><p>Serializes asynchronous work for equal keys within one lock pool.</p>
+</div>
+  <div class="markdown conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public sealed class AsyncKeyedLock&lt;TKey&gt; where TKey : notnull</code></pre>
+  </div>
+
+
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>TKey</code></dt>
+    <dd><p>The type of key, with stable equality and hash codes while leased.</p>
+</dd>
+  </dl>
+
+  <dl class="typelist inheritance">
+    <dt>Inheritance</dt>
+    <dd>
+      <div><span class="xref">object</span></div>
+      <div><span class="xref">AsyncKeyedLock&lt;TKey&gt;</span></div>
+    </dd>
+  </dl>
+
+
+
+
+  <dl class="typelist extensionMethods">
+    <dt>Extension Methods</dt>
+    <dd>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.ResultValidationExtensions.html#BridgingIT_DevKit_Common_ResultValidationExtensions_Validate__1___0_FluentValidation_IValidator___0__">ResultValidationExtensions.Validate&lt;T&gt;(T, IValidator&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.UtilitiesExtensions.html#BridgingIT_DevKit_Common_UtilitiesExtensions_Clone__1___0_">UtilitiesExtensions.Clone&lt;T&gt;(T)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.UtilitiesExtensions.html#BridgingIT_DevKit_Common_UtilitiesExtensions_Clone__1___0_System_Type_">UtilitiesExtensions.Clone&lt;T&gt;(T, Type)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.UtilitiesExtensions.html#BridgingIT_DevKit_Common_UtilitiesExtensions_AsReflectionDynamic_System_Object_">UtilitiesExtensions.AsReflectionDynamic(object)</a>
+  </div>
+  </dd></dl>
+
+
+  <h2 id="BridgingIT_DevKit_Common_AsyncKeyedLock_1_examples">Examples</h2>
+  <pre><code class="lang-csharp">using var locks = new AsyncKeyedLock&lt;string&gt;(StringComparer.OrdinalIgnoreCase);
+using var lease = locks.Rent("report-42");
+if (await lease.TryAcquireAsync(TimeSpan.FromSeconds(2)))
+{
+    await RefreshReportAsync("report-42");
+}</code></pre>
+
+
+  <h2 id="BridgingIT_DevKit_Common_AsyncKeyedLock_1_remarks">Remarks</h2>
+  <div class="markdown level0 remarks"><p>Each instance coordinates work in the current process. Equal keys share a semaphore even if rented
+by the same caller. Different keys can be acquired independently. Dispose each lease to retire unused keys.</p>
+</div>
+
+
+  <h2 class="section" id="constructors">Constructors
+</h2>
+
+
+  <a id="BridgingIT_DevKit_Common_AsyncKeyedLock_1__ctor_" data-uid="BridgingIT.DevKit.Common.AsyncKeyedLock`1.#ctor*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_AsyncKeyedLock_1__ctor_System_Collections_Generic_IEqualityComparer__0__" data-uid="BridgingIT.DevKit.Common.AsyncKeyedLock`1.#ctor(System.Collections.Generic.IEqualityComparer{`0})">
+  AsyncKeyedLock(IEqualityComparer&lt;TKey&gt;)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Creates a keyed lock pool with the supplied key comparison.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public AsyncKeyedLock(IEqualityComparer&lt;TKey&gt; comparer = null)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>comparer</code> <span class="xref">IEqualityComparer</span>&lt;TKey&gt;</dt>
+    <dd><p>The key comparer, or null to use the default equality comparer for <code class="typeparamref">TKey</code>.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Common_AsyncKeyedLock_1__ctor_System_Collections_Generic_IEqualityComparer__0___examples">Examples</h4>
+  <pre><code class="lang-csharp">using var locks = new AsyncKeyedLock&lt;string&gt;(StringComparer.Ordinal);</code></pre>
+
+
+
+
+
+
+  <h2 class="section" id="methods">Methods
+</h2>
+
+
+  <a id="BridgingIT_DevKit_Common_AsyncKeyedLock_1_Dispose_" data-uid="BridgingIT.DevKit.Common.AsyncKeyedLock`1.Dispose*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_AsyncKeyedLock_1_Dispose" data-uid="BridgingIT.DevKit.Common.AsyncKeyedLock`1.Dispose">
+  Dispose()
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Stops new rentals and lets existing leases finish.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public void Dispose()</code></pre>
+  </div>
+
+
+
+
+
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Common_AsyncKeyedLock_1_Dispose_examples">Examples</h4>
+  <pre><code class="lang-csharp">locks.Dispose();</code></pre>
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Common_AsyncKeyedLock_1_Dispose_remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>Already rented leases can acquire, complete, and retire in the usual way.</p>
+</div>
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_AsyncKeyedLock_1_Rent_" data-uid="BridgingIT.DevKit.Common.AsyncKeyedLock`1.Rent*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_AsyncKeyedLock_1_Rent__0_" data-uid="BridgingIT.DevKit.Common.AsyncKeyedLock`1.Rent(`0)">
+  Rent(TKey)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Reserves a single-use lease for a key without acquiring the lock.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public AsyncKeyedLock&lt;TKey&gt;.ILease Rent(TKey key)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>key</code> <span class="xref">TKey</span></dt>
+    <dd><p>The key to lock.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="BridgingIT.DevKit.Common.AsyncKeyedLock-1.html">AsyncKeyedLock</a>&lt;TKey&gt;.<a class="xref" href="BridgingIT.DevKit.Common.AsyncKeyedLock-1.ILease.html">ILease</a></dt>
+    <dd><p>A lease that the caller must dispose, even if it never attempts acquisition.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Common_AsyncKeyedLock_1_Rent__0__examples">Examples</h4>
+  <pre><code class="lang-csharp">using var lease = locks.Rent("report-42");</code></pre>
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><span class="xref">ArgumentNullException</span></dt>
+    <dd><p><code class="paramref">key</code> is null.</p>
+</dd>
+    <dt><span class="xref">ObjectDisposedException</span></dt>
+    <dd><p>The pool has been disposed.</p>
+</dd>
+  </dl>
+
+
+
+  <a id="BridgingIT_DevKit_Common_AsyncKeyedLock_1_TryAcquireAsync_" data-uid="BridgingIT.DevKit.Common.AsyncKeyedLock`1.TryAcquireAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_AsyncKeyedLock_1_TryAcquireAsync__0_System_TimeSpan_System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Common.AsyncKeyedLock`1.TryAcquireAsync(`0,System.TimeSpan,System.Threading.CancellationToken)">
+  TryAcquireAsync(TKey, TimeSpan, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Waits for exclusive access to a key and returns the acquired lease.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Task&lt;AsyncKeyedLock&lt;TKey&gt;.ILease&gt; TryAcquireAsync(TKey key, TimeSpan timeout, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>key</code> <span class="xref">TKey</span></dt>
+    <dd><p>The key to lock.</p>
+</dd>
+    <dt><code>timeout</code> <span class="xref">TimeSpan</span></dt>
+    <dd><p>The wait limit. Use zero for an immediate attempt or <span class="xref">System.Threading.Timeout.InfiniteTimeSpan</span> for an indefinite wait.</p>
+</dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd><p>The token used to cancel the wait.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.AsyncKeyedLock-1.html">AsyncKeyedLock</a>&lt;TKey&gt;.<a class="xref" href="BridgingIT.DevKit.Common.AsyncKeyedLock-1.ILease.html">ILease</a>&gt;</dt>
+    <dd><p>The acquired lease on success, or null on timeout. The caller disposes a returned lease to release the lock.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Common_AsyncKeyedLock_1_TryAcquireAsync__0_System_TimeSpan_System_Threading_CancellationToken__examples">Examples</h4>
+  <pre><code class="lang-csharp">using var lease = await locks.TryAcquireAsync("report-42", TimeSpan.FromSeconds(2), cancellationToken);</code></pre>
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><span class="xref">ArgumentNullException</span></dt>
+    <dd><p><code class="paramref">key</code> is null.</p>
+</dd>
+    <dt><span class="xref">ArgumentOutOfRangeException</span></dt>
+    <dd><p><code class="paramref">timeout</code> is outside the range accepted by <span class="xref">System.Threading.SemaphoreSlim.WaitAsync(System.TimeSpan, System.Threading.CancellationToken)</span>.</p>
+</dd>
+    <dt><span class="xref">OperationCanceledException</span></dt>
+    <dd><p><code class="paramref">cancellationToken</code> is canceled.</p>
+</dd>
+    <dt><span class="xref">ObjectDisposedException</span></dt>
+    <dd><p>The pool has been disposed.</p>
+</dd>
+  </dl>
+
+
+
+
+</article>
+
+
+
+      </div>
+
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
+
+
+    <footer class="border-top text-secondary">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          <span>Made with <a href="https://dotnet.github.io/docfx">docfx</a></span>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

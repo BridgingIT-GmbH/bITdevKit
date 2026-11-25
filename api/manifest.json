@@ -25453,6 +25453,34 @@
     },
     {
       "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Common.AsyncKeyedLock-1.ILease.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Common.AsyncKeyedLock-1.ILease.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Common.AsyncKeyedLock<TKey>.ILease",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Common.AsyncKeyedLock-1.ILease.yml\" sourcestartlinenumber=\"1\">Reserves one acquisition attempt for a key and releases any acquired lock when disposed.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Common.AsyncKeyedLock-1.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Common.AsyncKeyedLock-1.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Common.AsyncKeyedLock<TKey>",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Common.AsyncKeyedLock-1.yml\" sourcestartlinenumber=\"1\">Serializes asynchronous work for equal keys within one lock pool.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
       "source_relative_path": "obj/api/BridgingIT.DevKit.Common.AsyncPipelineStep-1.yml",
       "output": {
         ".html": {
@@ -31025,6 +31053,76 @@
     },
     {
       "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Common.HttpRepresentationHeaderMode.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Common.HttpRepresentationHeaderMode.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Common.HttpRepresentationHeaderMode",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Common.HttpRepresentationHeaderMode.yml\" sourcestartlinenumber=\"1\">Selects the validator and range unit comparison rules for representation headers.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Common.HttpRepresentationHeaders.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Common.HttpRepresentationHeaders.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Common.HttpRepresentationHeaders",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Common.HttpRepresentationHeaders.yml\" sourcestartlinenumber=\"1\">Evaluates request conditions and a single byte range against an already selected representation.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Common.HttpRepresentationPreconditionOutcome.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Common.HttpRepresentationPreconditionOutcome.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Common.HttpRepresentationPreconditionOutcome",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Common.HttpRepresentationPreconditionOutcome.yml\" sourcestartlinenumber=\"1\">Describes the conditional-request decision for a selected representation.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Common.HttpRepresentationRangeKind.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Common.HttpRepresentationRangeKind.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Common.HttpRepresentationRangeKind",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Common.HttpRepresentationRangeKind.yml\" sourcestartlinenumber=\"1\">Describes whether a single byte range can select content from a representation.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Common.HttpRepresentationRangeSelection.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Common.HttpRepresentationRangeSelection.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Common.HttpRepresentationRangeSelection",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Common.HttpRepresentationRangeSelection.yml\" sourcestartlinenumber=\"1\">Contains the result of selecting a single range without reading representation content.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
       "source_relative_path": "obj/api/BridgingIT.DevKit.Common.HttpRequestProfilingMetadata.yml",
       "output": {
         ".html": {
@@ -36202,6 +36300,20 @@
       "IsMRef": true,
       "Title": "BridgingIT.DevKit.Common.PatchOptionsBuilder<TOptions, TSelf>",
       "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Common.PatchOptionsBuilder-2.yml\" sourcestartlinenumber=\"1\">Records explicitly assigned option properties without assigning values for omitted properties.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Common.PathGlobMatcher.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Common.PathGlobMatcher.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Common.PathGlobMatcher",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Common.PathGlobMatcher.yml\" sourcestartlinenumber=\"1\">Matches complete slash-delimited paths against anchored globs with bounded matching state.</p>\n"
     },
     {
       "type": "ManagedReference",
@@ -42221,7 +42333,7 @@
       "Uid": null,
       "IsMRef": true,
       "Title": "BridgingIT.DevKit.Common.TimeSpanExtensions",
-      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Common.TimeSpanExtensions.yml\" sourcestartlinenumber=\"1\">Provides timeout-token creation, duration comparison, unit construction, truncation, and flexible clock-text parsing.</p>\n"
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Common.TimeSpanExtensions.yml\" sourcestartlinenumber=\"1\">Provides timeout-token creation, duration comparison, unit construction, truncation, and parsing.</p>\n"
     },
     {
       "type": "ManagedReference",
@@ -58759,6 +58871,20 @@
     },
     {
       "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Presentation.ConsoleCommandDurationAttribute.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Presentation.ConsoleCommandDurationAttribute.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Presentation.ConsoleCommandDurationAttribute",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Presentation.ConsoleCommandDurationAttribute.yml\" sourcestartlinenumber=\"1\">Enables friendly invariant duration parsing for a TimeSpan option or argument.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
       "source_relative_path": "obj/api/BridgingIT.DevKit.Presentation.ConsoleCommandExecutionResult.yml",
       "output": {
         ".html": {
@@ -60505,7 +60631,7 @@
       "Uid": null,
       "IsMRef": true,
       "Title": "BridgingIT.DevKit.Presentation.RequestProfilingPathMatcher",
-      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Presentation.RequestProfilingPathMatcher.yml\" sourcestartlinenumber=\"1\">Matches anchored path globs with bounded state and no regular-expression backtracking.</p>\n"
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Presentation.RequestProfilingPathMatcher.yml\" sourcestartlinenumber=\"1\">Matches request path exclusions and produces canonical keys for Request Profiling.</p>\n"
     },
     {
       "type": "ManagedReference",

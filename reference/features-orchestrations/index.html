@@ -7264,6 +7264,7 @@
 <li>in-process timer watchers for low-latency same-process wakeups</li>
 <li>an internal background recovery worker that sweeps due timers and repairs incomplete waiting boundaries after restarts or mid-boundary failures</li>
 </ul>
+<p>Use <code>StartupDelayInvariant("500ms")</code> in the registration callback to accept friendly duration text. Invalid text throws <code>ArgumentException</code> before changing the startup delay. <a href="../common-extensions/#parse-durations">Parse durations</a></p>
 <h2 id="authoring-model">Authoring model<a class="headerlink" href="#authoring-model" title="Permanent link">&para;</a></h2>
 <p>An orchestration is a class derived from <code>Orchestration&lt;TData&gt;</code>.</p>
 <p>Inside <code>Define(...)</code>, you describe one durable state machine. Each state can combine:</p>

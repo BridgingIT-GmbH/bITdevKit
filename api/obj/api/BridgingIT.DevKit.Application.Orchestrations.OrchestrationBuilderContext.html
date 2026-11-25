@@ -117,6 +117,9 @@ Class OrchestrationBuilderContext
 
 
 
+  <h2 id="BridgingIT_DevKit_Application_Orchestrations_OrchestrationBuilderContext_examples">Examples</h2>
+  <pre><code class="lang-csharp">new OrchestrationBuilderContext(services).StartupDelayInvariant("1.5m");</code></pre>
+
 
 
 
@@ -607,6 +610,54 @@ Class OrchestrationBuilderContext
 
 
 
+
+
+
+  <a id="BridgingIT_DevKit_Application_Orchestrations_OrchestrationBuilderContext_StartupDelayInvariant_" data-uid="BridgingIT.DevKit.Application.Orchestrations.OrchestrationBuilderContext.StartupDelayInvariant*"></a>
+
+  <h3 id="BridgingIT_DevKit_Application_Orchestrations_OrchestrationBuilderContext_StartupDelayInvariant_System_String_" data-uid="BridgingIT.DevKit.Application.Orchestrations.OrchestrationBuilderContext.StartupDelayInvariant(System.String)">
+  StartupDelayInvariant(string)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Sets the recovery startup delay from invariant TimeSpan text or a duration such as <code>500ms</code>.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public OrchestrationBuilderContext StartupDelayInvariant(string value)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>value</code> <span class="xref">string</span></dt>
+    <dd><p>The duration text.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="BridgingIT.DevKit.Application.Orchestrations.OrchestrationBuilderContext.html">OrchestrationBuilderContext</a></dt>
+    <dd><p>The current builder context.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Application_Orchestrations_OrchestrationBuilderContext_StartupDelayInvariant_System_String__examples">Examples</h4>
+  <pre><code class="lang-csharp">context.StartupDelayInvariant("1.5m");</code></pre>
+
+
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><span class="xref">ArgumentException</span></dt>
+    <dd><p>The value is not a supported invariant duration.</p>
+</dd>
+  </dl>
 
 
 

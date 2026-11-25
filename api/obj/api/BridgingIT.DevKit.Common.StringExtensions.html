@@ -169,6 +169,60 @@ Class StringExtensions
 
 
 
+  <a id="BridgingIT_DevKit_Common_StringExtensions_TruncateUtf8_" data-uid="BridgingIT.DevKit.Common.StringExtensions.TruncateUtf8*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_StringExtensions_TruncateUtf8_System_String_System_Int32_" data-uid="BridgingIT.DevKit.Common.StringExtensions.TruncateUtf8(System.String,System.Int32)">
+  TruncateUtf8(string, int)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Returns the longest prefix that fits within a UTF-8 byte limit without splitting a Unicode scalar.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static string TruncateUtf8(this string source, int maximumBytes)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>source</code> <span class="xref">string</span></dt>
+    <dd><p>The text to truncate.</p>
+</dd>
+    <dt><code>maximumBytes</code> <span class="xref">int</span></dt>
+    <dd><p>The maximum number of UTF-8 bytes.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">string</span></dt>
+    <dd><p>The original text if it fits, including null or empty input. Otherwise, the prefix that fits without an added marker.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Common_StringExtensions_TruncateUtf8_System_String_System_Int32__examples">Examples</h4>
+  <pre><code class="lang-csharp">var label = "Café 😀".TruncateUtf8(8); // "Café "</code></pre>
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Common_StringExtensions_TruncateUtf8_System_String_System_Int32__remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>UTF-8 byte counting treats unpaired surrogates as U+FFFD. When truncation is needed, any retained unpaired surrogate is returned as U+FFFD.</p>
+</div>
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><span class="xref">ArgumentOutOfRangeException</span></dt>
+    <dd><p><code class="paramref">maximumBytes</code> is negative.</p>
+</dd>
+  </dl>
+
+
+
 
 </article>
 

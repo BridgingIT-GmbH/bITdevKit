@@ -122854,6 +122854,21 @@ references:
   commentId: Overload:BridgingIT.DevKit.Application.Orchestrations.OrchestrationBuilderContext.StartupDelay
   fullName: BridgingIT.DevKit.Application.Orchestrations.OrchestrationBuilderContext.StartupDelay
   nameWithType: OrchestrationBuilderContext.StartupDelay
+- uid: BridgingIT.DevKit.Application.Orchestrations.OrchestrationBuilderContext.StartupDelayInvariant(System.String)
+  name: StartupDelayInvariant(string)
+  href: obj/api/BridgingIT.DevKit.Application.Orchestrations.OrchestrationBuilderContext.html#BridgingIT_DevKit_Application_Orchestrations_OrchestrationBuilderContext_StartupDelayInvariant_System_String_
+  commentId: M:BridgingIT.DevKit.Application.Orchestrations.OrchestrationBuilderContext.StartupDelayInvariant(System.String)
+  name.vb: StartupDelayInvariant(String)
+  fullName: BridgingIT.DevKit.Application.Orchestrations.OrchestrationBuilderContext.StartupDelayInvariant(string)
+  fullName.vb: BridgingIT.DevKit.Application.Orchestrations.OrchestrationBuilderContext.StartupDelayInvariant(String)
+  nameWithType: OrchestrationBuilderContext.StartupDelayInvariant(string)
+  nameWithType.vb: OrchestrationBuilderContext.StartupDelayInvariant(String)
+- uid: BridgingIT.DevKit.Application.Orchestrations.OrchestrationBuilderContext.StartupDelayInvariant*
+  name: StartupDelayInvariant
+  href: obj/api/BridgingIT.DevKit.Application.Orchestrations.OrchestrationBuilderContext.html#BridgingIT_DevKit_Application_Orchestrations_OrchestrationBuilderContext_StartupDelayInvariant_
+  commentId: Overload:BridgingIT.DevKit.Application.Orchestrations.OrchestrationBuilderContext.StartupDelayInvariant
+  fullName: BridgingIT.DevKit.Application.Orchestrations.OrchestrationBuilderContext.StartupDelayInvariant
+  nameWithType: OrchestrationBuilderContext.StartupDelayInvariant
 - uid: BridgingIT.DevKit.Application.Orchestrations.OrchestrationCompensationDefinition`1
   name: OrchestrationCompensationDefinition<TData>
   href: obj/api/BridgingIT.DevKit.Application.Orchestrations.OrchestrationCompensationDefinition-1.html
@@ -138048,6 +138063,21 @@ references:
   commentId: Overload:BridgingIT.DevKit.Application.Queueing.QueueingOptionsBuilder.StartupDelay
   fullName: BridgingIT.DevKit.Application.Queueing.QueueingOptionsBuilder.StartupDelay
   nameWithType: QueueingOptionsBuilder.StartupDelay
+- uid: BridgingIT.DevKit.Application.Queueing.QueueingOptionsBuilder.StartupDelayInvariant(System.String)
+  name: StartupDelayInvariant(string)
+  href: obj/api/BridgingIT.DevKit.Application.Queueing.QueueingOptionsBuilder.html#BridgingIT_DevKit_Application_Queueing_QueueingOptionsBuilder_StartupDelayInvariant_System_String_
+  commentId: M:BridgingIT.DevKit.Application.Queueing.QueueingOptionsBuilder.StartupDelayInvariant(System.String)
+  name.vb: StartupDelayInvariant(String)
+  fullName: BridgingIT.DevKit.Application.Queueing.QueueingOptionsBuilder.StartupDelayInvariant(string)
+  fullName.vb: BridgingIT.DevKit.Application.Queueing.QueueingOptionsBuilder.StartupDelayInvariant(String)
+  nameWithType: QueueingOptionsBuilder.StartupDelayInvariant(string)
+  nameWithType.vb: QueueingOptionsBuilder.StartupDelayInvariant(String)
+- uid: BridgingIT.DevKit.Application.Queueing.QueueingOptionsBuilder.StartupDelayInvariant*
+  name: StartupDelayInvariant
+  href: obj/api/BridgingIT.DevKit.Application.Queueing.QueueingOptionsBuilder.html#BridgingIT_DevKit_Application_Queueing_QueueingOptionsBuilder_StartupDelayInvariant_
+  commentId: Overload:BridgingIT.DevKit.Application.Queueing.QueueingOptionsBuilder.StartupDelayInvariant
+  fullName: BridgingIT.DevKit.Application.Queueing.QueueingOptionsBuilder.StartupDelayInvariant
+  nameWithType: QueueingOptionsBuilder.StartupDelayInvariant
 - uid: BridgingIT.DevKit.Application.Queueing.QueueingRegistrationStore
   name: QueueingRegistrationStore
   href: obj/api/BridgingIT.DevKit.Application.Queueing.QueueingRegistrationStore.html
@@ -188408,6 +188438,106 @@ references:
   fullName.vb: BridgingIT.DevKit.Common.AsyncItemRule(Of T).SetItem
   nameWithType: AsyncItemRule<T>.SetItem
   nameWithType.vb: AsyncItemRule(Of T).SetItem
+- uid: BridgingIT.DevKit.Common.AsyncKeyedLock`1
+  name: AsyncKeyedLock<TKey>
+  href: obj/api/BridgingIT.DevKit.Common.AsyncKeyedLock-1.html
+  commentId: T:BridgingIT.DevKit.Common.AsyncKeyedLock`1
+  name.vb: AsyncKeyedLock(Of TKey)
+  fullName: BridgingIT.DevKit.Common.AsyncKeyedLock<TKey>
+  fullName.vb: BridgingIT.DevKit.Common.AsyncKeyedLock(Of TKey)
+  nameWithType: AsyncKeyedLock<TKey>
+  nameWithType.vb: AsyncKeyedLock(Of TKey)
+- uid: BridgingIT.DevKit.Common.AsyncKeyedLock`1.#ctor(System.Collections.Generic.IEqualityComparer{`0})
+  name: AsyncKeyedLock(IEqualityComparer<TKey>)
+  href: obj/api/BridgingIT.DevKit.Common.AsyncKeyedLock-1.html#BridgingIT_DevKit_Common_AsyncKeyedLock_1__ctor_System_Collections_Generic_IEqualityComparer__0__
+  commentId: M:BridgingIT.DevKit.Common.AsyncKeyedLock`1.#ctor(System.Collections.Generic.IEqualityComparer{`0})
+  name.vb: New(IEqualityComparer(Of TKey))
+  fullName: BridgingIT.DevKit.Common.AsyncKeyedLock<TKey>.AsyncKeyedLock(System.Collections.Generic.IEqualityComparer<TKey>)
+  fullName.vb: BridgingIT.DevKit.Common.AsyncKeyedLock(Of TKey).New(System.Collections.Generic.IEqualityComparer(Of TKey))
+  nameWithType: AsyncKeyedLock<TKey>.AsyncKeyedLock(IEqualityComparer<TKey>)
+  nameWithType.vb: AsyncKeyedLock(Of TKey).New(IEqualityComparer(Of TKey))
+- uid: BridgingIT.DevKit.Common.AsyncKeyedLock`1.#ctor*
+  name: AsyncKeyedLock
+  href: obj/api/BridgingIT.DevKit.Common.AsyncKeyedLock-1.html#BridgingIT_DevKit_Common_AsyncKeyedLock_1__ctor_
+  commentId: Overload:BridgingIT.DevKit.Common.AsyncKeyedLock`1.#ctor
+  name.vb: New
+  fullName: BridgingIT.DevKit.Common.AsyncKeyedLock<TKey>.AsyncKeyedLock
+  fullName.vb: BridgingIT.DevKit.Common.AsyncKeyedLock(Of TKey).New
+  nameWithType: AsyncKeyedLock<TKey>.AsyncKeyedLock
+  nameWithType.vb: AsyncKeyedLock(Of TKey).New
+- uid: BridgingIT.DevKit.Common.AsyncKeyedLock`1.Dispose
+  name: Dispose()
+  href: obj/api/BridgingIT.DevKit.Common.AsyncKeyedLock-1.html#BridgingIT_DevKit_Common_AsyncKeyedLock_1_Dispose
+  commentId: M:BridgingIT.DevKit.Common.AsyncKeyedLock`1.Dispose
+  fullName: BridgingIT.DevKit.Common.AsyncKeyedLock<TKey>.Dispose()
+  fullName.vb: BridgingIT.DevKit.Common.AsyncKeyedLock(Of TKey).Dispose()
+  nameWithType: AsyncKeyedLock<TKey>.Dispose()
+  nameWithType.vb: AsyncKeyedLock(Of TKey).Dispose()
+- uid: BridgingIT.DevKit.Common.AsyncKeyedLock`1.Dispose*
+  name: Dispose
+  href: obj/api/BridgingIT.DevKit.Common.AsyncKeyedLock-1.html#BridgingIT_DevKit_Common_AsyncKeyedLock_1_Dispose_
+  commentId: Overload:BridgingIT.DevKit.Common.AsyncKeyedLock`1.Dispose
+  fullName: BridgingIT.DevKit.Common.AsyncKeyedLock<TKey>.Dispose
+  fullName.vb: BridgingIT.DevKit.Common.AsyncKeyedLock(Of TKey).Dispose
+  nameWithType: AsyncKeyedLock<TKey>.Dispose
+  nameWithType.vb: AsyncKeyedLock(Of TKey).Dispose
+- uid: BridgingIT.DevKit.Common.AsyncKeyedLock`1.ILease
+  name: AsyncKeyedLock<TKey>.ILease
+  href: obj/api/BridgingIT.DevKit.Common.AsyncKeyedLock-1.ILease.html
+  commentId: T:BridgingIT.DevKit.Common.AsyncKeyedLock`1.ILease
+  name.vb: AsyncKeyedLock(Of TKey).ILease
+  fullName: BridgingIT.DevKit.Common.AsyncKeyedLock<TKey>.ILease
+  fullName.vb: BridgingIT.DevKit.Common.AsyncKeyedLock(Of TKey).ILease
+  nameWithType: AsyncKeyedLock<TKey>.ILease
+  nameWithType.vb: AsyncKeyedLock(Of TKey).ILease
+- uid: BridgingIT.DevKit.Common.AsyncKeyedLock`1.ILease.TryAcquireAsync(System.TimeSpan,System.Threading.CancellationToken)
+  name: TryAcquireAsync(TimeSpan, CancellationToken)
+  href: obj/api/BridgingIT.DevKit.Common.AsyncKeyedLock-1.ILease.html#BridgingIT_DevKit_Common_AsyncKeyedLock_1_ILease_TryAcquireAsync_System_TimeSpan_System_Threading_CancellationToken_
+  commentId: M:BridgingIT.DevKit.Common.AsyncKeyedLock`1.ILease.TryAcquireAsync(System.TimeSpan,System.Threading.CancellationToken)
+  fullName: BridgingIT.DevKit.Common.AsyncKeyedLock<TKey>.ILease.TryAcquireAsync(System.TimeSpan, System.Threading.CancellationToken)
+  fullName.vb: BridgingIT.DevKit.Common.AsyncKeyedLock(Of TKey).ILease.TryAcquireAsync(System.TimeSpan, System.Threading.CancellationToken)
+  nameWithType: AsyncKeyedLock<TKey>.ILease.TryAcquireAsync(TimeSpan, CancellationToken)
+  nameWithType.vb: AsyncKeyedLock(Of TKey).ILease.TryAcquireAsync(TimeSpan, CancellationToken)
+- uid: BridgingIT.DevKit.Common.AsyncKeyedLock`1.ILease.TryAcquireAsync*
+  name: TryAcquireAsync
+  href: obj/api/BridgingIT.DevKit.Common.AsyncKeyedLock-1.ILease.html#BridgingIT_DevKit_Common_AsyncKeyedLock_1_ILease_TryAcquireAsync_
+  commentId: Overload:BridgingIT.DevKit.Common.AsyncKeyedLock`1.ILease.TryAcquireAsync
+  fullName: BridgingIT.DevKit.Common.AsyncKeyedLock<TKey>.ILease.TryAcquireAsync
+  fullName.vb: BridgingIT.DevKit.Common.AsyncKeyedLock(Of TKey).ILease.TryAcquireAsync
+  nameWithType: AsyncKeyedLock<TKey>.ILease.TryAcquireAsync
+  nameWithType.vb: AsyncKeyedLock(Of TKey).ILease.TryAcquireAsync
+- uid: BridgingIT.DevKit.Common.AsyncKeyedLock`1.Rent(`0)
+  name: Rent(TKey)
+  href: obj/api/BridgingIT.DevKit.Common.AsyncKeyedLock-1.html#BridgingIT_DevKit_Common_AsyncKeyedLock_1_Rent__0_
+  commentId: M:BridgingIT.DevKit.Common.AsyncKeyedLock`1.Rent(`0)
+  fullName: BridgingIT.DevKit.Common.AsyncKeyedLock<TKey>.Rent(TKey)
+  fullName.vb: BridgingIT.DevKit.Common.AsyncKeyedLock(Of TKey).Rent(TKey)
+  nameWithType: AsyncKeyedLock<TKey>.Rent(TKey)
+  nameWithType.vb: AsyncKeyedLock(Of TKey).Rent(TKey)
+- uid: BridgingIT.DevKit.Common.AsyncKeyedLock`1.Rent*
+  name: Rent
+  href: obj/api/BridgingIT.DevKit.Common.AsyncKeyedLock-1.html#BridgingIT_DevKit_Common_AsyncKeyedLock_1_Rent_
+  commentId: Overload:BridgingIT.DevKit.Common.AsyncKeyedLock`1.Rent
+  fullName: BridgingIT.DevKit.Common.AsyncKeyedLock<TKey>.Rent
+  fullName.vb: BridgingIT.DevKit.Common.AsyncKeyedLock(Of TKey).Rent
+  nameWithType: AsyncKeyedLock<TKey>.Rent
+  nameWithType.vb: AsyncKeyedLock(Of TKey).Rent
+- uid: BridgingIT.DevKit.Common.AsyncKeyedLock`1.TryAcquireAsync(`0,System.TimeSpan,System.Threading.CancellationToken)
+  name: TryAcquireAsync(TKey, TimeSpan, CancellationToken)
+  href: obj/api/BridgingIT.DevKit.Common.AsyncKeyedLock-1.html#BridgingIT_DevKit_Common_AsyncKeyedLock_1_TryAcquireAsync__0_System_TimeSpan_System_Threading_CancellationToken_
+  commentId: M:BridgingIT.DevKit.Common.AsyncKeyedLock`1.TryAcquireAsync(`0,System.TimeSpan,System.Threading.CancellationToken)
+  fullName: BridgingIT.DevKit.Common.AsyncKeyedLock<TKey>.TryAcquireAsync(TKey, System.TimeSpan, System.Threading.CancellationToken)
+  fullName.vb: BridgingIT.DevKit.Common.AsyncKeyedLock(Of TKey).TryAcquireAsync(TKey, System.TimeSpan, System.Threading.CancellationToken)
+  nameWithType: AsyncKeyedLock<TKey>.TryAcquireAsync(TKey, TimeSpan, CancellationToken)
+  nameWithType.vb: AsyncKeyedLock(Of TKey).TryAcquireAsync(TKey, TimeSpan, CancellationToken)
+- uid: BridgingIT.DevKit.Common.AsyncKeyedLock`1.TryAcquireAsync*
+  name: TryAcquireAsync
+  href: obj/api/BridgingIT.DevKit.Common.AsyncKeyedLock-1.html#BridgingIT_DevKit_Common_AsyncKeyedLock_1_TryAcquireAsync_
+  commentId: Overload:BridgingIT.DevKit.Common.AsyncKeyedLock`1.TryAcquireAsync
+  fullName: BridgingIT.DevKit.Common.AsyncKeyedLock<TKey>.TryAcquireAsync
+  fullName.vb: BridgingIT.DevKit.Common.AsyncKeyedLock(Of TKey).TryAcquireAsync
+  nameWithType: AsyncKeyedLock<TKey>.TryAcquireAsync
+  nameWithType.vb: AsyncKeyedLock(Of TKey).TryAcquireAsync
 - uid: BridgingIT.DevKit.Common.AsyncPipelineStep
   name: AsyncPipelineStep
   href: obj/api/BridgingIT.DevKit.Common.AsyncPipelineStep.html
@@ -230372,6 +230502,321 @@ references:
   commentId: Overload:BridgingIT.DevKit.Common.HttpError.Url
   fullName: BridgingIT.DevKit.Common.HttpError.Url
   nameWithType: HttpError.Url
+- uid: BridgingIT.DevKit.Common.HttpRepresentationHeaderMode
+  name: HttpRepresentationHeaderMode
+  href: obj/api/BridgingIT.DevKit.Common.HttpRepresentationHeaderMode.html
+  commentId: T:BridgingIT.DevKit.Common.HttpRepresentationHeaderMode
+  fullName: BridgingIT.DevKit.Common.HttpRepresentationHeaderMode
+  nameWithType: HttpRepresentationHeaderMode
+- uid: BridgingIT.DevKit.Common.HttpRepresentationHeaderMode.LegacyPresentation
+  name: LegacyPresentation
+  href: obj/api/BridgingIT.DevKit.Common.HttpRepresentationHeaderMode.html#BridgingIT_DevKit_Common_HttpRepresentationHeaderMode_LegacyPresentation
+  commentId: F:BridgingIT.DevKit.Common.HttpRepresentationHeaderMode.LegacyPresentation
+  fullName: BridgingIT.DevKit.Common.HttpRepresentationHeaderMode.LegacyPresentation
+  nameWithType: HttpRepresentationHeaderMode.LegacyPresentation
+- uid: BridgingIT.DevKit.Common.HttpRepresentationHeaderMode.Strict
+  name: Strict
+  href: obj/api/BridgingIT.DevKit.Common.HttpRepresentationHeaderMode.html#BridgingIT_DevKit_Common_HttpRepresentationHeaderMode_Strict
+  commentId: F:BridgingIT.DevKit.Common.HttpRepresentationHeaderMode.Strict
+  fullName: BridgingIT.DevKit.Common.HttpRepresentationHeaderMode.Strict
+  nameWithType: HttpRepresentationHeaderMode.Strict
+- uid: BridgingIT.DevKit.Common.HttpRepresentationHeaders
+  name: HttpRepresentationHeaders
+  href: obj/api/BridgingIT.DevKit.Common.HttpRepresentationHeaders.html
+  commentId: T:BridgingIT.DevKit.Common.HttpRepresentationHeaders
+  fullName: BridgingIT.DevKit.Common.HttpRepresentationHeaders
+  nameWithType: HttpRepresentationHeaders
+- uid: BridgingIT.DevKit.Common.HttpRepresentationHeaders.Evaluate(Microsoft.AspNetCore.Http.HttpRequest,System.Boolean,System.String,System.DateTimeOffset,System.Boolean)
+  name: Evaluate(HttpRequest, bool, string, DateTimeOffset, bool)
+  href: obj/api/BridgingIT.DevKit.Common.HttpRepresentationHeaders.html#BridgingIT_DevKit_Common_HttpRepresentationHeaders_Evaluate_Microsoft_AspNetCore_Http_HttpRequest_System_Boolean_System_String_System_DateTimeOffset_System_Boolean_
+  commentId: M:BridgingIT.DevKit.Common.HttpRepresentationHeaders.Evaluate(Microsoft.AspNetCore.Http.HttpRequest,System.Boolean,System.String,System.DateTimeOffset,System.Boolean)
+  name.vb: Evaluate(HttpRequest, Boolean, String, DateTimeOffset, Boolean)
+  fullName: BridgingIT.DevKit.Common.HttpRepresentationHeaders.Evaluate(Microsoft.AspNetCore.Http.HttpRequest, bool, string, System.DateTimeOffset, bool)
+  fullName.vb: BridgingIT.DevKit.Common.HttpRepresentationHeaders.Evaluate(Microsoft.AspNetCore.Http.HttpRequest, Boolean, String, System.DateTimeOffset, Boolean)
+  nameWithType: HttpRepresentationHeaders.Evaluate(HttpRequest, bool, string, DateTimeOffset, bool)
+  nameWithType.vb: HttpRepresentationHeaders.Evaluate(HttpRequest, Boolean, String, DateTimeOffset, Boolean)
+- uid: BridgingIT.DevKit.Common.HttpRepresentationHeaders.Evaluate(Microsoft.AspNetCore.Http.HttpRequest,System.Boolean,System.String,System.DateTimeOffset,System.Boolean,BridgingIT.DevKit.Common.HttpRepresentationHeaderMode)
+  name: Evaluate(HttpRequest, bool, string, DateTimeOffset, bool, HttpRepresentationHeaderMode)
+  href: obj/api/BridgingIT.DevKit.Common.HttpRepresentationHeaders.html#BridgingIT_DevKit_Common_HttpRepresentationHeaders_Evaluate_Microsoft_AspNetCore_Http_HttpRequest_System_Boolean_System_String_System_DateTimeOffset_System_Boolean_BridgingIT_DevKit_Common_HttpRepresentationHeaderMode_
+  commentId: M:BridgingIT.DevKit.Common.HttpRepresentationHeaders.Evaluate(Microsoft.AspNetCore.Http.HttpRequest,System.Boolean,System.String,System.DateTimeOffset,System.Boolean,BridgingIT.DevKit.Common.HttpRepresentationHeaderMode)
+  name.vb: Evaluate(HttpRequest, Boolean, String, DateTimeOffset, Boolean, HttpRepresentationHeaderMode)
+  fullName: BridgingIT.DevKit.Common.HttpRepresentationHeaders.Evaluate(Microsoft.AspNetCore.Http.HttpRequest, bool, string, System.DateTimeOffset, bool, BridgingIT.DevKit.Common.HttpRepresentationHeaderMode)
+  fullName.vb: BridgingIT.DevKit.Common.HttpRepresentationHeaders.Evaluate(Microsoft.AspNetCore.Http.HttpRequest, Boolean, String, System.DateTimeOffset, Boolean, BridgingIT.DevKit.Common.HttpRepresentationHeaderMode)
+  nameWithType: HttpRepresentationHeaders.Evaluate(HttpRequest, bool, string, DateTimeOffset, bool, HttpRepresentationHeaderMode)
+  nameWithType.vb: HttpRepresentationHeaders.Evaluate(HttpRequest, Boolean, String, DateTimeOffset, Boolean, HttpRepresentationHeaderMode)
+- uid: BridgingIT.DevKit.Common.HttpRepresentationHeaders.Evaluate*
+  name: Evaluate
+  href: obj/api/BridgingIT.DevKit.Common.HttpRepresentationHeaders.html#BridgingIT_DevKit_Common_HttpRepresentationHeaders_Evaluate_
+  commentId: Overload:BridgingIT.DevKit.Common.HttpRepresentationHeaders.Evaluate
+  fullName: BridgingIT.DevKit.Common.HttpRepresentationHeaders.Evaluate
+  nameWithType: HttpRepresentationHeaders.Evaluate
+- uid: BridgingIT.DevKit.Common.HttpRepresentationHeaders.MatchesEntityTag(System.String,System.String,System.Boolean)
+  name: MatchesEntityTag(string, string, bool)
+  href: obj/api/BridgingIT.DevKit.Common.HttpRepresentationHeaders.html#BridgingIT_DevKit_Common_HttpRepresentationHeaders_MatchesEntityTag_System_String_System_String_System_Boolean_
+  commentId: M:BridgingIT.DevKit.Common.HttpRepresentationHeaders.MatchesEntityTag(System.String,System.String,System.Boolean)
+  name.vb: MatchesEntityTag(String, String, Boolean)
+  fullName: BridgingIT.DevKit.Common.HttpRepresentationHeaders.MatchesEntityTag(string, string, bool)
+  fullName.vb: BridgingIT.DevKit.Common.HttpRepresentationHeaders.MatchesEntityTag(String, String, Boolean)
+  nameWithType: HttpRepresentationHeaders.MatchesEntityTag(string, string, bool)
+  nameWithType.vb: HttpRepresentationHeaders.MatchesEntityTag(String, String, Boolean)
+- uid: BridgingIT.DevKit.Common.HttpRepresentationHeaders.MatchesEntityTag(System.String,System.String,System.Boolean,BridgingIT.DevKit.Common.HttpRepresentationHeaderMode)
+  name: MatchesEntityTag(string, string, bool, HttpRepresentationHeaderMode)
+  href: obj/api/BridgingIT.DevKit.Common.HttpRepresentationHeaders.html#BridgingIT_DevKit_Common_HttpRepresentationHeaders_MatchesEntityTag_System_String_System_String_System_Boolean_BridgingIT_DevKit_Common_HttpRepresentationHeaderMode_
+  commentId: M:BridgingIT.DevKit.Common.HttpRepresentationHeaders.MatchesEntityTag(System.String,System.String,System.Boolean,BridgingIT.DevKit.Common.HttpRepresentationHeaderMode)
+  name.vb: MatchesEntityTag(String, String, Boolean, HttpRepresentationHeaderMode)
+  fullName: BridgingIT.DevKit.Common.HttpRepresentationHeaders.MatchesEntityTag(string, string, bool, BridgingIT.DevKit.Common.HttpRepresentationHeaderMode)
+  fullName.vb: BridgingIT.DevKit.Common.HttpRepresentationHeaders.MatchesEntityTag(String, String, Boolean, BridgingIT.DevKit.Common.HttpRepresentationHeaderMode)
+  nameWithType: HttpRepresentationHeaders.MatchesEntityTag(string, string, bool, HttpRepresentationHeaderMode)
+  nameWithType.vb: HttpRepresentationHeaders.MatchesEntityTag(String, String, Boolean, HttpRepresentationHeaderMode)
+- uid: BridgingIT.DevKit.Common.HttpRepresentationHeaders.MatchesEntityTag*
+  name: MatchesEntityTag
+  href: obj/api/BridgingIT.DevKit.Common.HttpRepresentationHeaders.html#BridgingIT_DevKit_Common_HttpRepresentationHeaders_MatchesEntityTag_
+  commentId: Overload:BridgingIT.DevKit.Common.HttpRepresentationHeaders.MatchesEntityTag
+  fullName: BridgingIT.DevKit.Common.HttpRepresentationHeaders.MatchesEntityTag
+  nameWithType: HttpRepresentationHeaders.MatchesEntityTag
+- uid: BridgingIT.DevKit.Common.HttpRepresentationHeaders.SelectRange(Microsoft.AspNetCore.Http.HttpRequest,System.Int64,System.String,System.DateTimeOffset)
+  name: SelectRange(HttpRequest, long, string, DateTimeOffset)
+  href: obj/api/BridgingIT.DevKit.Common.HttpRepresentationHeaders.html#BridgingIT_DevKit_Common_HttpRepresentationHeaders_SelectRange_Microsoft_AspNetCore_Http_HttpRequest_System_Int64_System_String_System_DateTimeOffset_
+  commentId: M:BridgingIT.DevKit.Common.HttpRepresentationHeaders.SelectRange(Microsoft.AspNetCore.Http.HttpRequest,System.Int64,System.String,System.DateTimeOffset)
+  name.vb: SelectRange(HttpRequest, Long, String, DateTimeOffset)
+  fullName: BridgingIT.DevKit.Common.HttpRepresentationHeaders.SelectRange(Microsoft.AspNetCore.Http.HttpRequest, long, string, System.DateTimeOffset)
+  fullName.vb: BridgingIT.DevKit.Common.HttpRepresentationHeaders.SelectRange(Microsoft.AspNetCore.Http.HttpRequest, Long, String, System.DateTimeOffset)
+  nameWithType: HttpRepresentationHeaders.SelectRange(HttpRequest, long, string, DateTimeOffset)
+  nameWithType.vb: HttpRepresentationHeaders.SelectRange(HttpRequest, Long, String, DateTimeOffset)
+- uid: BridgingIT.DevKit.Common.HttpRepresentationHeaders.SelectRange(Microsoft.AspNetCore.Http.HttpRequest,System.Int64,System.String,System.DateTimeOffset,BridgingIT.DevKit.Common.HttpRepresentationHeaderMode)
+  name: SelectRange(HttpRequest, long, string, DateTimeOffset, HttpRepresentationHeaderMode)
+  href: obj/api/BridgingIT.DevKit.Common.HttpRepresentationHeaders.html#BridgingIT_DevKit_Common_HttpRepresentationHeaders_SelectRange_Microsoft_AspNetCore_Http_HttpRequest_System_Int64_System_String_System_DateTimeOffset_BridgingIT_DevKit_Common_HttpRepresentationHeaderMode_
+  commentId: M:BridgingIT.DevKit.Common.HttpRepresentationHeaders.SelectRange(Microsoft.AspNetCore.Http.HttpRequest,System.Int64,System.String,System.DateTimeOffset,BridgingIT.DevKit.Common.HttpRepresentationHeaderMode)
+  name.vb: SelectRange(HttpRequest, Long, String, DateTimeOffset, HttpRepresentationHeaderMode)
+  fullName: BridgingIT.DevKit.Common.HttpRepresentationHeaders.SelectRange(Microsoft.AspNetCore.Http.HttpRequest, long, string, System.DateTimeOffset, BridgingIT.DevKit.Common.HttpRepresentationHeaderMode)
+  fullName.vb: BridgingIT.DevKit.Common.HttpRepresentationHeaders.SelectRange(Microsoft.AspNetCore.Http.HttpRequest, Long, String, System.DateTimeOffset, BridgingIT.DevKit.Common.HttpRepresentationHeaderMode)
+  nameWithType: HttpRepresentationHeaders.SelectRange(HttpRequest, long, string, DateTimeOffset, HttpRepresentationHeaderMode)
+  nameWithType.vb: HttpRepresentationHeaders.SelectRange(HttpRequest, Long, String, DateTimeOffset, HttpRepresentationHeaderMode)
+- uid: BridgingIT.DevKit.Common.HttpRepresentationHeaders.SelectRange(Microsoft.AspNetCore.Http.HttpRequest,System.Int64,System.String,System.DateTimeOffset,BridgingIT.DevKit.Common.HttpRepresentationHeaderMode,System.Boolean)
+  name: SelectRange(HttpRequest, long, string, DateTimeOffset, HttpRepresentationHeaderMode, bool)
+  href: obj/api/BridgingIT.DevKit.Common.HttpRepresentationHeaders.html#BridgingIT_DevKit_Common_HttpRepresentationHeaders_SelectRange_Microsoft_AspNetCore_Http_HttpRequest_System_Int64_System_String_System_DateTimeOffset_BridgingIT_DevKit_Common_HttpRepresentationHeaderMode_System_Boolean_
+  commentId: M:BridgingIT.DevKit.Common.HttpRepresentationHeaders.SelectRange(Microsoft.AspNetCore.Http.HttpRequest,System.Int64,System.String,System.DateTimeOffset,BridgingIT.DevKit.Common.HttpRepresentationHeaderMode,System.Boolean)
+  name.vb: SelectRange(HttpRequest, Long, String, DateTimeOffset, HttpRepresentationHeaderMode, Boolean)
+  fullName: BridgingIT.DevKit.Common.HttpRepresentationHeaders.SelectRange(Microsoft.AspNetCore.Http.HttpRequest, long, string, System.DateTimeOffset, BridgingIT.DevKit.Common.HttpRepresentationHeaderMode, bool)
+  fullName.vb: BridgingIT.DevKit.Common.HttpRepresentationHeaders.SelectRange(Microsoft.AspNetCore.Http.HttpRequest, Long, String, System.DateTimeOffset, BridgingIT.DevKit.Common.HttpRepresentationHeaderMode, Boolean)
+  nameWithType: HttpRepresentationHeaders.SelectRange(HttpRequest, long, string, DateTimeOffset, HttpRepresentationHeaderMode, bool)
+  nameWithType.vb: HttpRepresentationHeaders.SelectRange(HttpRequest, Long, String, DateTimeOffset, HttpRepresentationHeaderMode, Boolean)
+- uid: BridgingIT.DevKit.Common.HttpRepresentationHeaders.SelectRange*
+  name: SelectRange
+  href: obj/api/BridgingIT.DevKit.Common.HttpRepresentationHeaders.html#BridgingIT_DevKit_Common_HttpRepresentationHeaders_SelectRange_
+  commentId: Overload:BridgingIT.DevKit.Common.HttpRepresentationHeaders.SelectRange
+  fullName: BridgingIT.DevKit.Common.HttpRepresentationHeaders.SelectRange
+  nameWithType: HttpRepresentationHeaders.SelectRange
+- uid: BridgingIT.DevKit.Common.HttpRepresentationPreconditionOutcome
+  name: HttpRepresentationPreconditionOutcome
+  href: obj/api/BridgingIT.DevKit.Common.HttpRepresentationPreconditionOutcome.html
+  commentId: T:BridgingIT.DevKit.Common.HttpRepresentationPreconditionOutcome
+  fullName: BridgingIT.DevKit.Common.HttpRepresentationPreconditionOutcome
+  nameWithType: HttpRepresentationPreconditionOutcome
+- uid: BridgingIT.DevKit.Common.HttpRepresentationPreconditionOutcome.Failed
+  name: Failed
+  href: obj/api/BridgingIT.DevKit.Common.HttpRepresentationPreconditionOutcome.html#BridgingIT_DevKit_Common_HttpRepresentationPreconditionOutcome_Failed
+  commentId: F:BridgingIT.DevKit.Common.HttpRepresentationPreconditionOutcome.Failed
+  fullName: BridgingIT.DevKit.Common.HttpRepresentationPreconditionOutcome.Failed
+  nameWithType: HttpRepresentationPreconditionOutcome.Failed
+- uid: BridgingIT.DevKit.Common.HttpRepresentationPreconditionOutcome.NotModified
+  name: NotModified
+  href: obj/api/BridgingIT.DevKit.Common.HttpRepresentationPreconditionOutcome.html#BridgingIT_DevKit_Common_HttpRepresentationPreconditionOutcome_NotModified
+  commentId: F:BridgingIT.DevKit.Common.HttpRepresentationPreconditionOutcome.NotModified
+  fullName: BridgingIT.DevKit.Common.HttpRepresentationPreconditionOutcome.NotModified
+  nameWithType: HttpRepresentationPreconditionOutcome.NotModified
+- uid: BridgingIT.DevKit.Common.HttpRepresentationPreconditionOutcome.Proceed
+  name: Proceed
+  href: obj/api/BridgingIT.DevKit.Common.HttpRepresentationPreconditionOutcome.html#BridgingIT_DevKit_Common_HttpRepresentationPreconditionOutcome_Proceed
+  commentId: F:BridgingIT.DevKit.Common.HttpRepresentationPreconditionOutcome.Proceed
+  fullName: BridgingIT.DevKit.Common.HttpRepresentationPreconditionOutcome.Proceed
+  nameWithType: HttpRepresentationPreconditionOutcome.Proceed
+- uid: BridgingIT.DevKit.Common.HttpRepresentationRangeKind
+  name: HttpRepresentationRangeKind
+  href: obj/api/BridgingIT.DevKit.Common.HttpRepresentationRangeKind.html
+  commentId: T:BridgingIT.DevKit.Common.HttpRepresentationRangeKind
+  fullName: BridgingIT.DevKit.Common.HttpRepresentationRangeKind
+  nameWithType: HttpRepresentationRangeKind
+- uid: BridgingIT.DevKit.Common.HttpRepresentationRangeKind.Full
+  name: Full
+  href: obj/api/BridgingIT.DevKit.Common.HttpRepresentationRangeKind.html#BridgingIT_DevKit_Common_HttpRepresentationRangeKind_Full
+  commentId: F:BridgingIT.DevKit.Common.HttpRepresentationRangeKind.Full
+  fullName: BridgingIT.DevKit.Common.HttpRepresentationRangeKind.Full
+  nameWithType: HttpRepresentationRangeKind.Full
+- uid: BridgingIT.DevKit.Common.HttpRepresentationRangeKind.Partial
+  name: Partial
+  href: obj/api/BridgingIT.DevKit.Common.HttpRepresentationRangeKind.html#BridgingIT_DevKit_Common_HttpRepresentationRangeKind_Partial
+  commentId: F:BridgingIT.DevKit.Common.HttpRepresentationRangeKind.Partial
+  fullName: BridgingIT.DevKit.Common.HttpRepresentationRangeKind.Partial
+  nameWithType: HttpRepresentationRangeKind.Partial
+- uid: BridgingIT.DevKit.Common.HttpRepresentationRangeKind.Unsatisfiable
+  name: Unsatisfiable
+  href: obj/api/BridgingIT.DevKit.Common.HttpRepresentationRangeKind.html#BridgingIT_DevKit_Common_HttpRepresentationRangeKind_Unsatisfiable
+  commentId: F:BridgingIT.DevKit.Common.HttpRepresentationRangeKind.Unsatisfiable
+  fullName: BridgingIT.DevKit.Common.HttpRepresentationRangeKind.Unsatisfiable
+  nameWithType: HttpRepresentationRangeKind.Unsatisfiable
+- uid: BridgingIT.DevKit.Common.HttpRepresentationRangeKind.Unsupported
+  name: Unsupported
+  href: obj/api/BridgingIT.DevKit.Common.HttpRepresentationRangeKind.html#BridgingIT_DevKit_Common_HttpRepresentationRangeKind_Unsupported
+  commentId: F:BridgingIT.DevKit.Common.HttpRepresentationRangeKind.Unsupported
+  fullName: BridgingIT.DevKit.Common.HttpRepresentationRangeKind.Unsupported
+  nameWithType: HttpRepresentationRangeKind.Unsupported
+- uid: BridgingIT.DevKit.Common.HttpRepresentationRangeSelection
+  name: HttpRepresentationRangeSelection
+  href: obj/api/BridgingIT.DevKit.Common.HttpRepresentationRangeSelection.html
+  commentId: T:BridgingIT.DevKit.Common.HttpRepresentationRangeSelection
+  fullName: BridgingIT.DevKit.Common.HttpRepresentationRangeSelection
+  nameWithType: HttpRepresentationRangeSelection
+- uid: BridgingIT.DevKit.Common.HttpRepresentationRangeSelection.#ctor(BridgingIT.DevKit.Common.HttpRepresentationRangeKind,System.Int64,System.Nullable{System.Int64})
+  name: HttpRepresentationRangeSelection(HttpRepresentationRangeKind, long, long?)
+  href: obj/api/BridgingIT.DevKit.Common.HttpRepresentationRangeSelection.html#BridgingIT_DevKit_Common_HttpRepresentationRangeSelection__ctor_BridgingIT_DevKit_Common_HttpRepresentationRangeKind_System_Int64_System_Nullable_System_Int64__
+  commentId: M:BridgingIT.DevKit.Common.HttpRepresentationRangeSelection.#ctor(BridgingIT.DevKit.Common.HttpRepresentationRangeKind,System.Int64,System.Nullable{System.Int64})
+  name.vb: New(HttpRepresentationRangeKind, Long, Long?)
+  fullName: BridgingIT.DevKit.Common.HttpRepresentationRangeSelection.HttpRepresentationRangeSelection(BridgingIT.DevKit.Common.HttpRepresentationRangeKind, long, long?)
+  fullName.vb: BridgingIT.DevKit.Common.HttpRepresentationRangeSelection.New(BridgingIT.DevKit.Common.HttpRepresentationRangeKind, Long, Long?)
+  nameWithType: HttpRepresentationRangeSelection.HttpRepresentationRangeSelection(HttpRepresentationRangeKind, long, long?)
+  nameWithType.vb: HttpRepresentationRangeSelection.New(HttpRepresentationRangeKind, Long, Long?)
+- uid: BridgingIT.DevKit.Common.HttpRepresentationRangeSelection.#ctor*
+  name: HttpRepresentationRangeSelection
+  href: obj/api/BridgingIT.DevKit.Common.HttpRepresentationRangeSelection.html#BridgingIT_DevKit_Common_HttpRepresentationRangeSelection__ctor_
+  commentId: Overload:BridgingIT.DevKit.Common.HttpRepresentationRangeSelection.#ctor
+  name.vb: New
+  fullName: BridgingIT.DevKit.Common.HttpRepresentationRangeSelection.HttpRepresentationRangeSelection
+  fullName.vb: BridgingIT.DevKit.Common.HttpRepresentationRangeSelection.New
+  nameWithType: HttpRepresentationRangeSelection.HttpRepresentationRangeSelection
+  nameWithType.vb: HttpRepresentationRangeSelection.New
+- uid: BridgingIT.DevKit.Common.HttpRepresentationRangeSelection.Deconstruct(BridgingIT.DevKit.Common.HttpRepresentationRangeKind@,System.Int64@,System.Nullable{System.Int64}@)
+  name: Deconstruct(out HttpRepresentationRangeKind, out long, out long?)
+  href: obj/api/BridgingIT.DevKit.Common.HttpRepresentationRangeSelection.html#BridgingIT_DevKit_Common_HttpRepresentationRangeSelection_Deconstruct_BridgingIT_DevKit_Common_HttpRepresentationRangeKind__System_Int64__System_Nullable_System_Int64___
+  commentId: M:BridgingIT.DevKit.Common.HttpRepresentationRangeSelection.Deconstruct(BridgingIT.DevKit.Common.HttpRepresentationRangeKind@,System.Int64@,System.Nullable{System.Int64}@)
+  name.vb: Deconstruct(HttpRepresentationRangeKind, Long, Long?)
+  fullName: BridgingIT.DevKit.Common.HttpRepresentationRangeSelection.Deconstruct(out BridgingIT.DevKit.Common.HttpRepresentationRangeKind, out long, out long?)
+  fullName.vb: BridgingIT.DevKit.Common.HttpRepresentationRangeSelection.Deconstruct(BridgingIT.DevKit.Common.HttpRepresentationRangeKind, Long, Long?)
+  nameWithType: HttpRepresentationRangeSelection.Deconstruct(out HttpRepresentationRangeKind, out long, out long?)
+  nameWithType.vb: HttpRepresentationRangeSelection.Deconstruct(HttpRepresentationRangeKind, Long, Long?)
+- uid: BridgingIT.DevKit.Common.HttpRepresentationRangeSelection.Deconstruct*
+  name: Deconstruct
+  href: obj/api/BridgingIT.DevKit.Common.HttpRepresentationRangeSelection.html#BridgingIT_DevKit_Common_HttpRepresentationRangeSelection_Deconstruct_
+  commentId: Overload:BridgingIT.DevKit.Common.HttpRepresentationRangeSelection.Deconstruct
+  fullName: BridgingIT.DevKit.Common.HttpRepresentationRangeSelection.Deconstruct
+  nameWithType: HttpRepresentationRangeSelection.Deconstruct
+- uid: BridgingIT.DevKit.Common.HttpRepresentationRangeSelection.Equals(BridgingIT.DevKit.Common.HttpRepresentationRangeSelection)
+  name: Equals(HttpRepresentationRangeSelection)
+  href: obj/api/BridgingIT.DevKit.Common.HttpRepresentationRangeSelection.html#BridgingIT_DevKit_Common_HttpRepresentationRangeSelection_Equals_BridgingIT_DevKit_Common_HttpRepresentationRangeSelection_
+  commentId: M:BridgingIT.DevKit.Common.HttpRepresentationRangeSelection.Equals(BridgingIT.DevKit.Common.HttpRepresentationRangeSelection)
+  fullName: BridgingIT.DevKit.Common.HttpRepresentationRangeSelection.Equals(BridgingIT.DevKit.Common.HttpRepresentationRangeSelection)
+  nameWithType: HttpRepresentationRangeSelection.Equals(HttpRepresentationRangeSelection)
+- uid: BridgingIT.DevKit.Common.HttpRepresentationRangeSelection.Equals(System.Object)
+  name: Equals(object)
+  href: obj/api/BridgingIT.DevKit.Common.HttpRepresentationRangeSelection.html#BridgingIT_DevKit_Common_HttpRepresentationRangeSelection_Equals_System_Object_
+  commentId: M:BridgingIT.DevKit.Common.HttpRepresentationRangeSelection.Equals(System.Object)
+  name.vb: Equals(Object)
+  fullName: BridgingIT.DevKit.Common.HttpRepresentationRangeSelection.Equals(object)
+  fullName.vb: BridgingIT.DevKit.Common.HttpRepresentationRangeSelection.Equals(Object)
+  nameWithType: HttpRepresentationRangeSelection.Equals(object)
+  nameWithType.vb: HttpRepresentationRangeSelection.Equals(Object)
+- uid: BridgingIT.DevKit.Common.HttpRepresentationRangeSelection.Equals*
+  name: Equals
+  href: obj/api/BridgingIT.DevKit.Common.HttpRepresentationRangeSelection.html#BridgingIT_DevKit_Common_HttpRepresentationRangeSelection_Equals_
+  commentId: Overload:BridgingIT.DevKit.Common.HttpRepresentationRangeSelection.Equals
+  fullName: BridgingIT.DevKit.Common.HttpRepresentationRangeSelection.Equals
+  nameWithType: HttpRepresentationRangeSelection.Equals
+- uid: BridgingIT.DevKit.Common.HttpRepresentationRangeSelection.GetHashCode
+  name: GetHashCode()
+  href: obj/api/BridgingIT.DevKit.Common.HttpRepresentationRangeSelection.html#BridgingIT_DevKit_Common_HttpRepresentationRangeSelection_GetHashCode
+  commentId: M:BridgingIT.DevKit.Common.HttpRepresentationRangeSelection.GetHashCode
+  fullName: BridgingIT.DevKit.Common.HttpRepresentationRangeSelection.GetHashCode()
+  nameWithType: HttpRepresentationRangeSelection.GetHashCode()
+- uid: BridgingIT.DevKit.Common.HttpRepresentationRangeSelection.GetHashCode*
+  name: GetHashCode
+  href: obj/api/BridgingIT.DevKit.Common.HttpRepresentationRangeSelection.html#BridgingIT_DevKit_Common_HttpRepresentationRangeSelection_GetHashCode_
+  commentId: Overload:BridgingIT.DevKit.Common.HttpRepresentationRangeSelection.GetHashCode
+  fullName: BridgingIT.DevKit.Common.HttpRepresentationRangeSelection.GetHashCode
+  nameWithType: HttpRepresentationRangeSelection.GetHashCode
+- uid: BridgingIT.DevKit.Common.HttpRepresentationRangeSelection.Length
+  name: Length
+  href: obj/api/BridgingIT.DevKit.Common.HttpRepresentationRangeSelection.html#BridgingIT_DevKit_Common_HttpRepresentationRangeSelection_Length
+  commentId: P:BridgingIT.DevKit.Common.HttpRepresentationRangeSelection.Length
+  fullName: BridgingIT.DevKit.Common.HttpRepresentationRangeSelection.Length
+  nameWithType: HttpRepresentationRangeSelection.Length
+- uid: BridgingIT.DevKit.Common.HttpRepresentationRangeSelection.Length*
+  name: Length
+  href: obj/api/BridgingIT.DevKit.Common.HttpRepresentationRangeSelection.html#BridgingIT_DevKit_Common_HttpRepresentationRangeSelection_Length_
+  commentId: Overload:BridgingIT.DevKit.Common.HttpRepresentationRangeSelection.Length
+  fullName: BridgingIT.DevKit.Common.HttpRepresentationRangeSelection.Length
+  nameWithType: HttpRepresentationRangeSelection.Length
+- uid: BridgingIT.DevKit.Common.HttpRepresentationRangeSelection.Offset
+  name: Offset
+  href: obj/api/BridgingIT.DevKit.Common.HttpRepresentationRangeSelection.html#BridgingIT_DevKit_Common_HttpRepresentationRangeSelection_Offset
+  commentId: P:BridgingIT.DevKit.Common.HttpRepresentationRangeSelection.Offset
+  fullName: BridgingIT.DevKit.Common.HttpRepresentationRangeSelection.Offset
+  nameWithType: HttpRepresentationRangeSelection.Offset
+- uid: BridgingIT.DevKit.Common.HttpRepresentationRangeSelection.Offset*
+  name: Offset
+  href: obj/api/BridgingIT.DevKit.Common.HttpRepresentationRangeSelection.html#BridgingIT_DevKit_Common_HttpRepresentationRangeSelection_Offset_
+  commentId: Overload:BridgingIT.DevKit.Common.HttpRepresentationRangeSelection.Offset
+  fullName: BridgingIT.DevKit.Common.HttpRepresentationRangeSelection.Offset
+  nameWithType: HttpRepresentationRangeSelection.Offset
+- uid: BridgingIT.DevKit.Common.HttpRepresentationRangeSelection.Outcome
+  name: Outcome
+  href: obj/api/BridgingIT.DevKit.Common.HttpRepresentationRangeSelection.html#BridgingIT_DevKit_Common_HttpRepresentationRangeSelection_Outcome
+  commentId: P:BridgingIT.DevKit.Common.HttpRepresentationRangeSelection.Outcome
+  fullName: BridgingIT.DevKit.Common.HttpRepresentationRangeSelection.Outcome
+  nameWithType: HttpRepresentationRangeSelection.Outcome
+- uid: BridgingIT.DevKit.Common.HttpRepresentationRangeSelection.Outcome*
+  name: Outcome
+  href: obj/api/BridgingIT.DevKit.Common.HttpRepresentationRangeSelection.html#BridgingIT_DevKit_Common_HttpRepresentationRangeSelection_Outcome_
+  commentId: Overload:BridgingIT.DevKit.Common.HttpRepresentationRangeSelection.Outcome
+  fullName: BridgingIT.DevKit.Common.HttpRepresentationRangeSelection.Outcome
+  nameWithType: HttpRepresentationRangeSelection.Outcome
+- uid: BridgingIT.DevKit.Common.HttpRepresentationRangeSelection.ToString
+  name: ToString()
+  href: obj/api/BridgingIT.DevKit.Common.HttpRepresentationRangeSelection.html#BridgingIT_DevKit_Common_HttpRepresentationRangeSelection_ToString
+  commentId: M:BridgingIT.DevKit.Common.HttpRepresentationRangeSelection.ToString
+  fullName: BridgingIT.DevKit.Common.HttpRepresentationRangeSelection.ToString()
+  nameWithType: HttpRepresentationRangeSelection.ToString()
+- uid: BridgingIT.DevKit.Common.HttpRepresentationRangeSelection.ToString*
+  name: ToString
+  href: obj/api/BridgingIT.DevKit.Common.HttpRepresentationRangeSelection.html#BridgingIT_DevKit_Common_HttpRepresentationRangeSelection_ToString_
+  commentId: Overload:BridgingIT.DevKit.Common.HttpRepresentationRangeSelection.ToString
+  fullName: BridgingIT.DevKit.Common.HttpRepresentationRangeSelection.ToString
+  nameWithType: HttpRepresentationRangeSelection.ToString
+- uid: BridgingIT.DevKit.Common.HttpRepresentationRangeSelection.op_Equality(BridgingIT.DevKit.Common.HttpRepresentationRangeSelection,BridgingIT.DevKit.Common.HttpRepresentationRangeSelection)
+  name: operator ==(HttpRepresentationRangeSelection, HttpRepresentationRangeSelection)
+  href: obj/api/BridgingIT.DevKit.Common.HttpRepresentationRangeSelection.html#BridgingIT_DevKit_Common_HttpRepresentationRangeSelection_op_Equality_BridgingIT_DevKit_Common_HttpRepresentationRangeSelection_BridgingIT_DevKit_Common_HttpRepresentationRangeSelection_
+  commentId: M:BridgingIT.DevKit.Common.HttpRepresentationRangeSelection.op_Equality(BridgingIT.DevKit.Common.HttpRepresentationRangeSelection,BridgingIT.DevKit.Common.HttpRepresentationRangeSelection)
+  name.vb: =(HttpRepresentationRangeSelection, HttpRepresentationRangeSelection)
+  fullName: BridgingIT.DevKit.Common.HttpRepresentationRangeSelection.operator ==(BridgingIT.DevKit.Common.HttpRepresentationRangeSelection, BridgingIT.DevKit.Common.HttpRepresentationRangeSelection)
+  fullName.vb: BridgingIT.DevKit.Common.HttpRepresentationRangeSelection.=(BridgingIT.DevKit.Common.HttpRepresentationRangeSelection, BridgingIT.DevKit.Common.HttpRepresentationRangeSelection)
+  nameWithType: HttpRepresentationRangeSelection.operator ==(HttpRepresentationRangeSelection, HttpRepresentationRangeSelection)
+  nameWithType.vb: HttpRepresentationRangeSelection.=(HttpRepresentationRangeSelection, HttpRepresentationRangeSelection)
+- uid: BridgingIT.DevKit.Common.HttpRepresentationRangeSelection.op_Equality*
+  name: operator ==
+  href: obj/api/BridgingIT.DevKit.Common.HttpRepresentationRangeSelection.html#BridgingIT_DevKit_Common_HttpRepresentationRangeSelection_op_Equality_
+  commentId: Overload:BridgingIT.DevKit.Common.HttpRepresentationRangeSelection.op_Equality
+  name.vb: =
+  fullName: BridgingIT.DevKit.Common.HttpRepresentationRangeSelection.operator ==
+  fullName.vb: BridgingIT.DevKit.Common.HttpRepresentationRangeSelection.=
+  nameWithType: HttpRepresentationRangeSelection.operator ==
+  nameWithType.vb: HttpRepresentationRangeSelection.=
+- uid: BridgingIT.DevKit.Common.HttpRepresentationRangeSelection.op_Inequality(BridgingIT.DevKit.Common.HttpRepresentationRangeSelection,BridgingIT.DevKit.Common.HttpRepresentationRangeSelection)
+  name: operator !=(HttpRepresentationRangeSelection, HttpRepresentationRangeSelection)
+  href: obj/api/BridgingIT.DevKit.Common.HttpRepresentationRangeSelection.html#BridgingIT_DevKit_Common_HttpRepresentationRangeSelection_op_Inequality_BridgingIT_DevKit_Common_HttpRepresentationRangeSelection_BridgingIT_DevKit_Common_HttpRepresentationRangeSelection_
+  commentId: M:BridgingIT.DevKit.Common.HttpRepresentationRangeSelection.op_Inequality(BridgingIT.DevKit.Common.HttpRepresentationRangeSelection,BridgingIT.DevKit.Common.HttpRepresentationRangeSelection)
+  name.vb: <>(HttpRepresentationRangeSelection, HttpRepresentationRangeSelection)
+  fullName: BridgingIT.DevKit.Common.HttpRepresentationRangeSelection.operator !=(BridgingIT.DevKit.Common.HttpRepresentationRangeSelection, BridgingIT.DevKit.Common.HttpRepresentationRangeSelection)
+  fullName.vb: BridgingIT.DevKit.Common.HttpRepresentationRangeSelection.<>(BridgingIT.DevKit.Common.HttpRepresentationRangeSelection, BridgingIT.DevKit.Common.HttpRepresentationRangeSelection)
+  nameWithType: HttpRepresentationRangeSelection.operator !=(HttpRepresentationRangeSelection, HttpRepresentationRangeSelection)
+  nameWithType.vb: HttpRepresentationRangeSelection.<>(HttpRepresentationRangeSelection, HttpRepresentationRangeSelection)
+- uid: BridgingIT.DevKit.Common.HttpRepresentationRangeSelection.op_Inequality*
+  name: operator !=
+  href: obj/api/BridgingIT.DevKit.Common.HttpRepresentationRangeSelection.html#BridgingIT_DevKit_Common_HttpRepresentationRangeSelection_op_Inequality_
+  commentId: Overload:BridgingIT.DevKit.Common.HttpRepresentationRangeSelection.op_Inequality
+  name.vb: <>
+  fullName: BridgingIT.DevKit.Common.HttpRepresentationRangeSelection.operator !=
+  fullName.vb: BridgingIT.DevKit.Common.HttpRepresentationRangeSelection.<>
+  nameWithType: HttpRepresentationRangeSelection.operator !=
+  nameWithType.vb: HttpRepresentationRangeSelection.<>
 - uid: BridgingIT.DevKit.Common.HttpRequestProfilingMetadata
   name: HttpRequestProfilingMetadata
   href: obj/api/BridgingIT.DevKit.Common.HttpRequestProfilingMetadata.html
@@ -258416,6 +258861,45 @@ references:
   fullName.vb: BridgingIT.DevKit.Common.PatchOptionsBuilder(Of TOptions, TSelf).With(Of TValue)(System.Linq.Expressions.Expression(Of System.Func(Of TOptions, TValue)), TValue)
   nameWithType: PatchOptionsBuilder<TOptions, TSelf>.With<TValue>(Expression<Func<TOptions, TValue>>, TValue)
   nameWithType.vb: PatchOptionsBuilder(Of TOptions, TSelf).With(Of TValue)(Expression(Of Func(Of TOptions, TValue)), TValue)
+- uid: BridgingIT.DevKit.Common.PathGlobMatcher
+  name: PathGlobMatcher
+  href: obj/api/BridgingIT.DevKit.Common.PathGlobMatcher.html
+  commentId: T:BridgingIT.DevKit.Common.PathGlobMatcher
+  fullName: BridgingIT.DevKit.Common.PathGlobMatcher
+  nameWithType: PathGlobMatcher
+- uid: BridgingIT.DevKit.Common.PathGlobMatcher.#ctor(System.Collections.Generic.IReadOnlyList{System.String})
+  name: PathGlobMatcher(IReadOnlyList<string>)
+  href: obj/api/BridgingIT.DevKit.Common.PathGlobMatcher.html#BridgingIT_DevKit_Common_PathGlobMatcher__ctor_System_Collections_Generic_IReadOnlyList_System_String__
+  commentId: M:BridgingIT.DevKit.Common.PathGlobMatcher.#ctor(System.Collections.Generic.IReadOnlyList{System.String})
+  name.vb: New(IReadOnlyList(Of String))
+  fullName: BridgingIT.DevKit.Common.PathGlobMatcher.PathGlobMatcher(System.Collections.Generic.IReadOnlyList<string>)
+  fullName.vb: BridgingIT.DevKit.Common.PathGlobMatcher.New(System.Collections.Generic.IReadOnlyList(Of String))
+  nameWithType: PathGlobMatcher.PathGlobMatcher(IReadOnlyList<string>)
+  nameWithType.vb: PathGlobMatcher.New(IReadOnlyList(Of String))
+- uid: BridgingIT.DevKit.Common.PathGlobMatcher.#ctor*
+  name: PathGlobMatcher
+  href: obj/api/BridgingIT.DevKit.Common.PathGlobMatcher.html#BridgingIT_DevKit_Common_PathGlobMatcher__ctor_
+  commentId: Overload:BridgingIT.DevKit.Common.PathGlobMatcher.#ctor
+  name.vb: New
+  fullName: BridgingIT.DevKit.Common.PathGlobMatcher.PathGlobMatcher
+  fullName.vb: BridgingIT.DevKit.Common.PathGlobMatcher.New
+  nameWithType: PathGlobMatcher.PathGlobMatcher
+  nameWithType.vb: PathGlobMatcher.New
+- uid: BridgingIT.DevKit.Common.PathGlobMatcher.IsMatch(System.String)
+  name: IsMatch(string)
+  href: obj/api/BridgingIT.DevKit.Common.PathGlobMatcher.html#BridgingIT_DevKit_Common_PathGlobMatcher_IsMatch_System_String_
+  commentId: M:BridgingIT.DevKit.Common.PathGlobMatcher.IsMatch(System.String)
+  name.vb: IsMatch(String)
+  fullName: BridgingIT.DevKit.Common.PathGlobMatcher.IsMatch(string)
+  fullName.vb: BridgingIT.DevKit.Common.PathGlobMatcher.IsMatch(String)
+  nameWithType: PathGlobMatcher.IsMatch(string)
+  nameWithType.vb: PathGlobMatcher.IsMatch(String)
+- uid: BridgingIT.DevKit.Common.PathGlobMatcher.IsMatch*
+  name: IsMatch
+  href: obj/api/BridgingIT.DevKit.Common.PathGlobMatcher.html#BridgingIT_DevKit_Common_PathGlobMatcher_IsMatch_
+  commentId: Overload:BridgingIT.DevKit.Common.PathGlobMatcher.IsMatch
+  fullName: BridgingIT.DevKit.Common.PathGlobMatcher.IsMatch
+  nameWithType: PathGlobMatcher.IsMatch
 - uid: BridgingIT.DevKit.Common.PatternRule
   name: PatternRule
   href: obj/api/BridgingIT.DevKit.Common.PatternRule.html
@@ -301541,6 +302025,21 @@ references:
   commentId: Overload:BridgingIT.DevKit.Common.ScalarPropertyBagJson.Parse
   fullName: BridgingIT.DevKit.Common.ScalarPropertyBagJson.Parse
   nameWithType: ScalarPropertyBagJson.Parse
+- uid: BridgingIT.DevKit.Common.ScalarPropertyBagJson.ParseElement(System.Text.Json.JsonElement,System.Boolean)
+  name: ParseElement(JsonElement, bool)
+  href: obj/api/BridgingIT.DevKit.Common.ScalarPropertyBagJson.html#BridgingIT_DevKit_Common_ScalarPropertyBagJson_ParseElement_System_Text_Json_JsonElement_System_Boolean_
+  commentId: M:BridgingIT.DevKit.Common.ScalarPropertyBagJson.ParseElement(System.Text.Json.JsonElement,System.Boolean)
+  name.vb: ParseElement(JsonElement, Boolean)
+  fullName: BridgingIT.DevKit.Common.ScalarPropertyBagJson.ParseElement(System.Text.Json.JsonElement, bool)
+  fullName.vb: BridgingIT.DevKit.Common.ScalarPropertyBagJson.ParseElement(System.Text.Json.JsonElement, Boolean)
+  nameWithType: ScalarPropertyBagJson.ParseElement(JsonElement, bool)
+  nameWithType.vb: ScalarPropertyBagJson.ParseElement(JsonElement, Boolean)
+- uid: BridgingIT.DevKit.Common.ScalarPropertyBagJson.ParseElement*
+  name: ParseElement
+  href: obj/api/BridgingIT.DevKit.Common.ScalarPropertyBagJson.html#BridgingIT_DevKit_Common_ScalarPropertyBagJson_ParseElement_
+  commentId: Overload:BridgingIT.DevKit.Common.ScalarPropertyBagJson.ParseElement
+  fullName: BridgingIT.DevKit.Common.ScalarPropertyBagJson.ParseElement
+  nameWithType: ScalarPropertyBagJson.ParseElement
 - uid: BridgingIT.DevKit.Common.SecurityError
   name: SecurityError
   href: obj/api/BridgingIT.DevKit.Common.SecurityError.html
@@ -304078,6 +304577,21 @@ references:
   commentId: Overload:BridgingIT.DevKit.Common.StringExtensions.Distinct
   fullName: BridgingIT.DevKit.Common.StringExtensions.Distinct
   nameWithType: StringExtensions.Distinct
+- uid: BridgingIT.DevKit.Common.StringExtensions.TruncateUtf8(System.String,System.Int32)
+  name: TruncateUtf8(string, int)
+  href: obj/api/BridgingIT.DevKit.Common.StringExtensions.html#BridgingIT_DevKit_Common_StringExtensions_TruncateUtf8_System_String_System_Int32_
+  commentId: M:BridgingIT.DevKit.Common.StringExtensions.TruncateUtf8(System.String,System.Int32)
+  name.vb: TruncateUtf8(String, Integer)
+  fullName: BridgingIT.DevKit.Common.StringExtensions.TruncateUtf8(string, int)
+  fullName.vb: BridgingIT.DevKit.Common.StringExtensions.TruncateUtf8(String, Integer)
+  nameWithType: StringExtensions.TruncateUtf8(string, int)
+  nameWithType.vb: StringExtensions.TruncateUtf8(String, Integer)
+- uid: BridgingIT.DevKit.Common.StringExtensions.TruncateUtf8*
+  name: TruncateUtf8
+  href: obj/api/BridgingIT.DevKit.Common.StringExtensions.html#BridgingIT_DevKit_Common_StringExtensions_TruncateUtf8_
+  commentId: Overload:BridgingIT.DevKit.Common.StringExtensions.TruncateUtf8
+  fullName: BridgingIT.DevKit.Common.StringExtensions.TruncateUtf8
+  nameWithType: StringExtensions.TruncateUtf8
 - uid: BridgingIT.DevKit.Common.StringLengthRule
   name: StringLengthRule
   href: obj/api/BridgingIT.DevKit.Common.StringLengthRule.html
@@ -306531,6 +307045,21 @@ references:
   commentId: Overload:BridgingIT.DevKit.Common.TimeSpanExtensions.TruncateToSeconds
   fullName: BridgingIT.DevKit.Common.TimeSpanExtensions.TruncateToSeconds
   nameWithType: TimeSpanExtensions.TruncateToSeconds
+- uid: BridgingIT.DevKit.Common.TimeSpanExtensions.TryParseDuration(System.String,System.TimeSpan@)
+  name: TryParseDuration(string, out TimeSpan)
+  href: obj/api/BridgingIT.DevKit.Common.TimeSpanExtensions.html#BridgingIT_DevKit_Common_TimeSpanExtensions_TryParseDuration_System_String_System_TimeSpan__
+  commentId: M:BridgingIT.DevKit.Common.TimeSpanExtensions.TryParseDuration(System.String,System.TimeSpan@)
+  name.vb: TryParseDuration(String, TimeSpan)
+  fullName: BridgingIT.DevKit.Common.TimeSpanExtensions.TryParseDuration(string, out System.TimeSpan)
+  fullName.vb: BridgingIT.DevKit.Common.TimeSpanExtensions.TryParseDuration(String, System.TimeSpan)
+  nameWithType: TimeSpanExtensions.TryParseDuration(string, out TimeSpan)
+  nameWithType.vb: TimeSpanExtensions.TryParseDuration(String, TimeSpan)
+- uid: BridgingIT.DevKit.Common.TimeSpanExtensions.TryParseDuration*
+  name: TryParseDuration
+  href: obj/api/BridgingIT.DevKit.Common.TimeSpanExtensions.html#BridgingIT_DevKit_Common_TimeSpanExtensions_TryParseDuration_
+  commentId: Overload:BridgingIT.DevKit.Common.TimeSpanExtensions.TryParseDuration
+  fullName: BridgingIT.DevKit.Common.TimeSpanExtensions.TryParseDuration
+  nameWithType: TimeSpanExtensions.TryParseDuration
 - uid: BridgingIT.DevKit.Common.TimeSpanExtensions.TryParseTime(System.String,System.TimeSpan@)
   name: TryParseTime(string, out TimeSpan)
   href: obj/api/BridgingIT.DevKit.Common.TimeSpanExtensions.html#BridgingIT_DevKit_Common_TimeSpanExtensions_TryParseTime_System_String_System_TimeSpan__
@@ -433210,6 +433739,30 @@ references:
   commentId: Overload:BridgingIT.DevKit.Presentation.ConsoleCommandBinder.WriteHelp
   fullName: BridgingIT.DevKit.Presentation.ConsoleCommandBinder.WriteHelp
   nameWithType: ConsoleCommandBinder.WriteHelp
+- uid: BridgingIT.DevKit.Presentation.ConsoleCommandDurationAttribute
+  name: ConsoleCommandDurationAttribute
+  href: obj/api/BridgingIT.DevKit.Presentation.ConsoleCommandDurationAttribute.html
+  commentId: T:BridgingIT.DevKit.Presentation.ConsoleCommandDurationAttribute
+  fullName: BridgingIT.DevKit.Presentation.ConsoleCommandDurationAttribute
+  nameWithType: ConsoleCommandDurationAttribute
+- uid: BridgingIT.DevKit.Presentation.ConsoleCommandDurationAttribute.#ctor
+  name: ConsoleCommandDurationAttribute()
+  href: obj/api/BridgingIT.DevKit.Presentation.ConsoleCommandDurationAttribute.html#BridgingIT_DevKit_Presentation_ConsoleCommandDurationAttribute__ctor
+  commentId: M:BridgingIT.DevKit.Presentation.ConsoleCommandDurationAttribute.#ctor
+  name.vb: New()
+  fullName: BridgingIT.DevKit.Presentation.ConsoleCommandDurationAttribute.ConsoleCommandDurationAttribute()
+  fullName.vb: BridgingIT.DevKit.Presentation.ConsoleCommandDurationAttribute.New()
+  nameWithType: ConsoleCommandDurationAttribute.ConsoleCommandDurationAttribute()
+  nameWithType.vb: ConsoleCommandDurationAttribute.New()
+- uid: BridgingIT.DevKit.Presentation.ConsoleCommandDurationAttribute.#ctor*
+  name: ConsoleCommandDurationAttribute
+  href: obj/api/BridgingIT.DevKit.Presentation.ConsoleCommandDurationAttribute.html#BridgingIT_DevKit_Presentation_ConsoleCommandDurationAttribute__ctor_
+  commentId: Overload:BridgingIT.DevKit.Presentation.ConsoleCommandDurationAttribute.#ctor
+  name.vb: New
+  fullName: BridgingIT.DevKit.Presentation.ConsoleCommandDurationAttribute.ConsoleCommandDurationAttribute
+  fullName.vb: BridgingIT.DevKit.Presentation.ConsoleCommandDurationAttribute.New
+  nameWithType: ConsoleCommandDurationAttribute.ConsoleCommandDurationAttribute
+  nameWithType.vb: ConsoleCommandDurationAttribute.New
 - uid: BridgingIT.DevKit.Presentation.ConsoleCommandExecutionResult
   name: ConsoleCommandExecutionResult
   href: obj/api/BridgingIT.DevKit.Presentation.ConsoleCommandExecutionResult.html

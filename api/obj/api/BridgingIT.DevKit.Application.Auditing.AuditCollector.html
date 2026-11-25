@@ -965,7 +965,7 @@ Class AuditCollector
   
   </h3>
 
-  <div class="markdown level1 summary"><p>Truncates display text on complete UTF-8 rune boundaries.</p>
+  <div class="markdown level1 summary"><p>Truncates audit display text on complete UTF-8 rune boundaries.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -976,15 +976,18 @@ Class AuditCollector
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>value</code> <span class="xref">string</span></dt>
-    <dd></dd>
+    <dd><p>The display text to truncate.</p>
+</dd>
     <dt><code>maxBytes</code> <span class="xref">int</span></dt>
-    <dd></dd>
+    <dd><p>The byte limit. A negative limit returns an empty string for non-null input.</p>
+</dd>
   </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><span class="xref">string</span></dt>
-    <dd></dd>
+    <dd><p>The display text truncated to the byte limit, or null if <code class="paramref">value</code> is null.</p>
+</dd>
   </dl>
 
 
@@ -998,6 +1001,12 @@ Class AuditCollector
 
 
 
+  <dl class="typelist seealso">
+    <dt>See Also</dt>
+    <dd>
+    <div><a class="xref" href="BridgingIT.DevKit.Common.StringExtensions.html#BridgingIT_DevKit_Common_StringExtensions_TruncateUtf8_System_String_System_Int32_">TruncateUtf8</a>(<span class="xref">string</span>, <span class="xref">int</span>)</div>
+    </dd>
+  </dl>
 
 
 

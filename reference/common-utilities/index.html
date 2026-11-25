@@ -1872,6 +1872,17 @@
 </li>
         
           <li class="md-nav__item">
+  <a href="#keyed-asynchronous-locks" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Keyed asynchronous locks
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#ratelimiter" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -6105,6 +6116,17 @@
 </li>
         
           <li class="md-nav__item">
+  <a href="#keyed-asynchronous-locks" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Keyed asynchronous locks
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#ratelimiter" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -6961,6 +6983,7 @@
 <li><a href="#circuitbreaker">CircuitBreaker</a></li>
 <li><a href="#timeouthandler">TimeoutHandler</a></li>
 <li><a href="#bulkhead">Bulkhead</a></li>
+<li><a href="#keyed-asynchronous-locks">Keyed asynchronous locks</a></li>
 <li><a href="#ratelimiter">RateLimiter</a></li>
 <li><a href="#backgroundworker">BackgroundWorker</a></li>
 <li><a href="#simplenotifier-and-simplerequester">SimpleNotifier and SimpleRequester</a></li>
@@ -7884,6 +7907,23 @@
 <span class="w">    </span><span class="k">async</span><span class="w"> </span><span class="n">ct</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="n">ProcessFileAsync</span><span class="p">(</span><span class="n">ct</span><span class="p">),</span>
 <span class="w">    </span><span class="n">cancellationToken</span><span class="p">);</span>
 </code></pre></div>
+<h3 id="keyed-asynchronous-locks">Keyed asynchronous locks<a class="headerlink" href="#keyed-asynchronous-locks" title="Permanent link">&para;</a></h3>
+<p><code>AsyncKeyedLock&lt;TKey&gt;</code> in the <code>BridgingIT.DevKit.Common.Utilities</code> package uses one semaphore per active key within a pool. It is available in the <code>BridgingIT.DevKit.Common</code> namespace. Construct a pool for the operations that need to coordinate. The optional <code>IEqualityComparer&lt;TKey&gt;</code> defaults to the key type's equality comparer. Keep key equality and hash codes stable while a lease exists.</p>
+<p>Call the pool's <code>TryAcquireAsync(key, timeout, cancellationToken)</code> to wait for a key in one call. It returns an acquired lease, returns null on timeout, and throws <code>OperationCanceledException</code> on cancellation. Use <code>TimeSpan.Zero</code> for an immediate attempt and <code>Timeout.InfiniteTimeSpan</code> for an indefinite wait. Invalid timeouts throw <code>ArgumentOutOfRangeException</code>.</p>
+<div class="highlight"><pre><span></span><code><span class="k">using</span><span class="w"> </span><span class="nn">BridgingIT.DevKit.Common</span><span class="p">;</span>
+
+<span class="k">using</span><span class="w"> </span><span class="nn">var</span><span class="w"> </span><span class="n">locks</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">AsyncKeyedLock</span><span class="o">&lt;</span><span class="kt">string</span><span class="o">&gt;</span><span class="p">(</span><span class="n">StringComparer</span><span class="p">.</span><span class="n">OrdinalIgnoreCase</span><span class="p">);</span>
+<span class="kt">var</span><span class="w"> </span><span class="n">cancellationToken</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">CancellationToken</span><span class="p">.</span><span class="n">None</span><span class="p">;</span>
+<span class="k">using</span><span class="w"> </span><span class="nn">var</span><span class="w"> </span><span class="n">lease</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="n">locks</span><span class="p">.</span><span class="n">TryAcquireAsync</span><span class="p">(</span><span class="s">"report-42"</span><span class="p">,</span><span class="w"> </span><span class="n">TimeSpan</span><span class="p">.</span><span class="n">FromSeconds</span><span class="p">(</span><span class="mi">2</span><span class="p">),</span><span class="w"> </span><span class="n">cancellationToken</span><span class="p">);</span>
+<span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">lease</span><span class="w"> </span><span class="k">is</span><span class="w"> </span><span class="k">not</span><span class="w"> </span><span class="k">null</span><span class="p">)</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="n">Console</span><span class="p">.</span><span class="n">WriteLine</span><span class="p">(</span><span class="s">"Refreshing report-42"</span><span class="p">);</span>
+<span class="p">}</span>
+</code></pre></div>
+<p>To reserve a key in advance, call <code>Rent(TKey key)</code> and then call <code>TryAcquireAsync(timeout, cancellationToken)</code> once on that lease. The lease-level method returns <code>true</code> on acquisition and <code>false</code> on timeout.</p>
+<p>Dispose every lease, including one that never attempted acquisition. A timeout, cancellation, or failed wait returns the reservation automatically. Disposal releases an acquired lock once. The same key always shares exclusion within the pool, including when the holder tries to acquire it again through another lease. Different keys can proceed concurrently.</p>
+<p>Disposing a lease during its wait defers cleanup until that wait settles. Use the cancellation token to interrupt the wait. If the wait acquires the lock after lease disposal was requested, it releases the lock and throws <code>ObjectDisposedException</code>. Disposing the pool rejects new rentals and allows already rented leases to finish. An entry is removed when its last lease is returned.</p>
+<p>Coordination is local to the pool in the current process. <span class="bdk-feature-name" data-feature-name="storage-files"><span class="bdk-feature-icon" style="--bdk-feature-icon-size:18px" data-feature-icon="storage-files" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32" fill="none" aria-hidden="true" focusable="false"><g stroke="var(--dashboard-analysis-text, #b295e8)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11V8a2 2 0 0 1 2-2h7l3 4h12a2 2 0 0 1 2 2v13a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V11Z" /></g><g stroke="var(--dashboard-primary-text, #7da4f7)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M10 16h12M10 21h7" /></g></svg></span>File</span> Storage uses this helper inside its local provider and continues to choose its path comparer by operating system. <a href="../features-storage-files/#filesystem-package-and-migration"><span class="bdk-feature-name" data-feature-name="storage-files"><span class="bdk-feature-icon" style="--bdk-feature-icon-size:18px" data-feature-icon="storage-files" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32" fill="none" aria-hidden="true" focusable="false"><g stroke="var(--dashboard-analysis-text, #b295e8)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11V8a2 2 0 0 1 2-2h7l3 4h12a2 2 0 0 1 2 2v13a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V11Z" /></g><g stroke="var(--dashboard-primary-text, #7da4f7)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M10 16h12M10 21h7" /></g></svg></span>File</span> Storage filesystem provider</a></p>
 <h3 id="ratelimiter"><span class="bdk-feature-icon" style="--bdk-feature-icon-size:24px" data-feature-icon="rate-limiter" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32" fill="none" aria-hidden="true" focusable="false"><g stroke="var(--dashboard-primary-text, #7da4f7)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M3 5h9M3 16h9M3 27h9M20 3v26" /></g><g stroke="var(--dashboard-info-text, #62adb8)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M14 16h15m-4-4 4 4-4 4" /></g></svg></span> RateLimiter<a class="headerlink" href="#ratelimiter" title="Permanent link">&para;</a></h3>
 <p><code>RateLimiter</code> enforces a maximum number of operations inside a time window.</p>
 <p>Use it when:</p>

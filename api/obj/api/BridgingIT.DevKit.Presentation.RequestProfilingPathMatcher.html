@@ -6,7 +6,7 @@
       <meta name="viewport" content="width=device-width, initial-scale=1.0">
       <meta name="title" content="Class RequestProfilingPathMatcher | bITdevKit API Reference ">
       
-      <meta name="description" content="Matches anchored path globs with bounded state and no regular-expression backtracking.">
+      <meta name="description" content="Matches request path exclusions and produces canonical keys for Request Profiling.">
       <link rel="icon" href="../../favicon.ico">
       <link rel="stylesheet" href="../../public/docfx.min.css">
       <link rel="stylesheet" href="../../public/main.css">
@@ -93,7 +93,7 @@ Class RequestProfilingPathMatcher
   <dl><dt>Assembly</dt><dd>BridgingIT.DevKit.Presentation.Web.dll</dd></dl>
   </div>
 
-  <div class="markdown summary"><p>Matches anchored path globs with bounded state and no regular-expression backtracking.</p>
+  <div class="markdown summary"><p>Matches request path exclusions and produces canonical keys for Request Profiling.</p>
 </div>
   <div class="markdown conceptual"></div>
 
@@ -134,7 +134,7 @@ Class RequestProfilingPathMatcher
   
   </h3>
 
-  <div class="markdown level1 summary"><p>Validates and prepares at most 128 patterns, each at most 256 characters.</p>
+  <div class="markdown level1 summary"><p>Validates and prepares at most 128 patterns, each at most 256 UTF-16 code units.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -145,7 +145,8 @@ Class RequestProfilingPathMatcher
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>patterns</code> <span class="xref">IReadOnlyList</span>&lt;<span class="xref">string</span>&gt;</dt>
-    <dd></dd>
+    <dd><p>The anchored request path patterns.</p>
+</dd>
   </dl>
 
 
@@ -159,6 +160,15 @@ Class RequestProfilingPathMatcher
 
 
 
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><span class="xref">ArgumentNullException</span></dt>
+    <dd><p><code class="paramref">patterns</code> is null.</p>
+</dd>
+    <dt><span class="xref">ArgumentException</span></dt>
+    <dd><p>The list exceeds its count limit or contains an invalid pattern.</p>
+</dd>
+  </dl>
 
 
 
@@ -184,17 +194,21 @@ Class RequestProfilingPathMatcher
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>path</code> <span class="xref">string</span></dt>
-    <dd></dd>
+    <dd><p>The incoming path, with null or empty representing the root.</p>
+</dd>
     <dt><code>prefix</code> <span class="xref">string</span></dt>
-    <dd></dd>
+    <dd><p>The optional prefix to remove on a complete path boundary.</p>
+</dd>
     <dt><code>maximumLength</code> <span class="xref">int</span></dt>
-    <dd></dd>
+    <dd><p>The positive maximum key length in UTF-16 code units.</p>
+</dd>
   </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt>(<span class="xref">string</span> <span class="xref">Key</span>, <span class="xref">bool</span> <span class="xref">Shortened</span>)</dt>
-    <dd></dd>
+    <dd><p>The canonical key and whether it was shortened.</p>
+</dd>
   </dl>
 
 
@@ -207,6 +221,12 @@ Class RequestProfilingPathMatcher
 
 
 
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><span class="xref">ArgumentOutOfRangeException</span></dt>
+    <dd><p><code class="paramref">maximumLength</code> is zero or negative.</p>
+</dd>
+  </dl>
 
 
 
@@ -228,13 +248,15 @@ Class RequestProfilingPathMatcher
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>path</code> <span class="xref">string</span></dt>
-    <dd></dd>
+    <dd><p>The incoming path. Null and empty inputs represent the root path.</p>
+</dd>
   </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><span class="xref">bool</span></dt>
-    <dd></dd>
+    <dd><p>True if any configured pattern matches.</p>
+</dd>
   </dl>
 
 
@@ -250,6 +272,10 @@ Class RequestProfilingPathMatcher
 
 
 
+  <h2 id="seealso">See Also</h2>
+  <div class="seealso">
+      <div><a class="xref" href="BridgingIT.DevKit.Common.PathGlobMatcher.html">PathGlobMatcher</a></div>
+  </div>
 
 </article>
 

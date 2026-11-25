@@ -6,7 +6,7 @@
       <meta name="viewport" content="width=device-width, initial-scale=1.0">
       <meta name="title" content="Class TimeSpanExtensions | bITdevKit API Reference ">
       
-      <meta name="description" content="Provides timeout-token creation, duration comparison, unit construction, truncation, and flexible clock-text parsing.">
+      <meta name="description" content="Provides timeout-token creation, duration comparison, unit construction, truncation, and parsing.">
       <link rel="icon" href="../../favicon.ico">
       <link rel="stylesheet" href="../../public/docfx.min.css">
       <link rel="stylesheet" href="../../public/main.css">
@@ -93,7 +93,7 @@ Class TimeSpanExtensions
   <dl><dt>Assembly</dt><dd>BridgingIT.DevKit.Common.Abstractions.dll</dd></dl>
   </div>
 
-  <div class="markdown summary"><p>Provides timeout-token creation, duration comparison, unit construction, truncation, and flexible clock-text parsing.</p>
+  <div class="markdown summary"><p>Provides timeout-token creation, duration comparison, unit construction, truncation, and parsing.</p>
 </div>
   <div class="markdown conceptual"></div>
 
@@ -116,6 +116,9 @@ Class TimeSpanExtensions
 
 
 
+
+  <h2 id="BridgingIT_DevKit_Common_TimeSpanExtensions_examples">Examples</h2>
+  <pre><code class="lang-csharp">var parsed = "1.5m".TryParseDuration(out var duration);</code></pre>
 
 
 
@@ -1061,6 +1064,53 @@ Class TimeSpanExtensions
 
 
 
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_TimeSpanExtensions_TryParseDuration_" data-uid="BridgingIT.DevKit.Common.TimeSpanExtensions.TryParseDuration*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_TimeSpanExtensions_TryParseDuration_System_String_System_TimeSpan__" data-uid="BridgingIT.DevKit.Common.TimeSpanExtensions.TryParseDuration(System.String,System.TimeSpan@)">
+  TryParseDuration(string, out TimeSpan)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Parses invariant duration text or a number followed by ms, s, m, or h.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static bool TryParseDuration(this string source, out TimeSpan duration)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>source</code> <span class="xref">string</span></dt>
+    <dd></dd>
+    <dt><code>duration</code> <span class="xref">TimeSpan</span></dt>
+    <dd><p>The parsed duration when successful, or <span class="xref">System.TimeSpan.Zero</span> on failure.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">bool</span></dt>
+    <dd><p><a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a> when the text represents a finite duration within the <span class="xref">System.TimeSpan</span> range.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Common_TimeSpanExtensions_TryParseDuration_System_String_System_TimeSpan___examples">Examples</h4>
+  <pre><code class="lang-csharp">var parsed = "1.5m".TryParseDuration(out var duration); // 00:01:30</code></pre>
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Common_TimeSpanExtensions_TryParseDuration_System_String_System_TimeSpan___remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>Suffixes are case-insensitive. Numeric values can be signed or fractional. Null and blank text fail to parse.</p>
+</div>
 
 
 

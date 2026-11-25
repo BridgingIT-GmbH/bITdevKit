@@ -474225,18 +474225,6 @@ references:
   fullName.vb: BridgingIT.DevKit.Presentation.Web.Errors.ProblemDetailsOptions.New
   nameWithType: ProblemDetailsOptions.ProblemDetailsOptions
   nameWithType.vb: ProblemDetailsOptions.New
-- uid: BridgingIT.DevKit.Presentation.Web.Errors.ProblemDetailsOptions.AllowedHeaderNames
-  name: AllowedHeaderNames
-  href: obj/api/BridgingIT.DevKit.Presentation.Web.Errors.ProblemDetailsOptions.html#BridgingIT_DevKit_Presentation_Web_Errors_ProblemDetailsOptions_AllowedHeaderNames
-  commentId: P:BridgingIT.DevKit.Presentation.Web.Errors.ProblemDetailsOptions.AllowedHeaderNames
-  fullName: BridgingIT.DevKit.Presentation.Web.Errors.ProblemDetailsOptions.AllowedHeaderNames
-  nameWithType: ProblemDetailsOptions.AllowedHeaderNames
-- uid: BridgingIT.DevKit.Presentation.Web.Errors.ProblemDetailsOptions.AllowedHeaderNames*
-  name: AllowedHeaderNames
-  href: obj/api/BridgingIT.DevKit.Presentation.Web.Errors.ProblemDetailsOptions.html#BridgingIT_DevKit_Presentation_Web_Errors_ProblemDetailsOptions_AllowedHeaderNames_
-  commentId: Overload:BridgingIT.DevKit.Presentation.Web.Errors.ProblemDetailsOptions.AllowedHeaderNames
-  fullName: BridgingIT.DevKit.Presentation.Web.Errors.ProblemDetailsOptions.AllowedHeaderNames
-  nameWithType: ProblemDetailsOptions.AllowedHeaderNames
 - uid: BridgingIT.DevKit.Presentation.Web.Errors.ProblemDetailsOptions.Handles(Microsoft.AspNetCore.Http.HttpContext)
   name: Handles(HttpContext)
   href: obj/api/BridgingIT.DevKit.Presentation.Web.Errors.ProblemDetailsOptions.html#BridgingIT_DevKit_Presentation_Web_Errors_ProblemDetailsOptions_Handles_Microsoft_AspNetCore_Http_HttpContext_
@@ -475038,57 +475026,6 @@ references:
   commentId: Overload:BridgingIT.DevKit.Presentation.Web.Errors.ResponseProblemDetailsExceptionHandler.TryHandleAsync
   fullName: BridgingIT.DevKit.Presentation.Web.Errors.ResponseProblemDetailsExceptionHandler.TryHandleAsync
   nameWithType: ResponseProblemDetailsExceptionHandler.TryHandleAsync
-- uid: BridgingIT.DevKit.Presentation.Web.Errors.ResponseProblemDetailsHeaderSnapshot
-  name: ResponseProblemDetailsHeaderSnapshot
-  href: obj/api/BridgingIT.DevKit.Presentation.Web.Errors.ResponseProblemDetailsHeaderSnapshot.html
-  commentId: T:BridgingIT.DevKit.Presentation.Web.Errors.ResponseProblemDetailsHeaderSnapshot
-  fullName: BridgingIT.DevKit.Presentation.Web.Errors.ResponseProblemDetailsHeaderSnapshot
-  nameWithType: ResponseProblemDetailsHeaderSnapshot
-- uid: BridgingIT.DevKit.Presentation.Web.Errors.ResponseProblemDetailsHeaderSnapshot.#ctor(Microsoft.Extensions.Options.IOptions{BridgingIT.DevKit.Presentation.Web.Errors.ProblemDetailsOptions})
-  name: ResponseProblemDetailsHeaderSnapshot(IOptions<ProblemDetailsOptions>)
-  href: obj/api/BridgingIT.DevKit.Presentation.Web.Errors.ResponseProblemDetailsHeaderSnapshot.html#BridgingIT_DevKit_Presentation_Web_Errors_ResponseProblemDetailsHeaderSnapshot__ctor_Microsoft_Extensions_Options_IOptions_BridgingIT_DevKit_Presentation_Web_Errors_ProblemDetailsOptions__
-  commentId: M:BridgingIT.DevKit.Presentation.Web.Errors.ResponseProblemDetailsHeaderSnapshot.#ctor(Microsoft.Extensions.Options.IOptions{BridgingIT.DevKit.Presentation.Web.Errors.ProblemDetailsOptions})
-  name.vb: New(IOptions(Of ProblemDetailsOptions))
-  fullName: BridgingIT.DevKit.Presentation.Web.Errors.ResponseProblemDetailsHeaderSnapshot.ResponseProblemDetailsHeaderSnapshot(Microsoft.Extensions.Options.IOptions<BridgingIT.DevKit.Presentation.Web.Errors.ProblemDetailsOptions>)
-  fullName.vb: BridgingIT.DevKit.Presentation.Web.Errors.ResponseProblemDetailsHeaderSnapshot.New(Microsoft.Extensions.Options.IOptions(Of BridgingIT.DevKit.Presentation.Web.Errors.ProblemDetailsOptions))
-  nameWithType: ResponseProblemDetailsHeaderSnapshot.ResponseProblemDetailsHeaderSnapshot(IOptions<ProblemDetailsOptions>)
-  nameWithType.vb: ResponseProblemDetailsHeaderSnapshot.New(IOptions(Of ProblemDetailsOptions))
-- uid: BridgingIT.DevKit.Presentation.Web.Errors.ResponseProblemDetailsHeaderSnapshot.#ctor*
-  name: ResponseProblemDetailsHeaderSnapshot
-  href: obj/api/BridgingIT.DevKit.Presentation.Web.Errors.ResponseProblemDetailsHeaderSnapshot.html#BridgingIT_DevKit_Presentation_Web_Errors_ResponseProblemDetailsHeaderSnapshot__ctor_
-  commentId: Overload:BridgingIT.DevKit.Presentation.Web.Errors.ResponseProblemDetailsHeaderSnapshot.#ctor
-  name.vb: New
-  fullName: BridgingIT.DevKit.Presentation.Web.Errors.ResponseProblemDetailsHeaderSnapshot.ResponseProblemDetailsHeaderSnapshot
-  fullName.vb: BridgingIT.DevKit.Presentation.Web.Errors.ResponseProblemDetailsHeaderSnapshot.New
-  nameWithType: ResponseProblemDetailsHeaderSnapshot.ResponseProblemDetailsHeaderSnapshot
-  nameWithType.vb: ResponseProblemDetailsHeaderSnapshot.New
-- uid: BridgingIT.DevKit.Presentation.Web.Errors.ResponseProblemDetailsHeaderSnapshot.Configure(System.Action{Microsoft.AspNetCore.Builder.IApplicationBuilder})
-  name: Configure(Action<IApplicationBuilder>)
-  href: obj/api/BridgingIT.DevKit.Presentation.Web.Errors.ResponseProblemDetailsHeaderSnapshot.html#BridgingIT_DevKit_Presentation_Web_Errors_ResponseProblemDetailsHeaderSnapshot_Configure_System_Action_Microsoft_AspNetCore_Builder_IApplicationBuilder__
-  commentId: M:BridgingIT.DevKit.Presentation.Web.Errors.ResponseProblemDetailsHeaderSnapshot.Configure(System.Action{Microsoft.AspNetCore.Builder.IApplicationBuilder})
-  name.vb: Configure(Action(Of IApplicationBuilder))
-  fullName: BridgingIT.DevKit.Presentation.Web.Errors.ResponseProblemDetailsHeaderSnapshot.Configure(System.Action<Microsoft.AspNetCore.Builder.IApplicationBuilder>)
-  fullName.vb: BridgingIT.DevKit.Presentation.Web.Errors.ResponseProblemDetailsHeaderSnapshot.Configure(System.Action(Of Microsoft.AspNetCore.Builder.IApplicationBuilder))
-  nameWithType: ResponseProblemDetailsHeaderSnapshot.Configure(Action<IApplicationBuilder>)
-  nameWithType.vb: ResponseProblemDetailsHeaderSnapshot.Configure(Action(Of IApplicationBuilder))
-- uid: BridgingIT.DevKit.Presentation.Web.Errors.ResponseProblemDetailsHeaderSnapshot.Configure*
-  name: Configure
-  href: obj/api/BridgingIT.DevKit.Presentation.Web.Errors.ResponseProblemDetailsHeaderSnapshot.html#BridgingIT_DevKit_Presentation_Web_Errors_ResponseProblemDetailsHeaderSnapshot_Configure_
-  commentId: Overload:BridgingIT.DevKit.Presentation.Web.Errors.ResponseProblemDetailsHeaderSnapshot.Configure
-  fullName: BridgingIT.DevKit.Presentation.Web.Errors.ResponseProblemDetailsHeaderSnapshot.Configure
-  nameWithType: ResponseProblemDetailsHeaderSnapshot.Configure
-- uid: BridgingIT.DevKit.Presentation.Web.Errors.ResponseProblemDetailsHeaderSnapshot.Restore(Microsoft.AspNetCore.Http.HttpContext)
-  name: Restore(HttpContext)
-  href: obj/api/BridgingIT.DevKit.Presentation.Web.Errors.ResponseProblemDetailsHeaderSnapshot.html#BridgingIT_DevKit_Presentation_Web_Errors_ResponseProblemDetailsHeaderSnapshot_Restore_Microsoft_AspNetCore_Http_HttpContext_
-  commentId: M:BridgingIT.DevKit.Presentation.Web.Errors.ResponseProblemDetailsHeaderSnapshot.Restore(Microsoft.AspNetCore.Http.HttpContext)
-  fullName: BridgingIT.DevKit.Presentation.Web.Errors.ResponseProblemDetailsHeaderSnapshot.Restore(Microsoft.AspNetCore.Http.HttpContext)
-  nameWithType: ResponseProblemDetailsHeaderSnapshot.Restore(HttpContext)
-- uid: BridgingIT.DevKit.Presentation.Web.Errors.ResponseProblemDetailsHeaderSnapshot.Restore*
-  name: Restore
-  href: obj/api/BridgingIT.DevKit.Presentation.Web.Errors.ResponseProblemDetailsHeaderSnapshot.html#BridgingIT_DevKit_Presentation_Web_Errors_ResponseProblemDetailsHeaderSnapshot_Restore_
-  commentId: Overload:BridgingIT.DevKit.Presentation.Web.Errors.ResponseProblemDetailsHeaderSnapshot.Restore
-  fullName: BridgingIT.DevKit.Presentation.Web.Errors.ResponseProblemDetailsHeaderSnapshot.Restore
-  nameWithType: ResponseProblemDetailsHeaderSnapshot.Restore
 - uid: BridgingIT.DevKit.Presentation.Web.Errors.ResponseProblemDetailsService
   name: ResponseProblemDetailsService
   href: obj/api/BridgingIT.DevKit.Presentation.Web.Errors.ResponseProblemDetailsService.html

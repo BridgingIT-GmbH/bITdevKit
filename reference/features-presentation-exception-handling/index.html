@@ -3324,6 +3324,17 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
+  <a href="#manage-response-headers-in-middleware" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Manage response headers in middleware
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#preserve-html-error-pages-in-mixed-hosts" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -5364,6 +5375,17 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
+  <a href="#manage-response-headers-in-middleware" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Manage response headers in middleware
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#preserve-html-error-pages-in-mixed-hosts" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -5887,6 +5909,7 @@
 <li><a href="#basic-usage">Basic Usage</a></li>
 <li><a href="#shared-response-format">Shared response format</a></li>
 <li><a href="#configure-response-problem-details">Configure response Problem Details</a><ul>
+<li><a href="#manage-response-headers-in-middleware">Manage response headers in middleware</a></li>
 <li><a href="#preserve-html-error-pages-in-mixed-hosts">Preserve HTML error pages in mixed hosts</a></li>
 <li><a href="#share-a-problem-type-uri">Share a problem type URI</a></li>
 <li><a href="#document-the-response-in-openapi">Document the response in OpenAPI</a></li>
@@ -6053,11 +6076,6 @@
 <td>Enriches an accepted write after native customization and shared preparation.</td>
 </tr>
 <tr>
-<td><code>AllowedHeaderNames</code></td>
-<td>Correlation, authentication challenge, HSTS, and standard <span class="bdk-feature-name" data-feature-name="cors"><span class="bdk-feature-icon" style="--bdk-feature-icon-size:18px" data-feature-icon="cors" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32" fill="none" aria-hidden="true" focusable="false"><g stroke="var(--dashboard-primary-text, #7da4f7)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5h9v22H4V5Z M19 5h9v22h-9" /></g><g stroke="var(--dashboard-info-text, #62adb8)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11h14m-3-3 3 3-3 3M23 21H9m3-3-3 3 3 3" /></g></svg></span>CORS</span> headers</td>
-<td>Retains selected response headers after native exception handling clears them.</td>
-</tr>
-<tr>
 <td><code>ShouldLogUnhandledException</code></td>
 <td><code>true</code></td>
 <td>Writes a DevKit log for handled server exceptions.</td>
@@ -6077,6 +6095,10 @@
 <p>For optional Entity Framework handlers, register <code>GlobalExceptionHandlerOptions</code> as a singleton for their constructor, then register <code>DbUpdateConcurrencyExceptionHandler</code>, <code>DbUpdateExceptionHandler</code>, and <code>DbExceptionHandler</code> individually before <code>AddResponseProblemDetails()</code>. The concurrency handler must precede the broader update handler. The combined feature and DevKit's full standalone <code>AddExceptionHandler(...)</code> chain are mutually exclusive.</p>
 <p>The host can configure native <code>Microsoft.AspNetCore.Http.ProblemDetailsOptions.CustomizeProblemDetails</code>. Install a custom <code>IProblemDetailsWriter</code> ahead of the framework <span class="bdk-feature-name" data-feature-name="format-json"><span class="bdk-feature-icon" style="--bdk-feature-icon-size:18px" data-feature-icon="format-json" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32" fill="none" aria-hidden="true" focusable="false"><g stroke="var(--dashboard-primary-text, #7da4f7)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4H8v9l-4 3 4 3v9h4M20 4h4v9l4 3-4 3v9h-4" /></g><g stroke="var(--dashboard-info-text, #62adb8)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="16" cy="12" r="1" /><circle cx="16" cy="20" r="1" /></g></svg></span>JSON</span> writer if it should handle an accepted format first. DevKit logs through <code>ILogger</code> subject to host log levels. ASP.NET Core diagnostics for a handled exception are controlled separately by native <code>ExceptionHandlerOptions.SuppressDiagnosticsCallback</code>. If using framework logging for handled server errors, set <code>ShouldLogUnhandledException = false</code> to avoid double logging.</p>
 <p>Use <code>ProblemHttpResult</code> as the Minimal API server error arm to get HTTP <span class="bdk-feature-name" data-feature-name="results"><span class="bdk-feature-icon" style="--bdk-feature-icon-size:18px" data-feature-icon="results" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32" fill="none" aria-hidden="true" focusable="false"><g stroke="var(--dashboard-analysis-text, #b295e8)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="26" height="22" rx="2" /></g><g stroke="var(--dashboard-primary-text, #7da4f7)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="m11 16 4 4 7-8" /></g></svg></span>Result</span> logging. If the endpoint declares the native <code>InternalServerError</code> arm, pass a logger to the mapper to log the failure.</p>
+<h3 id="manage-response-headers-in-middleware">Manage response headers in middleware<a class="headerlink" href="#manage-response-headers-in-middleware" title="Permanent link">&para;</a></h3>
+<p>DevKit Problem Details writes the status code, <code>Content-Type</code>, and body. Empty-status responses keep their existing headers, including authentication challenges and any cache policy set by the host. ASP.NET Core clears pending response headers before invoking exception handlers and applies its own cache policy to exception responses.</p>
+<p>For custom headers on exception responses, register an <code>HttpResponse.OnStarting</code> callback in application middleware before calling the next middleware. Set the headers in the callback so they apply to the final response.</p>
+<p>Place <code>UseResponseProblemDetails()</code> before authentication and authorization so status-code pages can process their responses. Place <code>UseCors()</code> after routing and before authentication and authorization.</p>
 <h3 id="preserve-html-error-pages-in-mixed-hosts">Preserve HTML error pages in mixed hosts<a class="headerlink" href="#preserve-html-error-pages-in-mixed-hosts" title="Permanent link">&para;</a></h3>
 <p>By default, DevKit leaves exceptions rewritten by <code>UseExceptionHandler("/Error")</code> to the native page. A host can keep that middleware and use <code>UseResponseProblemDetails()</code> at its API error boundary with the default options.</p>
 <p>Set <code>ShouldHandleRequest</code> if one native exception middleware should handle both API and HTML routes. Use the original request path to identify an API request when ASP.NET Core substitutes the error page path. The application must serve <code>/Error</code> for the original HTTP methods it handles.</p>
@@ -6122,7 +6144,7 @@
 <span class="w">    </span><span class="p">.</span><span class="n">ProducesResultProblem</span><span class="p">(</span><span class="mi">500</span><span class="p">);</span>
 </code></pre></div>
 <h3 id="migrate-from-hellang">Migrate from Hellang<a class="headerlink" href="#migrate-from-hellang" title="Permanent link">&para;</a></h3>
-<p>Replace the Hellang service registration, <code>Configure.ProblemDetails(...)</code>, and <code>UseProblemDetails()</code> with the combined DevKit registration and middleware. The combined registration also supplies <span class="bdk-feature-name" data-feature-name="results"><span class="bdk-feature-icon" style="--bdk-feature-icon-size:18px" data-feature-icon="results" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32" fill="none" aria-hidden="true" focusable="false"><g stroke="var(--dashboard-analysis-text, #b295e8)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="26" height="22" rx="2" /></g><g stroke="var(--dashboard-primary-text, #7da4f7)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="m11 16 4 4 7-8" /></g></svg></span>Result</span> HTTP preparation. Set one disclosure policy, move exception mappings into <code>Map&lt;TException&gt;</code>, and transfer any custom header names and response enrichment into DevKit options. Use request scope for hosts with native HTML error pages. Update tests and generated clients for grouped validation, structured diagnostics, and the MVC <span class="bdk-feature-name" data-feature-name="results"><span class="bdk-feature-icon" style="--bdk-feature-icon-size:18px" data-feature-icon="results" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32" fill="none" aria-hidden="true" focusable="false"><g stroke="var(--dashboard-analysis-text, #b295e8)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="26" height="22" rx="2" /></g><g stroke="var(--dashboard-primary-text, #7da4f7)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="m11 16 4 4 7-8" /></g></svg></span>Result</span> status changes.</p>
+<p>Replace the Hellang service registration, <code>Configure.ProblemDetails(...)</code>, and <code>UseProblemDetails()</code> with the combined DevKit registration and middleware. The combined registration also supplies <span class="bdk-feature-name" data-feature-name="results"><span class="bdk-feature-icon" style="--bdk-feature-icon-size:18px" data-feature-icon="results" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32" fill="none" aria-hidden="true" focusable="false"><g stroke="var(--dashboard-analysis-text, #b295e8)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="26" height="22" rx="2" /></g><g stroke="var(--dashboard-primary-text, #7da4f7)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="m11 16 4 4 7-8" /></g></svg></span>Result</span> HTTP preparation. Set one disclosure policy, move exception mappings into <code>Map&lt;TException&gt;</code>, and move problem payload enrichment into <code>OnBeforeWriteDetails</code>. Configure custom headers in application middleware. Use request scope for hosts with native HTML error pages. Update tests and generated clients for grouped validation, structured diagnostics, and the MVC <span class="bdk-feature-name" data-feature-name="results"><span class="bdk-feature-icon" style="--bdk-feature-icon-size:18px" data-feature-icon="results" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32" fill="none" aria-hidden="true" focusable="false"><g stroke="var(--dashboard-analysis-text, #b295e8)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="26" height="22" rx="2" /></g><g stroke="var(--dashboard-primary-text, #7da4f7)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="m11 16 4 4 7-8" /></g></svg></span>Result</span> status changes.</p>
 <h2 id="key-concepts">Key concepts<a class="headerlink" href="#key-concepts" title="Permanent link">&para;</a></h2>
 <p>The sections below cover the standalone <code>AddExceptionHandler(...)</code> chain and its <code>GlobalExceptionHandlerOptions</code>.</p>
 <ul>

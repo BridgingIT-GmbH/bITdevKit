@@ -66,7 +66,7 @@ public sealed class TimeoutBlobStoreClientBehavior : BlobStoreClientBehaviorBase
         BlobStoreOperationContext context,
         Func<CancellationToken, Task<Result<T>>> next,
         CancellationToken cancellationToken) =>
-        this.ExecuteWithTimeoutAsync(operation, next, cancellationToken);
+        this.ExecuteWithTimeoutAsync(operation, next, Result<T>.Failure, cancellationToken, DisposeValueAsync);
 
     /// <inheritdoc/>
     protected override Task<Result> ExecuteAsync(
@@ -74,64 +74,75 @@ public sealed class TimeoutBlobStoreClientBehavior : BlobStoreClientBehaviorBase
         BlobStoreOperationContext context,
         Func<CancellationToken, Task<Result>> next,
         CancellationToken cancellationToken) =>
-        this.ExecuteWithTimeoutAsync(operation, next, cancellationToken);
+        this.ExecuteWithTimeoutAsync(operation, next, Result.Failure, cancellationToken);
 
-    private async Task<Result<T>> ExecuteWithTimeoutAsync<T>(
+    private async Task<TResult> ExecuteWithTimeoutAsync<TResult>(
         string operation,
-        Func<CancellationToken, Task<Result<T>>> next,
-        CancellationToken cancellationToken)
+        Func<CancellationToken, Task<TResult>> next,
+        Func<BlobStoreTimeoutError, TResult> failure,
+        CancellationToken cancellationToken,
+        Func<TResult, ValueTask> disposeResult = null)
     {
         cancellationToken.ThrowIfCancellationRequested();
-        using var timeoutSource = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken);
-        var operationTask = next(timeoutSource.Token);
-        var timeoutTask = Task.Delay(this.Options.Timeout, this.timeProvider);
-        var callerCancellationTask = Task.Delay(Timeout.InfiniteTimeSpan, this.timeProvider, cancellationToken);
+        using var operationSource = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken);
+        using var delaySource = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken);
+        var operationTask = next(operationSource.Token);
+        var timeout = this.Options.Timeout;
+        var timeoutTask = Task.Delay(timeout, this.timeProvider, delaySource.Token);
+        var cancellationTask = Task.Delay(Timeout.InfiniteTimeSpan, delaySource.Token);
 
-        var completed = await Task.WhenAny(operationTask, timeoutTask, callerCancellationTask).ConfigureAwait(false);
-        if (completed == operationTask)
+        var completed = await Task.WhenAny(operationTask, timeoutTask, cancellationTask).ConfigureAwait(false);
+        await delaySource.CancelAsync().ConfigureAwait(false);
+        if (completed == operationTask && !cancellationToken.IsCancellationRequested)
         {
             return await operationTask.ConfigureAwait(false);
         }
 
-        await timeoutSource.CancelAsync().ConfigureAwait(false);
-        await ObserveCompletionAsync(operationTask).ConfigureAwait(false);
-        if (completed == callerCancellationTask || cancellationToken.IsCancellationRequested)
+        if (!operationTask.IsCompleted)
         {
-            throw new OperationCanceledException(cancellationToken);
+            await operationSource.CancelAsync().ConfigureAwait(false);
+        }
+
+        await ObserveCompletionAsync(operationTask).ConfigureAwait(false);
+        if (cancellationToken.IsCancellationRequested)
+        {
+            if (operationTask.IsCompletedSuccessfully && disposeResult is not null)
+            {
+                try
+                {
+                    await disposeResult(await operationTask.ConfigureAwait(false)).ConfigureAwait(false);
+                }
+                catch (Exception exception)
+                {
+                    throw new OperationCanceledException("Blob operation canceled while disposing its result.", exception, cancellationToken);
+                }
+            }
+
+            cancellationToken.ThrowIfCancellationRequested();
+        }
+
+        if (operationTask.IsCompletedSuccessfully)
+        {
+            return await operationTask.ConfigureAwait(false);
         }
 
         BlobStoreClientBehaviorTelemetry.IncrementTimeout();
-
-        return Result<T>.Failure(new BlobStoreTimeoutError(operation, this.Options.Timeout));
+        return failure(new BlobStoreTimeoutError(operation, timeout));
     }
 
-    private async Task<Result> ExecuteWithTimeoutAsync(
-        string operation,
-        Func<CancellationToken, Task<Result>> next,
-        CancellationToken cancellationToken)
+    private static ValueTask DisposeValueAsync<T>(Result<T> result)
     {
-        cancellationToken.ThrowIfCancellationRequested();
-        using var timeoutSource = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken);
-        var operationTask = next(timeoutSource.Token);
-        var timeoutTask = Task.Delay(this.Options.Timeout, this.timeProvider);
-        var callerCancellationTask = Task.Delay(Timeout.InfiniteTimeSpan, this.timeProvider, cancellationToken);
-
-        var completed = await Task.WhenAny(operationTask, timeoutTask, callerCancellationTask).ConfigureAwait(false);
-        if (completed == operationTask)
+        if (result.Value is IAsyncDisposable asyncDisposable)
         {
-            return await operationTask.ConfigureAwait(false);
+            return asyncDisposable.DisposeAsync();
         }
 
-        await timeoutSource.CancelAsync().ConfigureAwait(false);
-        await ObserveCompletionAsync(operationTask).ConfigureAwait(false);
-        if (completed == callerCancellationTask || cancellationToken.IsCancellationRequested)
+        if (result.Value is IDisposable disposable)
         {
-            throw new OperationCanceledException(cancellationToken);
+            disposable.Dispose();
         }
 
-        BlobStoreClientBehaviorTelemetry.IncrementTimeout();
-
-        return Result.Failure(new BlobStoreTimeoutError(operation, this.Options.Timeout));
+        return ValueTask.CompletedTask;
     }
 
     private static TimeoutBlobStoreClientBehaviorOptions Normalize(TimeoutBlobStoreClientBehaviorOptions options)
@@ -153,7 +164,7 @@ public sealed class TimeoutBlobStoreClientBehavior : BlobStoreClientBehaviorBase
         }
         catch
         {
-            // The deadline result owns the outcome after cancellation; awaiting here observes and quiesces the operation.
+            // Observe faults and wait for the operation to finish before reporting cancellation or timeout.
         }
     }
 }

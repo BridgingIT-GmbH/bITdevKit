@@ -2,6 +2,7 @@
 - Strictly follow the coding conventions and formatting rules defined in the project's .editorconfig file.
 - Use C# 12+ and .NET 8+ features where appropriate.
 - Write clean, maintainable, and well-documented code.
+- Follow the C# visibility rules in [AGENTS.md](../AGENTS.md). Check both newly added and modified classes and properties, including the classes that declare edited members. Document public declarations with XML comments and an `<example>` block.
 - Follow SOLID principles and modern .NET best practices.
 - Structure code using Onion/Clean Architecture: Domain, Application, Infrastructure, Presentation.
 

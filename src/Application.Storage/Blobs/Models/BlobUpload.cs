@@ -68,7 +68,7 @@ public sealed class BlobUpload
     public string ExpectedContentHash { get; init; }
 
     /// <summary>
-    /// Gets the optional UTC expiration timestamp after which retention sweeping may delete the blob.
+    /// Gets the UTC instant at which the blob becomes unavailable and eligible for retention cleanup.
     /// Providers normalize non-UTC offsets to UTC before storing metadata.
     /// </summary>
     /// <example>

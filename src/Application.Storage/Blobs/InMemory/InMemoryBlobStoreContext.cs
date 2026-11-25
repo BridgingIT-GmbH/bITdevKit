@@ -36,24 +36,30 @@ public sealed class InMemoryBlobStoreContext
 
     /// <summary>Publishes an entry only if its optional version condition matches under the store lock.</summary>
     /// <example><code>var written = context.TryStore(entry, false, etag, out var stored);</code></example>
-    public bool TryStore(InMemoryBlobEntry entry, bool failIfExists, string ifMatchETag, out InMemoryBlobEntry stored)
+    public bool TryStore(InMemoryBlobEntry entry, bool failIfExists, string ifMatchETag, out InMemoryBlobEntry stored) =>
+        this.TryStore(entry, failIfExists, ifMatchETag, null, out stored);
+
+    internal bool TryStore(InMemoryBlobEntry entry, bool failIfExists, string ifMatchETag, DateTimeOffset? cutoff, out InMemoryBlobEntry stored)
     {
         ArgumentNullException.ThrowIfNull(entry);
         ArgumentNullException.ThrowIfNull(entry.Info);
 
         lock (this.syncRoot)
         {
-            if ((failIfExists && this.blobs.ContainsKey(entry.Info.Key)) ||
-                (!string.IsNullOrWhiteSpace(ifMatchETag) &&
-                 (!this.blobs.TryGetValue(entry.Info.Key, out var expected) || !string.Equals(expected.Info.ETag, ifMatchETag, StringComparison.Ordinal))))
+            this.blobs.TryGetValue(entry.Info.Key, out var existing);
+            if (existing is not null && IsExpired(existing, cutoff))
+            {
+                existing = null;
+            }
+
+            if ((failIfExists && existing is not null) ||
+                (!string.IsNullOrWhiteSpace(ifMatchETag) && !string.Equals(existing?.Info.ETag, ifMatchETag, StringComparison.Ordinal)))
             {
                 stored = null;
                 return false;
             }
 
-            var createdAt = this.blobs.TryGetValue(entry.Info.Key, out var existing)
-                ? existing.Info.CreatedAt
-                : entry.Info.CreatedAt;
+            var createdAt = existing is null ? entry.Info.CreatedAt : existing.Info.CreatedAt;
             var normalized = Clone(entry, createdAt, entry.Info.Properties ?? existing?.Info.Properties);
             this.blobs[entry.Info.Key] = normalized;
             stored = Clone(normalized);
@@ -72,11 +78,13 @@ public sealed class InMemoryBlobStoreContext
     /// var found = context.TryGet(key, out var entry);
     /// </code>
     /// </example>
-    public bool TryGet(BlobKey key, out InMemoryBlobEntry entry)
+    public bool TryGet(BlobKey key, out InMemoryBlobEntry entry) => this.TryGet(key, null, out entry);
+
+    internal bool TryGet(BlobKey key, DateTimeOffset? cutoff, out InMemoryBlobEntry entry)
     {
         lock (this.syncRoot)
         {
-            if (this.blobs.TryGetValue(key, out var found))
+            if (this.blobs.TryGetValue(key, out var found) && !IsExpired(found, cutoff))
             {
                 entry = Clone(found);
                 return true;
@@ -106,6 +114,15 @@ public sealed class InMemoryBlobStoreContext
         string ifMatchETag,
         Func<InMemoryBlobEntry, InMemoryBlobEntry> update,
         out InMemoryBlobEntry stored,
+        out bool etagMismatch) =>
+        this.TryUpdate(key, ifMatchETag, update, null, out stored, out etagMismatch);
+
+    internal bool TryUpdate(
+        BlobKey key,
+        string ifMatchETag,
+        Func<InMemoryBlobEntry, InMemoryBlobEntry> update,
+        DateTimeOffset? cutoff,
+        out InMemoryBlobEntry stored,
         out bool etagMismatch)
     {
         ArgumentNullException.ThrowIfNull(update);
@@ -113,7 +130,7 @@ public sealed class InMemoryBlobStoreContext
         lock (this.syncRoot)
         {
             etagMismatch = false;
-            if (!this.blobs.TryGetValue(key, out var current))
+            if (!this.blobs.TryGetValue(key, out var current) || IsExpired(current, cutoff))
             {
                 stored = null;
                 return false;
@@ -145,11 +162,13 @@ public sealed class InMemoryBlobStoreContext
     /// var exists = context.Contains(key);
     /// </code>
     /// </example>
-    public bool Contains(BlobKey key)
+    public bool Contains(BlobKey key) => this.Contains(key, null);
+
+    internal bool Contains(BlobKey key, DateTimeOffset? cutoff)
     {
         lock (this.syncRoot)
         {
-            return this.blobs.ContainsKey(key);
+            return this.blobs.TryGetValue(key, out var entry) && !IsExpired(entry, cutoff);
         }
     }
 
@@ -162,11 +181,13 @@ public sealed class InMemoryBlobStoreContext
     /// var entries = context.GetSnapshot();
     /// </code>
     /// </example>
-    public IReadOnlyCollection<InMemoryBlobEntry> GetSnapshot()
+    public IReadOnlyCollection<InMemoryBlobEntry> GetSnapshot() => this.GetSnapshot(null);
+
+    internal IReadOnlyCollection<InMemoryBlobEntry> GetSnapshot(DateTimeOffset? cutoff)
     {
         lock (this.syncRoot)
         {
-            return this.blobs.Values.Select(entry => Clone(entry)).ToArray();
+            return this.blobs.Values.Where(entry => !IsExpired(entry, cutoff)).Select(entry => Clone(entry)).ToArray();
         }
     }
 
@@ -237,6 +258,9 @@ public sealed class InMemoryBlobStoreContext
             return keys;
         }
     }
+
+    private static bool IsExpired(InMemoryBlobEntry entry, DateTimeOffset? cutoff) =>
+        entry.Info.ExpiresAt <= cutoff;
 
     private static InMemoryBlobEntry Clone(InMemoryBlobEntry entry, DateTimeOffset? createdAt = null, PropertyBag properties = null) => new()
     {

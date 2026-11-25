@@ -237,6 +237,56 @@ public sealed class EntityFrameworkBlobStoreProviderUploadDownloadTests
         Encoding.UTF8.GetString(chunks.SelectMany(e => e.Content.Take(e.Length)).ToArray()).ShouldBe("abcdefghij");
     }
 
+    [Theory]
+    [InlineData(true, 4)]
+    [InlineData(false, 64 * 1024)]
+    public async Task UploadAsync_WithSmallSeekableContent_SizesItsFirstReadAndSkipsChunkDeletion(bool hasLength, int firstReadSize)
+    {
+        await using var context = CreateContext();
+        var sut = CreateProvider(context, new BlobStoreOptions { ChunkSize = 256 * 1024 });
+        using var stream = new CountingSeekableReadStream([0, 1, 2, 3], hasLength) { Position = 1 };
+
+        var result = await sut.UploadAsync(CreateUpload(stream));
+
+        result.IsSuccess.ShouldBeTrue();
+        stream.FirstRequestedReadSize.ShouldBe(firstReadSize);
+        context.StorageBlobChunksAccessCount.ShouldBe(1);
+        (await context.StorageBlobChunks.SingleAsync()).Content.ShouldBe([1, 2, 3]);
+    }
+
+    [Fact]
+    public async Task UploadAsync_WithShortNonSeekableReads_GrowsTheBufferAndFillsEachChunk()
+    {
+        await using var context = CreateContext();
+        const int chunkSize = 128 * 1024;
+        var sut = CreateProvider(context, new BlobStoreOptions { ChunkSize = chunkSize });
+        var bytes = Enumerable.Range(0, chunkSize + 100).Select(index => (byte)index).ToArray();
+        using var stream = new CountingNonSeekableReadStream(bytes, 15000);
+
+        var result = await sut.UploadAsync(CreateUpload(stream));
+
+        result.IsSuccess.ShouldBeTrue();
+        stream.FirstRequestedReadSize.ShouldBe(64 * 1024);
+        var chunks = await context.StorageBlobChunks.OrderBy(chunk => chunk.Index).ToListAsync();
+        chunks.Select(chunk => chunk.Length).ShouldBe([chunkSize, 100]);
+        chunks.SelectMany(chunk => chunk.Content).ShouldBe(bytes);
+    }
+
+    [Fact]
+    public async Task UploadAsync_WithShortReadsOverSizeLimit_RollsBackBeforeWritingAChunk()
+    {
+        await using var context = CreateContext();
+        var sut = CreateProvider(context, new BlobStoreOptions { ChunkSize = 16, MaxBlobSize = 5 });
+        using var stream = new CountingNonSeekableReadStream(new byte[10], 1);
+
+        var result = await sut.UploadAsync(CreateUpload(stream));
+
+        result.HasError<BlobStoreSizeLimitExceededError>().ShouldBeTrue();
+        stream.ReadCount.ShouldBe(6);
+        (await context.StorageBlobs.CountAsync()).ShouldBe(0);
+        (await context.StorageBlobChunks.CountAsync()).ShouldBe(0);
+    }
+
     [Fact]
     public async Task UploadAsync_WithNonSeekableStream_ReadsInConfiguredChunks()
     {
@@ -702,7 +752,7 @@ public sealed class EntityFrameworkBlobStoreProviderUploadDownloadTests
     {
         var blob = new StorageBlob
         {
-            Id = Guid.NewGuid().ToString("N"),
+            Id = Guid.NewGuid(),
             Container = "reports",
             Name = "file.bin",
             ContainerHash = HashHelper.ComputeSha256("reports"),
@@ -831,11 +881,26 @@ public sealed class EntityFrameworkBlobStoreProviderUploadDownloadTests
         }
     }
 
-    private sealed class CountingNonSeekableReadStream(byte[] content) : Stream
+    private sealed class CountingSeekableReadStream(byte[] content, bool hasLength) : MemoryStream(content)
+    {
+        public override long Length => hasLength ? base.Length : throw new NotSupportedException();
+
+        public int? FirstRequestedReadSize { get; private set; }
+
+        public override ValueTask<int> ReadAsync(Memory<byte> buffer, CancellationToken cancellationToken = default)
+        {
+            this.FirstRequestedReadSize ??= buffer.Length;
+            return base.ReadAsync(buffer, cancellationToken);
+        }
+    }
+
+    private sealed class CountingNonSeekableReadStream(byte[] content, int maximumRead = int.MaxValue) : Stream
     {
         private readonly MemoryStream inner = new(content);
 
         public int ReadCount { get; private set; }
+
+        public int? FirstRequestedReadSize { get; private set; }
 
         public int MaxRequestedReadSize { get; private set; }
 
@@ -860,8 +925,9 @@ public sealed class EntityFrameworkBlobStoreProviderUploadDownloadTests
         public override async ValueTask<int> ReadAsync(Memory<byte> buffer, CancellationToken cancellationToken = default)
         {
             this.ReadCount++;
+            this.FirstRequestedReadSize ??= buffer.Length;
             this.MaxRequestedReadSize = Math.Max(this.MaxRequestedReadSize, buffer.Length);
-            return await this.inner.ReadAsync(buffer, cancellationToken);
+            return await this.inner.ReadAsync(buffer[..Math.Min(buffer.Length, maximumRead)], cancellationToken);
         }
 
         public override long Seek(long offset, SeekOrigin origin) => throw new NotSupportedException();

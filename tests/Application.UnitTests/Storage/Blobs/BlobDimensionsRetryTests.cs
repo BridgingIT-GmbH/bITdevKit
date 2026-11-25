@@ -14,7 +14,7 @@ public sealed class BlobDimensionsRetryTests
         inner.UploadAsync(Arg.Any<BlobUpload>(), Arg.Any<CancellationToken>()).Returns(async call =>
         {
             await call.Arg<BlobUpload>().Content.CopyToAsync(Stream.Null);
-            return Result<BlobInfo>.Failure(new BlobStoreProviderError("Final publication failed."));
+            return Result<BlobInfo>.Failure(new BlobStoreProviderError("Final publication failed.", isTransient: true));
         });
         var sut = new RetryBlobStoreClientBehavior(inner, new() { Attempts = 3 });
         using var stream = new MemoryStream([1, 2, 3]);

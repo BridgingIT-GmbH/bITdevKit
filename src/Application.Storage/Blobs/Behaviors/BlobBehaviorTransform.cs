@@ -86,15 +86,22 @@ public static class BlobBehaviorTransform
     /// var copy = await BlobBehaviorTransform.CopyAndHashAsync(source, destination, cancellationToken);
     /// </code>
     /// </example>
-    public static async Task<BlobTransformCopyResult> CopyAndHashAsync(
+    public static Task<BlobTransformCopyResult> CopyAndHashAsync(
         Stream source,
         Stream destination,
+        CancellationToken cancellationToken) =>
+        CopyAndHashAsync(source, destination, maximumBytes: null, cancellationToken);
+
+    internal static async Task<BlobTransformCopyResult> CopyAndHashAsync(
+        Stream source,
+        Stream destination,
+        long? maximumBytes,
         CancellationToken cancellationToken)
     {
         var result = await StreamHelper.CopyAsync(
                 source,
                 destination,
-                new StreamCopyOptions { BufferSize = BufferSize, HashAlgorithm = HashAlgorithmName.SHA256 },
+                new StreamCopyOptions { BufferSize = BufferSize, HashAlgorithm = HashAlgorithmName.SHA256, MaximumBytes = maximumBytes },
                 cancellationToken)
             .ConfigureAwait(false);
         return new BlobTransformCopyResult(result.Length, $"{BlobContentHash.Prefix}{result.Hash}");

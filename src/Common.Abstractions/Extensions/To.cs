@@ -32,7 +32,12 @@ public static partial class Extensions
                 return defaultValue;
             }
 
-            var targetType = typeof(TValue);
+            if (source is TValue value)
+            {
+                return value;
+            }
+
+            var targetType = Nullable.GetUnderlyingType(typeof(TValue)) ?? typeof(TValue);
 
             try
             {
@@ -44,12 +49,12 @@ public static partial class Extensions
                 if (targetType == typeof(Guid))
                 {
                     return (TValue)TypeDescriptor.GetConverter(targetType)
-                        .ConvertFrom(Convert.ToString(source, cultureInfo ?? CultureInfo.InvariantCulture));
+                        .ConvertFrom(FormatConversionValue(source, cultureInfo));
                 }
 
                 if (targetType == typeof(DateTime))
                 {
-                    if (DateTime.TryParse(Convert.ToString(source, cultureInfo ?? CultureInfo.InvariantCulture),
+                    if (DateTime.TryParse(FormatConversionValue(source, cultureInfo),
                             cultureInfo ?? CultureInfo.InvariantCulture,
                             DateTimeStyles.AdjustToUniversal | DateTimeStyles.AssumeUniversal,
                             out var result))
@@ -67,7 +72,7 @@ public static partial class Extensions
 
                 if (targetType == typeof(DateTimeOffset))
                 {
-                    if (DateTimeOffset.TryParse(Convert.ToString(source, cultureInfo ?? CultureInfo.InvariantCulture),
+                    if (DateTimeOffset.TryParse(FormatConversionValue(source, cultureInfo),
                             cultureInfo ?? CultureInfo.InvariantCulture,
                             DateTimeStyles.AdjustToUniversal | DateTimeStyles.AssumeUniversal,
                             out var result))
@@ -81,6 +86,16 @@ public static partial class Extensions
                     }
 
                     return defaultValue;
+                }
+
+                if (targetType == typeof(TimeSpan))
+                {
+                    return (TValue)(object)TimeSpan.Parse(FormatConversionValue(source, cultureInfo), cultureInfo ?? CultureInfo.InvariantCulture);
+                }
+
+                if (targetType == typeof(string) && source is DateTime or DateTimeOffset or TimeSpan)
+                {
+                    return (TValue)(object)FormatConversionValue(source, cultureInfo);
                 }
 
                 if (targetType is IConvertible || (targetType.IsValueType && !targetType.IsEnum))
@@ -136,6 +151,13 @@ public static partial class Extensions
                 return defaultValue;
             }
 
+            if (targetType.IsInstanceOfType(source))
+            {
+                return source;
+            }
+
+            targetType = Nullable.GetUnderlyingType(targetType) ?? targetType;
+
             try
             {
                 if (source.GetType() == typeof(StringValues))
@@ -146,12 +168,12 @@ public static partial class Extensions
                 if (targetType == typeof(Guid))
                 {
                     return TypeDescriptor.GetConverter(targetType)
-                        .ConvertFrom(Convert.ToString(source, cultureInfo ?? CultureInfo.InvariantCulture));
+                        .ConvertFrom(FormatConversionValue(source, cultureInfo));
                 }
 
                 if (targetType == typeof(DateTime))
                 {
-                    if (DateTime.TryParse(Convert.ToString(source, cultureInfo ?? CultureInfo.InvariantCulture),
+                    if (DateTime.TryParse(FormatConversionValue(source, cultureInfo),
                             cultureInfo ?? CultureInfo.InvariantCulture,
                             DateTimeStyles.AdjustToUniversal | DateTimeStyles.AssumeUniversal,
                             out var result))
@@ -169,7 +191,7 @@ public static partial class Extensions
 
                 if (targetType == typeof(DateTimeOffset))
                 {
-                    if (DateTimeOffset.TryParse(Convert.ToString(source, cultureInfo ?? CultureInfo.InvariantCulture),
+                    if (DateTimeOffset.TryParse(FormatConversionValue(source, cultureInfo),
                             cultureInfo ?? CultureInfo.InvariantCulture,
                             DateTimeStyles.AdjustToUniversal | DateTimeStyles.AssumeUniversal,
                             out var result))
@@ -183,6 +205,16 @@ public static partial class Extensions
                     }
 
                     return defaultValue;
+                }
+
+                if (targetType == typeof(TimeSpan))
+                {
+                    return TimeSpan.Parse(FormatConversionValue(source, cultureInfo), cultureInfo ?? CultureInfo.InvariantCulture);
+                }
+
+                if (targetType == typeof(string) && source is DateTime or DateTimeOffset or TimeSpan)
+                {
+                    return FormatConversionValue(source, cultureInfo);
                 }
 
                 if (targetType is IConvertible || (targetType.IsValueType && !targetType.IsEnum))
@@ -230,21 +262,27 @@ public static partial class Extensions
                 return false;
             }
 
-            var targetType = typeof(TValue);
+            if (source is TValue value)
+            {
+                result = value;
+                return true;
+            }
+
+            var targetType = Nullable.GetUnderlyingType(typeof(TValue)) ?? typeof(TValue);
 
             try
             {
                 if (targetType == typeof(Guid))
                 {
                     result = (TValue)TypeDescriptor.GetConverter(targetType)
-                        .ConvertFrom(Convert.ToString(source, cultureInfo ?? CultureInfo.InvariantCulture));
+                        .ConvertFrom(FormatConversionValue(source, cultureInfo));
 
                     return true;
                 }
 
                 if (targetType == typeof(DateTime))
                 {
-                    if (DateTime.TryParse(Convert.ToString(source, cultureInfo ?? CultureInfo.InvariantCulture),
+                    if (DateTime.TryParse(FormatConversionValue(source, cultureInfo),
                             cultureInfo ?? CultureInfo.InvariantCulture,
                             DateTimeStyles.AdjustToUniversal | DateTimeStyles.AssumeUniversal,
                             out var dateTimeResult))
@@ -261,7 +299,7 @@ public static partial class Extensions
 
                 if (targetType == typeof(DateTimeOffset))
                 {
-                    if (DateTimeOffset.TryParse(Convert.ToString(source, cultureInfo ?? CultureInfo.InvariantCulture),
+                    if (DateTimeOffset.TryParse(FormatConversionValue(source, cultureInfo),
                             cultureInfo ?? CultureInfo.InvariantCulture,
                             DateTimeStyles.AdjustToUniversal | DateTimeStyles.AssumeUniversal,
                             out var dateTimeResult))
@@ -274,6 +312,19 @@ public static partial class Extensions
                     result = default;
 
                     return false;
+                }
+
+                if (targetType == typeof(TimeSpan))
+                {
+                    var parsed = TimeSpan.TryParse(FormatConversionValue(source, cultureInfo), cultureInfo ?? CultureInfo.InvariantCulture, out var duration);
+                    result = parsed ? (TValue)(object)duration : default;
+                    return parsed;
+                }
+
+                if (targetType == typeof(string) && source is DateTime or DateTimeOffset or TimeSpan)
+                {
+                    result = (TValue)(object)FormatConversionValue(source, cultureInfo);
+                    return true;
                 }
 
                 if (targetType is IConvertible || (targetType.IsValueType && !targetType.IsEnum))
@@ -339,19 +390,27 @@ public static partial class Extensions
                 return false;
             }
 
+            if (targetType.IsInstanceOfType(source))
+            {
+                result = source;
+                return true;
+            }
+
+            targetType = Nullable.GetUnderlyingType(targetType) ?? targetType;
+
             try
             {
                 if (targetType == typeof(Guid))
                 {
                     result = TypeDescriptor.GetConverter(targetType)
-                        .ConvertFrom(Convert.ToString(source, cultureInfo ?? CultureInfo.InvariantCulture));
+                        .ConvertFrom(FormatConversionValue(source, cultureInfo));
 
                     return true;
                 }
 
                 if (targetType == typeof(DateTime))
                 {
-                    if (DateTime.TryParse(Convert.ToString(source, cultureInfo ?? CultureInfo.InvariantCulture),
+                    if (DateTime.TryParse(FormatConversionValue(source, cultureInfo),
                             cultureInfo ?? CultureInfo.InvariantCulture,
                             DateTimeStyles.AdjustToUniversal | DateTimeStyles.AssumeUniversal,
                             out var dateTimeResult))
@@ -368,7 +427,7 @@ public static partial class Extensions
 
                 if (targetType == typeof(DateTimeOffset))
                 {
-                    if (DateTimeOffset.TryParse(Convert.ToString(source, cultureInfo ?? CultureInfo.InvariantCulture),
+                    if (DateTimeOffset.TryParse(FormatConversionValue(source, cultureInfo),
                             cultureInfo ?? CultureInfo.InvariantCulture,
                             DateTimeStyles.AdjustToUniversal | DateTimeStyles.AssumeUniversal,
                             out var dateTimeResult))
@@ -381,6 +440,19 @@ public static partial class Extensions
                     result = null;
 
                     return false;
+                }
+
+                if (targetType == typeof(TimeSpan))
+                {
+                    var parsed = TimeSpan.TryParse(FormatConversionValue(source, cultureInfo), cultureInfo ?? CultureInfo.InvariantCulture, out var duration);
+                    result = parsed ? duration : null;
+                    return parsed;
+                }
+
+                if (targetType == typeof(string) && source is DateTime or DateTimeOffset or TimeSpan)
+                {
+                    result = FormatConversionValue(source, cultureInfo);
+                    return true;
                 }
 
                 if (targetType is IConvertible || (targetType.IsValueType && !targetType.IsEnum))
@@ -437,5 +509,13 @@ public static partial class Extensions
             }
         }
     }
+
+    private static string FormatConversionValue(object value, CultureInfo culture) => value switch
+    {
+        DateTime dateTime => dateTime.ToString("O", CultureInfo.InvariantCulture),
+        DateTimeOffset offset => offset.ToString("O", CultureInfo.InvariantCulture),
+        TimeSpan duration => duration.ToString("c", CultureInfo.InvariantCulture),
+        _ => Convert.ToString(value, culture ?? CultureInfo.InvariantCulture)
+    };
 
 }

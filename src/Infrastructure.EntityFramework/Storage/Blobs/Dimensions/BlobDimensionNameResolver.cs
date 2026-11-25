@@ -8,7 +8,11 @@ using Microsoft.EntityFrameworkCore.Storage;
 using System.Security.Cryptography;
 using System.Text;
 
-internal sealed class BlobDimensionNameResolver<TContext>(IServiceScopeFactory scopes) where TContext : DbContext
+/// <summary>Resolves blob dimension names to database IDs and registers missing names within the blob transaction.</summary>
+/// <typeparam name="TContext">The relational context type that maps the blob dimension name table.</typeparam>
+/// <param name="scopes">Creates scopes for the contexts used to register new names in the owner transaction.</param>
+/// <example><code>var resolver = new BlobDimensionNameResolver&lt;AppDbContext&gt;(scopeFactory);</code></example>
+public sealed class BlobDimensionNameResolver<TContext>(IServiceScopeFactory scopes) where TContext : DbContext
 {
     private readonly Lazy<BlobDimensionNameCache> cache = new(() => new());
 
@@ -17,10 +21,24 @@ internal sealed class BlobDimensionNameResolver<TContext>(IServiceScopeFactory s
     private long registrationConflicts;
     private long acknowledgedNames;
 
+    /// <summary>Gets the number of name IDs in the resolver's shared cache.</summary>
+    /// <example><code>var cached = resolver.CachedNames;</code></example>
     public int CachedNames => this.cache.IsValueCreated ? this.cache.Value.Count : 0;
 
+    /// <summary>Starts a session for name lookups and value changes in one blob transaction.</summary>
+    /// <returns>A new session that should be disposed when the operation ends.</returns>
+    /// <example><code>await using var session = resolver.BeginSession();</code></example>
     public BlobDimensionMutationSession BeginSession() => new(this.cache.Value);
 
+    /// <summary>Publishes committed name IDs to the shared cache and records acknowledged registrations.</summary>
+    /// <param name="session">The session to publish after its transaction has committed.</param>
+    /// <remarks>Publication is skipped inside an ambient transaction and for sessions already published.</remarks>
+    /// <example>
+    /// <code>
+    /// await transaction.CommitAsync(cancellationToken);
+    /// resolver.PublishCommitted(session);
+    /// </code>
+    /// </example>
     public void PublishCommitted(BlobDimensionMutationSession session)
     {
         if (session.Published || System.Transactions.Transaction.Current is not null) return;
@@ -29,6 +47,9 @@ internal sealed class BlobDimensionNameResolver<TContext>(IServiceScopeFactory s
         if (session.NewRegistrations > 0) Interlocked.Add(ref this.acknowledgedNames, session.NewRegistrations);
     }
 
+    /// <summary>Captures name cache, admission, and registration counters for this resolver.</summary>
+    /// <returns>The current dimension name diagnostics.</returns>
+    /// <example><code>var diagnostics = resolver.Capture();</code></example>
     public BlobDimensionDiagnostics Capture() => new()
     {
         PositiveCacheEntries = this.CachedNames,
@@ -39,8 +60,17 @@ internal sealed class BlobDimensionNameResolver<TContext>(IServiceScopeFactory s
         RegistrationsPerSecond = Interlocked.Read(ref this.acknowledgedNames) / Math.Max(1, this.lifetime.Elapsed.TotalSeconds)
     };
 
+    /// <summary>Clears cached names and invalidates cache publication by existing sessions.</summary>
+    /// <example><code>resolver.Clear();</code></example>
     public void Clear() { if (this.cache.IsValueCreated) this.cache.Value.Clear(); }
 
+    /// <summary>Looks up the existing IDs of dimension names for a blob read.</summary>
+    /// <param name="root">The context used by the current blob read.</param>
+    /// <param name="scope">The container in which the names are registered.</param>
+    /// <param name="names">The dimension names to resolve.</param>
+    /// <param name="token">Cancels the lookup.</param>
+    /// <returns>The IDs found, keyed by canonical name, or a failure for an invalid scope or a hash collision.</returns>
+    /// <example><code>var resolved = await resolver.ResolveForReadAsync(context, "reports", ["year"], cancellationToken);</code></example>
     public async Task<Result<IReadOnlyDictionary<string, long>>> ResolveForReadAsync(TContext root, string scope, IEnumerable<string> names, CancellationToken token)
     {
         await using var session = this.BeginSession();
@@ -49,6 +79,14 @@ internal sealed class BlobDimensionNameResolver<TContext>(IServiceScopeFactory s
         return result;
     }
 
+    /// <summary>Resolves dimension names and adds missing dictionary entries in the current blob transaction.</summary>
+    /// <param name="root">The owner context. New names require an active transaction on this context.</param>
+    /// <param name="scope">The container in which to resolve or register the names.</param>
+    /// <param name="names">All dimension names required by the write.</param>
+    /// <param name="session">The session that tracks name IDs and new registrations for this transaction.</param>
+    /// <param name="token">Cancels lookups, registration, or waiting for a registration slot.</param>
+    /// <returns>All requested IDs keyed by canonical name, or a failure if the names cannot be resolved or registered.</returns>
+    /// <example><code>var resolved = await resolver.ResolveForWriteAsync(context, "reports", ["year"], session, cancellationToken);</code></example>
     public async Task<Result<IReadOnlyDictionary<string, long>>> ResolveForWriteAsync(TContext root, string scope, IEnumerable<string> names,
         BlobDimensionMutationSession session, CancellationToken token)
     {
@@ -100,6 +138,14 @@ internal sealed class BlobDimensionNameResolver<TContext>(IServiceScopeFactory s
         return result.IsSuccess && result.Value.Count != requested.Length ? Result<IReadOnlyDictionary<string, long>>.Failure(new BlobDimensionRegistrationContentionError()) : result;
     }
 
+    /// <summary>Looks up previously registered dimension names using the supplied mutation session.</summary>
+    /// <param name="root">The context used by the current blob mutation.</param>
+    /// <param name="scope">The container in which the names are registered.</param>
+    /// <param name="names">The dimension names to resolve.</param>
+    /// <param name="session">The session that tracks name IDs for this mutation.</param>
+    /// <param name="token">Cancels the lookup.</param>
+    /// <returns>The IDs found, keyed by canonical name, or a failure for an invalid scope or a hash collision.</returns>
+    /// <example><code>var resolved = await resolver.ResolveExistingAsync(context, "reports", ["year"], session, cancellationToken);</code></example>
     public Task<Result<IReadOnlyDictionary<string, long>>> ResolveExistingAsync(TContext root, string scope, IEnumerable<string> names,
         BlobDimensionMutationSession session, CancellationToken token) => this.LookupAsync(root, scope, names, session, token);
 

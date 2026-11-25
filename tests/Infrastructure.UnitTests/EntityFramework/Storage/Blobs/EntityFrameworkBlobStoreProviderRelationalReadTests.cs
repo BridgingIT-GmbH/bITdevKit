@@ -14,6 +14,7 @@ using Microsoft.Data.Sqlite;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Diagnostics;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Time.Testing;
 
 [UnitTest("Infrastructure")]
 public sealed class EntityFrameworkBlobStoreProviderRelationalReadTests : IDisposable
@@ -22,6 +23,7 @@ public sealed class EntityFrameworkBlobStoreProviderRelationalReadTests : IDispo
 
     private readonly SqliteConnection connection = new("DataSource=:memory:");
     private readonly CommandCounter counter = new();
+    private readonly SaveObserver saves = new();
     private readonly ServiceProvider services;
 
     public EntityFrameworkBlobStoreProviderRelationalReadTests()
@@ -30,7 +32,7 @@ public sealed class EntityFrameworkBlobStoreProviderRelationalReadTests : IDispo
         var collection = new ServiceCollection();
         collection.AddDbContext<RelationalBlobDbContext>(options => options
             .UseSqlite(this.connection)
-            .AddInterceptors(this.counter));
+            .AddInterceptors(this.counter, this.saves));
         this.services = collection.BuildServiceProvider();
 
         using var scope = this.services.CreateScope();
@@ -41,6 +43,180 @@ public sealed class EntityFrameworkBlobStoreProviderRelationalReadTests : IDispo
     {
         this.services.Dispose();
         this.connection.Dispose();
+    }
+
+    [Fact]
+    public async Task SweepExpiredAsync_WhenOneDeleteConflicts_CommitsTheOtherBlobs()
+    {
+        var sut = this.CreateProvider(new BlobStoreOptions { ChunkSize = 2 });
+        var cutoff = DateTimeOffset.UtcNow;
+        var keys = new BlobKey[] { new("reports", "first"), new("reports", "raced"), new("reports", "last") };
+        for (var index = 0; index < keys.Length; index++)
+        {
+            (await sut.UploadAsync(new()
+            {
+                Key = keys[index],
+                Content = new MemoryStream([1, 2, 3]),
+                ExpiresAt = cutoff.AddMinutes(-3 + index)
+            })).IsSuccess.ShouldBeTrue();
+        }
+
+        var transactions = new List<Guid>();
+        this.saves.BeforeSave = dbContext =>
+        {
+            var deleted = dbContext.ChangeTracker.Entries<StorageBlob>().SingleOrDefault(entry => entry.State == EntityState.Deleted);
+            if (deleted is null)
+            {
+                return;
+            }
+
+            transactions.Add(dbContext.Database.CurrentTransaction.TransactionId);
+            if (deleted.Entity.Name == keys[1].Name)
+            {
+                throw new DbUpdateConcurrencyException("Simulated concurrent blob update.");
+            }
+        };
+
+        var result = await sut.SweepExpiredAsync(new() { ExpiresOnOrBefore = cutoff, BatchSize = 10, MaxBatches = 1 });
+
+        result.IsSuccess.ShouldBeTrue();
+        result.Value.DeletedCount.ShouldBe(2);
+        result.Value.SkippedCount.ShouldBe(1);
+        result.Value.DeletedKeys.ShouldBe([keys[0], keys[2]]);
+        transactions.Distinct().Count().ShouldBe(3);
+        using var scope = this.services.CreateScope();
+        var stored = scope.ServiceProvider.GetRequiredService<RelationalBlobDbContext>();
+        (await stored.StorageBlobs.SingleAsync()).Name.ShouldBe(keys[1].Name);
+        (await stored.StorageBlobChunks.CountAsync()).ShouldBe(2);
+    }
+
+    [Theory]
+    [InlineData(false, false)]
+    [InlineData(false, true)]
+    [InlineData(true, false)]
+    [InlineData(true, true)]
+    public async Task UploadAsync_WhenInsertRaces_ClassifiesTheFailureByOverwriteMode(bool concurrency, bool createOnly)
+    {
+        var sut = this.CreateProvider(new BlobStoreOptions());
+        this.saves.BeforeSave = dbContext =>
+        {
+            if (dbContext.ChangeTracker.Entries<StorageBlob>().Any(entry => entry.State == EntityState.Added))
+            {
+                throw concurrency
+                    ? new DbUpdateConcurrencyException("Simulated concurrent blob update.")
+                    : new DbUpdateException("UNIQUE constraint failed: __Storage_Blobs.ContainerHash, __Storage_Blobs.NameHash");
+            }
+        };
+
+        var result = await sut.UploadAsync(new()
+        {
+            Key = Key,
+            Content = new MemoryStream([1]),
+            OverwriteMode = createOnly ? BlobOverwriteMode.FailIfExists : BlobOverwriteMode.Overwrite
+        });
+
+        result.HasError<BlobStoreConflictError>().ShouldBe(createOnly && !concurrency);
+        result.HasError<BlobStoreLeaseError>().ShouldBe(!createOnly || concurrency);
+        using var scope = this.services.CreateScope();
+        var stored = scope.ServiceProvider.GetRequiredService<RelationalBlobDbContext>();
+        (await stored.StorageBlobs.AnyAsync()).ShouldBeFalse();
+    }
+
+    [Fact]
+    public async Task EntityFrameworkClient_WithRegisteredClock_TimestampsMutationsAndHidesExpiredBlob()
+    {
+        var start = new DateTimeOffset(2026, 7, 16, 10, 0, 0, TimeSpan.Zero);
+        var clock = new FakeTimeProvider(start);
+        var collection = new ServiceCollection();
+        collection.AddSingleton<TimeProvider>(clock);
+        collection.AddDbContext<RelationalBlobDbContext>(options => options.UseSqlite(this.connection));
+        collection.AddBlobStorage().WithEntityFrameworkClient<RelationalBlobDbContext>("reports");
+        using var services = collection.BuildServiceProvider();
+        using var scope = services.CreateScope();
+        var provider = scope.ServiceProvider.GetRequiredKeyedService<IBlobStoreProvider>("reports");
+        var sut = scope.ServiceProvider.GetRequiredService<IBlobStoreClientFactory>().CreateClient("reports");
+        var expires = start.AddHours(1);
+
+        var upload = await sut.UploadAsync(new() { Key = Key, Content = new MemoryStream([1]), ExpiresAt = expires });
+        upload.IsSuccess.ShouldBeTrue();
+        upload.Value.CreatedAt.ShouldBe(start);
+        upload.Value.LastModifiedAt.ShouldBe(start);
+
+        clock.Advance(TimeSpan.FromMinutes(1));
+        var properties = await sut.UpdatePropertiesAsync(new() { Key = Key, ExpiresAt = expires });
+        properties.IsSuccess.ShouldBeTrue();
+        properties.Value.CreatedAt.ShouldBe(start);
+        properties.Value.LastModifiedAt.ShouldBe(clock.GetUtcNow());
+
+        clock.Advance(TimeSpan.FromMinutes(1));
+        var dimensions = BlobDimensions.Create(new Dictionary<string, object> { ["year"] = 2026 }).Value;
+        var updated = await sut.UpdateDimensionsAsync(new() { Key = Key, Dimensions = dimensions });
+        updated.IsSuccess.ShouldBeTrue();
+        updated.Value.CreatedAt.ShouldBe(start);
+        updated.Value.LastModifiedAt.ShouldBe(clock.GetUtcNow());
+
+        clock.SetUtcNow(expires.AddTicks(-1));
+        (await sut.ExistsAsync(Key)).Value.ShouldBeTrue();
+        clock.Advance(TimeSpan.FromTicks(1));
+        (await sut.GetPropertiesAsync(Key)).HasError<BlobStoreNotFoundError>().ShouldBeTrue();
+        (await sut.ExistsAsync(Key)).Value.ShouldBeFalse();
+
+        var retention = Assert.IsAssignableFrom<IBlobStoreRetentionProvider>(provider);
+        var swept = await retention.SweepExpiredAsync(new() { ExpiresOnOrBefore = expires, BatchSize = 10, MaxBatches = 1 });
+        swept.IsSuccess.ShouldBeTrue();
+        swept.Value.DeletedKeys.ShouldBe([Key]);
+        swept.Value.CompletedAt.ShouldBe(expires);
+    }
+
+    [Fact]
+    public async Task ExpiredRows_InSqlite_AreHiddenUntilReplacementRemovesDependents()
+    {
+        var options = new BlobStoreOptions { ChunkSize = 4, AllowFullScans = true };
+        var sut = this.CreateProvider(options);
+        var expired = new BlobKey("reports", "a-expired");
+        var expiredInline = new BlobKey("reports", "b-expired");
+        var live = new BlobKey("reports", "c-live");
+        var past = DateTimeOffset.UtcNow.AddHours(-1);
+        var dimensions = BlobDimensions.Create(new Dictionary<string, object> { ["year"] = 2026 }).Value;
+        (await sut.UploadAsync(new() { Key = expired, Content = new MemoryStream([1, 2, 3, 4, 5]), ExpiresAt = past, Dimensions = dimensions }))
+            .IsSuccess.ShouldBeTrue();
+        (await sut.UploadAsync(new() { Key = expiredInline, Content = new MemoryStream([1]), ExpiresAt = past }))
+            .IsSuccess.ShouldBeTrue();
+        (await sut.UploadAsync(new() { Key = live, Content = new MemoryStream([2, 3, 4, 5, 6]) }))
+            .IsSuccess.ShouldBeTrue();
+
+        var direct = await sut.DownloadManyAsync([expired, expiredInline, live]);
+        direct[expired].HasError<BlobStoreNotFoundError>().ShouldBeTrue();
+        direct[expiredInline].HasError<BlobStoreNotFoundError>().ShouldBeTrue();
+        direct.ContainsKey(live).ShouldBeFalse("the public client reads live large blobs through the single-read fallback");
+        var client = new BlobStoreClient("ef", sut, options);
+        var batch = await client.DownloadBytesManyAsync([expired, expiredInline, live]);
+        batch.Value[2].Result.Value.Bytes.ShouldBe([2, 3, 4, 5, 6]);
+        (await client.UpdateDimensionsAsync(new() { Key = expired, Dimensions = BlobDimensions.Empty }))
+            .HasError<BlobStoreNotFoundError>().ShouldBeTrue();
+        var page = await client.ListPageAsync(
+            new BlobFilterScope("reports", AllowFullScan: true), new FilterModel { PageSize = 1 }, null);
+        page.IsSuccess.ShouldBeTrue(string.Join(Environment.NewLine, page.Errors.Select(error => error.Message)));
+        page.Value.Items.Select(item => item.Key).ShouldBe([live]);
+
+        using var scope = this.services.CreateScope();
+        var context = scope.ServiceProvider.GetRequiredService<RelationalBlobDbContext>();
+        var oldId = await context.StorageBlobs.Where(blob => blob.Name == expired.Name).Select(blob => blob.Id).SingleAsync();
+        (await context.StorageBlobChunks.CountAsync(chunk => chunk.BlobId == oldId)).ShouldBe(2);
+        (await context.Set<StorageBlobDimension>().CountAsync(value => value.BlobId == oldId)).ShouldBe(1);
+        (await sut.UploadAsync(new()
+        {
+            Key = expired,
+            Content = new MemoryStream([7]),
+            OverwriteMode = BlobOverwriteMode.FailIfExists
+        })).IsSuccess.ShouldBeTrue();
+        (await context.StorageBlobs.AnyAsync(blob => blob.Id == oldId)).ShouldBeFalse();
+        (await context.StorageBlobChunks.AnyAsync(chunk => chunk.BlobId == oldId)).ShouldBeFalse();
+        (await context.Set<StorageBlobDimension>().AnyAsync(value => value.BlobId == oldId)).ShouldBeFalse();
+
+        var sweep = await sut.SweepExpiredAsync(new() { ExpiresOnOrBefore = past, BatchSize = 10, MaxBatches = 1 });
+        sweep.IsSuccess.ShouldBeTrue();
+        sweep.Value.DeletedKeys.ShouldBe([expiredInline]);
     }
 
     [Fact]
@@ -390,21 +566,19 @@ public sealed class EntityFrameworkBlobStoreProviderRelationalReadTests : IDispo
             .Select(b => b.Id)
             .ToListAsync();
         ids.Count.ShouldBe(10);
-        ids.ShouldBe(ids.OrderBy(id => id, StringComparer.Ordinal).ToList());
-        ids.ShouldAllBe(id => id.Length == 32 && id[12] == '7');
+        ids.ShouldBe(ids.OrderBy(id => id).ToList());
+        ids.ShouldAllBe(id => id.Version == 7);
     }
 
     [Fact]
-    public void CreateId_ReturnsVersion7GuidInNFormat()
+    public void CreateId_ReturnsVersion7Guid()
     {
         // Arrange & Act
         var id = StorageBlob.CreateId();
 
         // Assert
-        id.Length.ShouldBe(32);
-        Guid.TryParseExact(id, "N", out var guid).ShouldBeTrue();
-        guid.Version.ShouldBe(7);
-        new StorageBlob().Id.Length.ShouldBe(32);
+        id.Version.ShouldBe(7);
+        new StorageBlob().Id.Version.ShouldBe(7);
     }
 
     private async Task<BlobKey[]> UploadManyAsync(
@@ -446,6 +620,20 @@ public sealed class EntityFrameworkBlobStoreProviderRelationalReadTests : IDispo
         public DbSet<StorageBlob> StorageBlobs { get; set; }
 
         public DbSet<StorageBlobChunk> StorageBlobChunks { get; set; }
+    }
+
+    private sealed class SaveObserver : SaveChangesInterceptor
+    {
+        public Action<DbContext> BeforeSave { get; set; }
+
+        public override ValueTask<InterceptionResult<int>> SavingChangesAsync(
+            DbContextEventData eventData,
+            InterceptionResult<int> result,
+            CancellationToken cancellationToken = default)
+        {
+            this.BeforeSave?.Invoke(eventData.Context);
+            return base.SavingChangesAsync(eventData, result, cancellationToken);
+        }
     }
 
     private sealed class CommandCounter : DbCommandInterceptor

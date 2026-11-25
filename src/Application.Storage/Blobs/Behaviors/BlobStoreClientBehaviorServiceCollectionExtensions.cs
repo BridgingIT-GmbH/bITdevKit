@@ -72,6 +72,17 @@ public static partial class ServiceCollectionExtensions
             name));
     }
 
+    /// <summary>Registers tracing for named blob clients.</summary>
+    /// <param name="context">The blob-storage builder context.</param>
+    /// <returns>The current builder context.</returns>
+    /// <example><code>services.AddBlobStorage().WithMetricsBehavior().WithTracingBehavior();</code></example>
+    public static BlobStorageBuilderContext WithTracingBehavior(this BlobStorageBuilderContext context)
+    {
+        ArgumentNullException.ThrowIfNull(context);
+
+        return context.WithBehavior((inner, _, name) => new TracingBlobStoreClientBehavior(inner, name));
+    }
+
     /// <summary>
     /// Registers bounded, process-local upload concurrency admission for every named blob store.
     /// </summary>
@@ -154,7 +165,8 @@ public static partial class ServiceCollectionExtensions
             inner,
             serviceProvider.GetRequiredService<ICacheProvider>(),
             options,
-            name));
+            name,
+            serviceProvider.GetService<TimeProvider>()));
     }
 
     /// <summary>

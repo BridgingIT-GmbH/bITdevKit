@@ -23,7 +23,10 @@ public sealed partial class EntityFrameworkBlobStoreProvider<TContext> : IBlobDi
             return Result<BlobDimensionDiagnostics>.Success(snapshot with { DictionaryEntries = count });
         }
         catch (OperationCanceledException) { throw; }
-        catch (Exception) { return Result<BlobDimensionDiagnostics>.Failure(new BlobStoreProviderError("Dimension dictionary inspection failed.")); }
+        catch (Exception exception)
+        {
+            return Result<BlobDimensionDiagnostics>.Failure(new BlobStoreProviderError("Dimension dictionary inspection failed.", SqlServerBlobErrors.IsTransient(exception)));
+        }
     }
 
     /// <summary>Clears cached dictionary identities after external resource recreation.</summary>
@@ -68,7 +71,7 @@ public sealed partial class EntityFrameworkBlobStoreProvider<TContext> : IBlobDi
             var identity = CreateKeyIdentity(update.Key);
             var blob = await this.QueryExactBlob(dbContext, identity).SingleOrDefaultAsync(cancellationToken).ConfigureAwait(false);
 
-            if (blob is null)
+            if (blob is null || IsExpired(blob, this.timeProvider.GetUtcNow()))
             {
                 await this.RollbackAsync(transaction, cancellationToken).ConfigureAwait(false);
                 return Result<StoredBlobInfo>.Failure(new BlobStoreNotFoundError(update.Key));
@@ -112,7 +115,7 @@ public sealed partial class EntityFrameworkBlobStoreProvider<TContext> : IBlobDi
             }
 
             blob.ETag = CreateETag();
-            blob.LastModifiedAt = DateTimeOffset.UtcNow;
+            blob.LastModifiedAt = this.timeProvider.GetUtcNow();
             blob.LeaseId = null;
             blob.LeaseAcquiredBy = null;
             blob.LeaseAcquiredUntil = null;
@@ -160,7 +163,7 @@ public sealed partial class EntityFrameworkBlobStoreProvider<TContext> : IBlobDi
         {
             await this.RollbackAsync(transaction, CancellationToken.None).ConfigureAwait(false);
             await this.RestoreMetadataSnapshotIfNeededAsync(dbContext, snapshot, mutationLease, transaction, CancellationToken.None).ConfigureAwait(false);
-            return Result<StoredBlobInfo>.Failure(new BlobStoreProviderError(exception.GetFullMessage()));
+            return Result<StoredBlobInfo>.Failure(SqlServerBlobErrors.ProviderError(exception));
         }
         finally
         {

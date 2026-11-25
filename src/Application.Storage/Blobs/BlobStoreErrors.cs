@@ -189,16 +189,30 @@ public sealed class BlobStoreLeaseError(string message) : ResultErrorBase(messag
 /// </example>
 public sealed class BlobStoreSerializationError(string message) : ResultErrorBase(message);
 
-/// <summary>
-/// Represents a provider-specific blob storage failure.
-/// </summary>
-/// <param name="message">The provider failure message.</param>
-/// <example>
-/// <code>
-/// var error = new BlobStoreProviderError("Provider request failed.");
-/// </code>
-/// </example>
-public sealed class BlobStoreProviderError(string message) : ResultErrorBase(message);
+/// <summary>Represents a provider-specific blob storage failure.</summary>
+/// <example><code>var error = new BlobStoreProviderError("Provider request failed.");</code></example>
+public sealed class BlobStoreProviderError : ResultErrorBase, ITransientStorageError
+{
+    /// <summary>Creates a provider failure that is permanent by default.</summary>
+    /// <param name="message">The provider failure message.</param>
+    /// <example><code>var error = new BlobStoreProviderError("The table is missing.");</code></example>
+    public BlobStoreProviderError(string message) : this(message, false)
+    {
+    }
+
+    /// <summary>Creates a provider failure with an explicit retry classification.</summary>
+    /// <param name="message">The provider failure message.</param>
+    /// <param name="isTransient">Whether retrying may succeed.</param>
+    /// <example><code>var error = new BlobStoreProviderError("Database deadlock.", isTransient: true);</code></example>
+    public BlobStoreProviderError(string message, bool isTransient = false) : base(message)
+    {
+        this.IsTransient = isTransient;
+    }
+
+    /// <summary>Gets whether the provider identified the failure as transient.</summary>
+    /// <example><code>var retry = error.IsTransient;</code></example>
+    public bool IsTransient { get; }
+}
 
 /// <summary>
 /// Represents a provider mutation whose compensating restore also failed.
@@ -495,8 +509,11 @@ public sealed class BlobStoreUploadAdmissionTimeoutError(
 /// var error = new BlobStoreTimeoutError("download", TimeSpan.FromSeconds(30));
 /// </code>
 /// </example>
-public sealed class BlobStoreTimeoutError(string operation, TimeSpan timeout) : ResultErrorBase($"Blob storage operation '{operation}' timed out after {timeout}.")
+public sealed class BlobStoreTimeoutError(string operation, TimeSpan timeout) : ResultErrorBase($"Blob storage operation '{operation}' timed out after {timeout}."), ITransientStorageError
 {
+    /// <summary>Gets whether a timed-out operation is eligible for retry.</summary>
+    /// <example><code>var retry = error.IsTransient;</code></example>
+    public bool IsTransient => true;
 
     /// <summary>
     /// Gets the timed-out blob operation name.

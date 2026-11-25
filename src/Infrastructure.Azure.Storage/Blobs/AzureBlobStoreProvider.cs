@@ -40,8 +40,34 @@ public partial class AzureBlobStoreProvider : IBlobStoreProvider, IBlobStoreRete
     {
         try
         {
-            return Result<IReadOnlyList<string>>.Success(
-                await this.backend.ListContainersAsync(cancellationToken).ConfigureAwait(false));
+            var now = DateTimeOffset.UtcNow;
+            var containers = await this.backend.ListContainersAsync(cancellationToken).ConfigureAwait(false);
+            var live = new List<string>();
+            foreach (var container in containers)
+            {
+                string token = null;
+                try
+                {
+                    do
+                    {
+                        var page = await this.backend.ListPageAsync(container, null, token, 128, cancellationToken).ConfigureAwait(false);
+                        if (page.Items.Any(item => !IsExpired(item, now)))
+                        {
+                            live.Add(container);
+                            break;
+                        }
+
+                        token = page.ContinuationToken;
+                    }
+                    while (!string.IsNullOrEmpty(token));
+                }
+                catch (RequestFailedException exception) when (exception.Status == 404)
+                {
+                    // The container disappeared after the account listing.
+                }
+            }
+
+            return Result<IReadOnlyList<string>>.Success(live);
         }
         catch (OperationCanceledException) { throw; }
         catch (Exception exception)
@@ -148,6 +174,30 @@ public partial class AzureBlobStoreProvider : IBlobStoreProvider, IBlobStoreRete
 
         try
         {
+            var failIfExists = upload.OverwriteMode == BlobOverwriteMode.FailIfExists;
+            var now = DateTimeOffset.UtcNow;
+            AzureBlobProperties current = null;
+            try
+            {
+                current = await this.backend.GetPropertiesForExpirationAsync(upload.Key, cancellationToken).ConfigureAwait(false);
+            }
+            catch (RequestFailedException exception) when (exception.Status == 404)
+            {
+                // A conditional upload will still use the backend's native ETag condition.
+            }
+
+            if (current is not null && IsExpired(current, now))
+            {
+                if (!string.IsNullOrWhiteSpace(upload.IfMatchETag))
+                {
+                    return Result<StoredBlobInfo>.Failure(new BlobStoreConflictError("The conditional upload target has expired."));
+                }
+
+                // Delete before staging because Azure can remove uncommitted blocks with the old blob.
+                await this.backend.DeleteIfExistsAsync(upload.Key, current.ETag, cancellationToken).ConfigureAwait(false);
+                failIfExists = true;
+            }
+
             var committed = await this.backend.UploadAsync(
                     upload.Key,
                     upload.Content,
@@ -155,7 +205,7 @@ public partial class AzureBlobStoreProvider : IBlobStoreProvider, IBlobStoreRete
                         upload.ContentType?.MimeType(),
                         metadataResult.Value,
                         ToTags(upload.ExpiresAt),
-                        upload.OverwriteMode == BlobOverwriteMode.FailIfExists,
+                        failIfExists,
                         upload.ExpectedContentHash,
                         this.options.MaxBlobSize,
                         ContentHashMetadataKey,
@@ -208,8 +258,13 @@ public partial class AzureBlobStoreProvider : IBlobStoreProvider, IBlobStoreRete
 
         try
         {
-            var properties = await this.backend.GetPropertiesAsync(key, cancellationToken).ConfigureAwait(false);
-            var content = await this.backend.OpenReadAsync(key, cancellationToken).ConfigureAwait(false);
+            var properties = await this.backend.GetPropertiesForExpirationAsync(key, cancellationToken).ConfigureAwait(false);
+            if (IsExpired(properties, DateTimeOffset.UtcNow))
+            {
+                return Result<StoredBlobDownload>.Failure(new BlobStoreNotFoundError(key));
+            }
+
+            var content = await this.backend.OpenReadAsync(key, properties.ETag, cancellationToken).ConfigureAwait(false);
 
             return Result<StoredBlobDownload>.Success(new StoredBlobDownload
             {
@@ -242,7 +297,10 @@ public partial class AzureBlobStoreProvider : IBlobStoreProvider, IBlobStoreRete
 
         try
         {
-            return Result<StoredBlobInfo>.Success(ToInfo(await this.backend.GetPropertiesAsync(key, cancellationToken).ConfigureAwait(false)));
+            var properties = await this.backend.GetPropertiesForExpirationAsync(key, cancellationToken).ConfigureAwait(false);
+            return IsExpired(properties, DateTimeOffset.UtcNow)
+                ? Result<StoredBlobInfo>.Failure(new BlobStoreNotFoundError(key))
+                : Result<StoredBlobInfo>.Success(ToInfo(properties));
         }
         catch (OperationCanceledException)
         {
@@ -271,6 +329,17 @@ public partial class AzureBlobStoreProvider : IBlobStoreProvider, IBlobStoreRete
         try
         {
             var current = await this.backend.GetPropertiesAsync(update.Key, cancellationToken).ConfigureAwait(false);
+            if (IsExpired(current, DateTimeOffset.UtcNow))
+            {
+                return Result<StoredBlobInfo>.Failure(new BlobStoreNotFoundError(update.Key));
+            }
+
+            if (!string.IsNullOrWhiteSpace(update.IfMatchETag) &&
+                !string.Equals(update.IfMatchETag, current.ETag, StringComparison.Ordinal))
+            {
+                return Result<StoredBlobInfo>.Failure(new BlobStoreConflictError("The blob ETag changed."));
+            }
+
             var currentInfo = ToInfo(current);
             var metadataResult = ToMetadata(update.Properties ?? currentInfo.Properties,
                 update.TransformMetadata ?? currentInfo.TransformMetadata);
@@ -290,7 +359,7 @@ public partial class AzureBlobStoreProvider : IBlobStoreProvider, IBlobStoreRete
                     update.ContentType?.MimeType(),
                     metadataResult.Value,
                     ToTags(update.ExpiresAt),
-                    update.IfMatchETag ?? current.ETag,
+                    current.ETag,
                     cancellationToken)
                 .ConfigureAwait(false);
 
@@ -321,7 +390,8 @@ public partial class AzureBlobStoreProvider : IBlobStoreProvider, IBlobStoreRete
 
         try
         {
-            return Result<bool>.Success(await this.backend.ExistsAsync(key, cancellationToken).ConfigureAwait(false));
+            var properties = await this.backend.GetPropertiesForExpirationAsync(key, cancellationToken).ConfigureAwait(false);
+            return Result<bool>.Success(!IsExpired(properties, DateTimeOffset.UtcNow));
         }
         catch (OperationCanceledException)
         {
@@ -360,18 +430,26 @@ public partial class AzureBlobStoreProvider : IBlobStoreProvider, IBlobStoreRete
         try
         {
             var nativeToken = validation.Value.ContinuationToken?.NativeToken;
-            var page = await this.backend.ListPageAsync(
-                    validation.Value.Query.Container,
-                    validation.Value.Query.Prefix,
-                    nativeToken,
-                    validation.Value.Take,
-                    cancellationToken)
-                .ConfigureAwait(false);
+            var now = DateTimeOffset.UtcNow;
+            var items = new List<StoredBlobInfo>();
+            do
+            {
+                var page = await this.backend.ListPageAsync(
+                        validation.Value.Query.Container,
+                        validation.Value.Query.Prefix,
+                        nativeToken,
+                        validation.Value.Take - items.Count,
+                        cancellationToken)
+                    .ConfigureAwait(false);
+                items.AddRange(page.Items.Where(item => !IsExpired(item, now)).Select(ToInfo));
+                nativeToken = page.ContinuationToken;
+            }
+            while (items.Count < validation.Value.Take && !string.IsNullOrEmpty(nativeToken));
 
             return Result<StoredBlobPage>.Success(new StoredBlobPage
             {
-                Items = page.Items.Select(ToInfo).ToList(),
-                ContinuationToken = this.CreateContinuationToken(validation.Value.QueryHash, page.ContinuationToken)
+                Items = items,
+                ContinuationToken = this.CreateContinuationToken(validation.Value.QueryHash, nativeToken)
             });
         }
         catch (OperationCanceledException)
@@ -489,6 +567,9 @@ public partial class AzureBlobStoreProvider : IBlobStoreProvider, IBlobStoreRete
             return Result<BlobRetentionSweepResult>.Failure(MapException(exception));
         }
     }
+
+    private static bool IsExpired(AzureBlobProperties properties, DateTimeOffset cutoff) =>
+        ParseExpiresAt(properties.Metadata?.GetValueOrDefault(ExpiresAtMetadataKey)) <= cutoff;
 
     private static StoredBlobInfo ToInfo(AzureBlobProperties properties) => new()
     {

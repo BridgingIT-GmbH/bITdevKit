@@ -48,7 +48,8 @@ public static partial class ServiceCollectionExtensions
             (serviceProvider, options) => new InMemoryBlobStoreProvider(
                 contextFactory?.Invoke(serviceProvider) ?? sharedContext.Value,
                 options,
-                serviceProvider.GetService<IContinuationTokenProtector>()),
+                serviceProvider.GetService<IContinuationTokenProtector>(),
+                serviceProvider.GetService<TimeProvider>()),
             configure,
             InMemoryBlobStoreProvider.ProviderName,
             InMemoryBlobStoreProvider.CreateCapabilities(),

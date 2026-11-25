@@ -13,6 +13,38 @@ using Microsoft.Extensions.DependencyInjection;
 public sealed class BlobStoreTransformBehaviorTests
 {
     [Theory]
+    [InlineData("0")]
+    [InlineData(2)]
+    public async Task CompressionBehavior_WhenDecompressedContentExceedsStoredLength_ReturnsIntegrityError(object storedLength)
+    {
+        var key = new BlobKey("reports", "compressed");
+        using var compressed = new MemoryStream();
+        using (var gzip = new System.IO.Compression.GZipStream(compressed, System.IO.Compression.CompressionMode.Compress, leaveOpen: true))
+        {
+            gzip.Write([1, 2, 3]);
+        }
+
+        compressed.Position = 0;
+        var provider = new InMemoryBlobStoreProvider();
+        var uploaded = await provider.UploadAsync(new()
+        {
+            Key = key,
+            Content = compressed,
+            TransformMetadata = new()
+            {
+                [BlobBehaviorTransform.CompressionAlgorithmKey] = "gzip",
+                [BlobBehaviorTransform.CompressionLengthKey] = storedLength
+            }
+        });
+        uploaded.IsSuccess.ShouldBeTrue();
+        var sut = new CompressionBlobStoreClientBehavior(new BlobStoreClient("InMemory", provider));
+
+        var result = await sut.DownloadAsync(key);
+
+        result.HasError<BlobStoreIntegrityError>().ShouldBeTrue();
+    }
+
+    [Theory]
     [InlineData(false)]
     [InlineData(true)]
     public async Task TransformBehavior_WithUnsupportedProperties_FailsBeforeReadingProvider(bool encrypt)

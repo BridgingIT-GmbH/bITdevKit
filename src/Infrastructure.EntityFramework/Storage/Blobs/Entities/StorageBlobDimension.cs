@@ -10,15 +10,16 @@ using System.ComponentModel.DataAnnotations.Schema;
 /// <summary>A typed, automatically indexed blob dimension value.</summary>
 /// <example><code>var page = await context.Set&lt;StorageBlobDimension&gt;().AsNoTracking().Where(row =&gt; row.NameId == nameId).Take(100).ToListAsync();</code></example>
 [Table("__Storage_BlobDimensions")]
+[EntityTypeConfiguration(typeof(BlobRowIdConfiguration.Dimension))]
 [PrimaryKey(nameof(BlobId), nameof(NameId))]
 [Index(nameof(NameId), nameof(ValueType), nameof(IntegralValue), nameof(BlobId))]
 [Index(nameof(NameId), nameof(ValueType), nameof(DecimalValue), nameof(BlobId))]
 [Index(nameof(NameId), nameof(ValueType), nameof(StringValue), nameof(BlobId))]
 public sealed class StorageBlobDimension
 {
-    /// <summary>Gets or sets the owning record identity.</summary>
-    [Required, MaxLength(64)]
-    public string BlobId { get; set; }
+    /// <summary>Gets or sets the GUID of the blob that owns this dimension.</summary>
+    /// <example><code>dimension.BlobId = blob.Id;</code></example>
+    public Guid BlobId { get; set; }
 
     /// <summary>Gets or sets the scoped dictionary identity.</summary>
     public long NameId { get; set; }

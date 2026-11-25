@@ -66,7 +66,7 @@ public sealed class BlobDeletePrefixResult
     public int DeletedCount { get; init; }
 
     /// <summary>
-    /// Gets the names of candidate blobs.
+    /// Gets the names of the first 1,000 candidate blobs observed.
     /// </summary>
     /// <example>
     /// <code>

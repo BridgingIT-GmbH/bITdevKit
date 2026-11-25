@@ -18,6 +18,7 @@ namespace BridgingIT.DevKit.Application.Storage;
 public sealed partial class CacheBlobStoreClientBehavior : IBlobStoreClient
 {
     private readonly ICacheProvider cacheProvider;
+    private readonly TimeProvider timeProvider;
     private readonly IBlobStoreClient inner;
 
     /// <summary>
@@ -39,7 +40,27 @@ public sealed partial class CacheBlobStoreClientBehavior : IBlobStoreClient
         ICacheProvider cacheProvider,
         CacheBlobStoreClientBehaviorOptions options = null,
         string storeName = null)
+        : this(loggerFactory, inner, cacheProvider, options, storeName, null)
     {
+    }
+
+    /// <summary>Initializes a download cache behavior that checks blob expiry using the supplied clock.</summary>
+    /// <param name="loggerFactory">The logger factory used by the behavior.</param>
+    /// <param name="inner">The decorated blob-store client.</param>
+    /// <param name="cacheProvider">The download cache.</param>
+    /// <param name="options">The cache behavior options.</param>
+    /// <param name="storeName">The configured blob-store client name.</param>
+    /// <param name="timeProvider">The clock. A null value selects the system clock.</param>
+    /// <example><code>var behavior = new CacheBlobStoreClientBehavior(loggerFactory, inner, cacheProvider, options, "reports", clock);</code></example>
+    public CacheBlobStoreClientBehavior(
+        ILoggerFactory loggerFactory,
+        IBlobStoreClient inner,
+        ICacheProvider cacheProvider,
+        CacheBlobStoreClientBehaviorOptions options,
+        string storeName,
+        TimeProvider timeProvider)
+    {
+        this.timeProvider = timeProvider ?? TimeProvider.System;
         this.inner = inner ?? throw new ArgumentNullException(nameof(inner));
         this.cacheProvider = cacheProvider ?? throw new ArgumentNullException(nameof(cacheProvider));
         this.Logger = loggerFactory?.CreateLogger<CacheBlobStoreClientBehavior>() ??
@@ -114,7 +135,8 @@ public sealed partial class CacheBlobStoreClientBehavior : IBlobStoreClient
         }
 
         var cacheKey = this.CreateExactCacheKey(key);
-        if (await this.cacheProvider.TryGetAsync(cacheKey, out CacheBlobDownloadEntry cached, cancellationToken).ConfigureAwait(false))
+        if (await this.cacheProvider.TryGetAsync(cacheKey, out CacheBlobDownloadEntry cached, cancellationToken).ConfigureAwait(false) &&
+            !(cached.Info?.ExpiresAt <= this.timeProvider.GetUtcNow()))
         {
             TypedLogger.LogCacheHit(this.Logger, this.StoreName);
 

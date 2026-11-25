@@ -165,6 +165,7 @@ services.AddBlobStorage(options => options
         }))
     .WithLoggingBehavior()
     .WithMetricsBehavior()
+    .WithTracingBehavior()
     .WithContentTypeDetectionBehavior()
     .WithChecksumVerificationBehavior()
     .WithCacheBehavior(cache =>
@@ -279,6 +280,12 @@ See the [filesystem provider guide](storage-filesystem-providers.md) for native 
 
 Normal blob operations use `IBlobStoreClient`. Direct helper calls require the documented ownership and persistence rules. In particular, acquire key authority before selecting a payload or deciding a mutation, and keep authority through publication. See [public storage helpers](storage-filesystem-providers.md#public-storage-helpers) for the low-level API and recovery preconditions.
 
+## Retry behavior
+
+`WithRetryBehavior()` retries a failed result only when it contains errors and every error implements `ITransientStorageError` with `IsTransient` set to true. `BlobStoreProviderError` is permanent by default. `BlobStoreTimeoutError` is transient.
+
+The Entity Framework provider checks the exception and its inner exceptions for timeouts and transient SQL Server errors. It uses the SQL client classification and includes known transient error numbers such as deadlocks and lock timeouts. Retry also respects the configured attempt limit and the upload stream's replay rules.
+
 ## Metrics
 
 `WithMetricsBehavior()` emits these instruments through the `bdk` meter, all tagged with `operation` and `store` only:
@@ -301,6 +308,12 @@ Normal blob operations use `IBlobStoreClient`. Direct helper calls require the d
 
 The metrics service gives `By/s` histograms explicit bucket boundaries from 1 KB/s to 1 GB/s. Without them the default OpenTelemetry boundaries (up to 10,000) would put every sample in the overflow bucket. Use the rate of the `blobstorage_bytes` counter for sustained throughput and the histogram for the per-transfer distribution.
 
+## Tracing
+
+`WithTracingBehavior()` creates an internal `blobs.{operation}` activity for each traced client call. Register the behavior after metrics and before timeout, retry, and upload admission so the activity includes their work. Subscribe a listener to `BlobTelemetry.ActivitySourceName` (`BridgingIT.DevKit.Application.Storage.Blobs`) to collect the activities.
+
+Activities carry `blobs.operation` and `blobs.store`. On failure, `error.type` and the Error status description contain the first result error's type name, or the thrown exception's type name. Blob names, containers, continuation tokens, properties, and error messages stay out of the activity.
+
 ## Operation profiling
 
 Register Profiling before other behaviors to measure their downstream work:
@@ -321,6 +334,7 @@ Use the optional upload-concurrency behavior when bursts must not open an unboun
 services.AddBlobStorage()
     .WithLoggingBehavior()
     .WithMetricsBehavior()
+    .WithTracingBehavior()
     .WithTimeoutBehavior(options => options.Timeout = TimeSpan.FromMinutes(2))
     .WithRetryBehavior(options => options.Attempts = 3)
     .WithUploadConcurrencyBehavior(options =>
@@ -651,7 +665,7 @@ services.AddBlobStorage()
     .WithInMemoryClient("reports");
 ```
 
-Injected failures return `BlobStoreProviderError`, so retry behavior treats them like transient provider failures when retry wraps chaos. Register retry first when you want injected failures to be retried because the first registered behavior is outermost:
+Injected failures return `BlobStoreProviderError` with `IsTransient` enabled, so retry behavior can retry them when retry wraps chaos. Register retry first when you want injected failures to be retried because the first registered behavior is outermost:
 
 ```csharp
 services.AddBlobStorage()
@@ -678,7 +692,12 @@ Keep chaos behavior opt-in. Do not enable it for normal production traffic unles
 
 An EF Core context used for blob storage must implement `IBlobStoreContext`. Consuming applications own their migrations.
 
+Entity annotations map `StorageBlob.Id`, `StorageBlobChunk.BlobId`, and `StorageBlobDimension.BlobId` from C# `Guid` values to `char(32)` columns with lowercase hexadecimal values. EF applies the mapping when it discovers the entities. New row IDs are UUIDv7, and the columns use the database's default collation.
+
+The EF blob provider uses the registered `TimeProvider` for upload and mutation timestamps, expiration checks, lease timing, and sweep completion. It uses `TimeProvider.System` by default. Register a custom `TimeProvider` with `services.AddSingleton<TimeProvider>(clock)` to control those operations in tests or a host.
+
 ```csharp
+using BridgingIT.DevKit.Infrastructure.EntityFramework;
 using BridgingIT.DevKit.Infrastructure.EntityFramework.Storage;
 using Microsoft.EntityFrameworkCore;
 
@@ -690,6 +709,10 @@ public sealed class AppDbContext(DbContextOptions<AppDbContext> options)
     public DbSet<StorageBlobChunk> StorageBlobChunks { get; set; }
 }
 ```
+
+### Optional UUIDv7 ordering
+
+If a deployment needs UUIDv7 timestamp order across distinct milliseconds regardless of the database default, call `modelBuilder.UseBlobRowIdCollation(this.Database.ProviderName)` in `OnModelCreating` before creating the schema. It applies `Latin1_General_100_BIN2` on SQL Server, `C` on PostgreSQL, or `BINARY` on SQLite to all three key columns. [ADR-0033](adr/0033-time-ordered-ef-blob-row-ids.md)
 
 ## Azure commit semantics
 
@@ -816,6 +839,10 @@ var propertiesResult = await blobs.UpdatePropertiesAsync(
     },
     cancellationToken);
 ```
+
+A blob becomes unavailable as soon as the current UTC instant reaches `ExpiresAt`. Downloads, property access and updates, and supported dimension updates return `BlobStoreNotFoundError`. `ExistsAsync` returns false. Listings and the container catalog include only live blobs. The expiry check happens when a download opens.
+
+Reads leave expired data in storage for the retention sweep. Explicit delete can still remove an expired blob. An upload over an expired key creates a new blob with a fresh `CreatedAt` and ETag. `FailIfExists` allows that upload, while an upload with `IfMatchETag` conflicts. Azure checks blob metadata before upload and when discovering live containers, so those calls require the corresponding read and list permissions. Replacing an expired Azure blob also needs delete permission.
 
 The hosted retention service is registered by `AddBlobStorage`. It starts after the host application has started, logs sweep progress, and calls provider-native retention sweep paths. It does not use public `ListPageAsync` scans. Providers that do not support retention are skipped.
 

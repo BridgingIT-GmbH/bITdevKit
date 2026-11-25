@@ -8,10 +8,35 @@ namespace BridgingIT.DevKit.Application.UnitTests.Storage;
 using System.Text;
 using Application.Storage;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Time.Testing;
 
 [UnitTest("Application")]
 public sealed class BlobStoreCacheBehaviorTests
 {
+    [Fact]
+    public async Task DownloadAsync_WithExpiredCacheEntry_ReadsTheProviderAgain()
+    {
+        var clock = new FakeTimeProvider();
+        var provider = new InMemoryBlobStoreProvider(null, null, null, clock);
+        var inner = new BlobStoreClient("reports", provider);
+        var sut = new CacheBlobStoreClientBehavior(null, inner, new RecordingCacheProvider(), null, "reports", clock);
+        var key = new BlobKey("reports", "cached-expiry");
+        var expiration = clock.GetUtcNow().AddMinutes(1);
+        (await inner.UploadAsync(new() { Key = key, Content = new MemoryStream([1]), ExpiresAt = expiration })).IsSuccess.ShouldBeTrue();
+        var cached = await sut.DownloadAsync(key);
+        cached.IsSuccess.ShouldBeTrue();
+        await cached.Value.DisposeAsync();
+
+        clock.Advance(TimeSpan.FromMinutes(1));
+        (await sut.DownloadAsync(key)).HasError<BlobStoreNotFoundError>().ShouldBeTrue();
+
+        (await inner.UploadAsync(new() { Key = key, Content = new MemoryStream([2]) })).IsSuccess.ShouldBeTrue();
+        var replacement = await sut.DownloadAsync(key);
+        replacement.IsSuccess.ShouldBeTrue();
+        await using var download = replacement.Value;
+        download.Content.ReadByte().ShouldBe(2);
+    }
+
     [Theory]
     [InlineData(false)]
     [InlineData(true)]

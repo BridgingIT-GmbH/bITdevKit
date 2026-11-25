@@ -15,6 +15,71 @@ public abstract class BlobStoreProviderContractTests
 
     protected abstract IBlobStoreProvider CreateProvider(BlobStoreOptions options = null);
 
+    [Fact]
+    public async Task ExpiredBlob_ReadsTreatItAsMissingAndCreateOnlyReplacesIt()
+    {
+        var sut = this.CreateProvider();
+        var cutoff = DateTimeOffset.UtcNow;
+        var expired = CreateKey("expiry/a-expired.txt");
+        var live = CreateKey("expiry/b-live.txt");
+        var expiredOnly = new BlobKey("expired-only", "expiry/expired.txt");
+
+        async Task<Result<StoredBlobInfo>> SeedAsync(BlobKey key, DateTimeOffset expiry) =>
+            await sut.UploadAsync(new()
+            {
+                Key = key,
+                Content = new MemoryStream(Encoding.UTF8.GetBytes(key.Name)),
+                ExpiresAt = expiry,
+                Properties = new() { ["original"] = true }
+            });
+
+        var original = await SeedAsync(expired, cutoff.AddHours(-1));
+        var unaffected = await SeedAsync(live, cutoff.AddHours(1));
+        (await SeedAsync(expiredOnly, cutoff.AddHours(-1))).IsSuccess.ShouldBeTrue();
+        original.IsSuccess.ShouldBeTrue();
+        unaffected.IsSuccess.ShouldBeTrue();
+
+        (await sut.DownloadAsync(expired)).HasError<BlobStoreNotFoundError>().ShouldBeTrue();
+        (await sut.GetPropertiesAsync(expired)).HasError<BlobStoreNotFoundError>().ShouldBeTrue();
+        (await sut.UpdatePropertiesAsync(new() { Key = expired, IfMatchETag = original.Value.ETag }))
+            .HasError<BlobStoreNotFoundError>().ShouldBeTrue();
+        (await sut.ExistsAsync(expired)).Value.ShouldBeFalse();
+        var page = await sut.ListPageAsync(new() { Container = live.Container, Prefix = "expiry/", Take = 1 });
+        page.IsSuccess.ShouldBeTrue();
+        page.Value.Items.Select(item => item.Key).ShouldBe([live]);
+
+        var catalog = Assert.IsAssignableFrom<IBlobStoreContainerCatalog>(sut);
+        var containers = await catalog.ListContainersAsync();
+        containers.IsSuccess.ShouldBeTrue();
+        containers.Value.ShouldContain(live.Container);
+        containers.Value.ShouldNotContain(expiredOnly.Container);
+
+        var client = new BlobStoreClient(this.ProviderName, sut);
+        var batch = await client.DownloadBytesManyAsync([expired, live]);
+        batch.IsSuccess.ShouldBeTrue();
+        batch.Value[0].Result.HasError<BlobStoreNotFoundError>().ShouldBeTrue();
+        batch.Value[1].Result.Value.Info.ETag.ShouldBe(unaffected.Value.ETag);
+        batch.Value[1].Result.Value.Bytes.ShouldBe(Encoding.UTF8.GetBytes(live.Name));
+
+        (await sut.UploadAsync(CreateStoredUpload(expired, "conditional", original.Value.ETag)))
+            .HasError<BlobStoreConflictError>().ShouldBeTrue();
+        var replacement = await sut.UploadAsync(new()
+        {
+            Key = expired,
+            Content = new MemoryStream([1, 2]),
+            OverwriteMode = BlobOverwriteMode.FailIfExists
+        });
+        replacement.IsSuccess.ShouldBeTrue(string.Join(Environment.NewLine, replacement.Errors.Select(error => error.Message)));
+        replacement.Value.ETag.ShouldNotBe(original.Value.ETag);
+        replacement.Value.Properties.Count.ShouldBe(0);
+        (await sut.ExistsAsync(expired)).Value.ShouldBeTrue();
+
+        (await sut.DeleteAsync(expiredOnly, new() { IfMatchETag = "wrong" }))
+            .HasError<BlobStoreConflictError>().ShouldBeTrue();
+        (await sut.DeleteAsync(expiredOnly)).IsSuccess.ShouldBeTrue();
+        (await sut.DeleteAsync(expiredOnly)).IsSuccess.ShouldBeTrue();
+    }
+
     [Theory]
     [InlineData(false)]
     [InlineData(true)]

@@ -10,6 +10,29 @@ using Microsoft.EntityFrameworkCore.Storage;
 
 public sealed partial class EntityFrameworkBlobStoreProvider<TContext> where TContext : DbContext, IBlobStoreContext
 {
+    private static bool IsExpired(StorageBlob blob, DateTimeOffset cutoff) => blob.ExpiresAt <= cutoff;
+
+    private static IQueryable<StorageBlob> QueryLiveBlobs(TContext context, DateTimeOffset cutoff)
+    {
+        if (!IsSqlite(context))
+        {
+            return context.StorageBlobs.Where(row => row.ExpiresAt == null || row.ExpiresAt > cutoff);
+        }
+
+        // Match the sweep's UTC TEXT representation for SQLite DateTimeOffset values.
+        var entity = context.Model.FindEntityType(typeof(StorageBlob));
+        var store = StoreObjectIdentifier.Table(entity.GetTableName(), entity.GetSchema());
+        var sql = context.GetService<ISqlGenerationHelper>();
+        var table = sql.DelimitIdentifier(store.Name, store.Schema);
+        var property = entity.FindProperty(nameof(StorageBlob.ExpiresAt));
+        var expiration = sql.DelimitIdentifier(property.GetColumnName(store));
+        using var command = context.Database.GetDbConnection().CreateCommand();
+        var parameter = property.GetRelationalTypeMapping().CreateParameter(command, "@cutoff", cutoff.ToUniversalTime());
+        // Only delimited model identifiers enter SQL text. The cutoff is a database parameter.
+        var query = $"SELECT * FROM {table} WHERE {expiration} IS NULL OR {expiration} > {{0}}";
+        return context.StorageBlobs.FromSqlRaw(query, parameter);
+    }
+
     private static async Task<List<StorageBlob>> ReadExpiredCandidatesAsync(TContext context, BlobRetentionSweepRequest request, CancellationToken cancellationToken)
     {
         if (!IsSqlite(context))

@@ -23,7 +23,7 @@ public sealed partial class EntityFrameworkBlobStoreProvider<TContext>
             var context = lease.Context;
             var container = query.Scope.Container;
             var containerHash = HashHelper.ComputeSha256(container);
-            var owners = context.StorageBlobs.AsNoTracking()
+            var owners = QueryLiveBlobs(context, this.timeProvider.GetUtcNow()).AsNoTracking()
                 .Where(blob => blob.ContainerHash == containerHash && blob.Container == container);
             if (query.Scope.Prefix is { } prefix) owners = owners.Where(blob => blob.Name.StartsWith(prefix));
 
@@ -50,9 +50,9 @@ public sealed partial class EntityFrameworkBlobStoreProvider<TContext>
             });
         }
         catch (OperationCanceledException) { throw; }
-        catch (Exception)
+        catch (Exception exception)
         {
-            return Result<StoredBlobPage>.Failure(new BlobStoreProviderError("Entity Framework blob filter query failed."));
+            return Result<StoredBlobPage>.Failure(new BlobStoreProviderError("Entity Framework blob filter query failed.", SqlServerBlobErrors.IsTransient(exception)));
         }
     }
 

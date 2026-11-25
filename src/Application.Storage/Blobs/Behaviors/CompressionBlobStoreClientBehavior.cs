@@ -163,8 +163,20 @@ public sealed class CompressionBlobStoreClientBehavior : IBlobStoreClient
         {
             await using (result.Value.ConfigureAwait(false))
             {
+                long? maximumBytes = null;
+                if (result.Value.Info.TransformMetadata.TryGetValue(BlobBehaviorTransform.CompressionLengthKey, out var storedLength) && storedLength is not null)
+                {
+                    var lengthText = Convert.ToString(storedLength, CultureInfo.InvariantCulture);
+                    if (!long.TryParse(lengthText, NumberStyles.Integer, CultureInfo.InvariantCulture, out var logicalLength) || logicalLength < 0)
+                    {
+                        throw new InvalidDataException("The stored logical blob length is invalid.");
+                    }
+
+                    maximumBytes = logicalLength;
+                }
+
                 await using var gzip = CompressionHelper.CreateGZipDecompressionStream(result.Value.Content, leaveOpen: false);
-                var copy = await BlobBehaviorTransform.CopyAndHashAsync(gzip, transformed, cancellationToken).ConfigureAwait(false);
+                var copy = await BlobBehaviorTransform.CopyAndHashAsync(gzip, transformed, maximumBytes, cancellationToken).ConfigureAwait(false);
                 var logicalInfo = this.ToLogicalInfo(result.Value.Info, copy);
                 var integrity = BlobBehaviorTransform.ValidateExpectedHash(logicalInfo.ContentHash, copy.ContentHash);
                 if (integrity.IsFailure)
@@ -180,6 +192,12 @@ public sealed class CompressionBlobStoreClientBehavior : IBlobStoreClient
                     Info = logicalInfo
                 });
             }
+        }
+        catch (StreamSizeLimitExceededException exception)
+        {
+            await transformed.DisposeAsync().ConfigureAwait(false);
+            return Result<BlobDownload>.Failure(new BlobStoreIntegrityError(
+                $"Decompressed content exceeds its stored logical length of {exception.MaximumBytes} bytes."));
         }
         catch (InvalidDataException exception)
         {

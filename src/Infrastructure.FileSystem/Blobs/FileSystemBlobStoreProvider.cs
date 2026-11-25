@@ -74,6 +74,11 @@ public sealed class FileSystemBlobStoreProvider : IBlobStoreProvider, IBlobStore
                 immediate: false,
                 cancellationToken).ConfigureAwait(false);
             var current = this.store.Read(path, identity);
+            var now = DateTimeOffset.UtcNow;
+            if (current?.Blob.ExpiresAt <= now)
+            {
+                current = null;
+            }
 
             if (current is not null && upload.OverwriteMode == BlobOverwriteMode.FailIfExists)
             {
@@ -85,7 +90,6 @@ public sealed class FileSystemBlobStoreProvider : IBlobStoreProvider, IBlobStore
                 return Result<StoredBlobInfo>.Failure(new BlobStoreConflictError("The blob ETag changed or the blob was deleted."));
             }
 
-            var now = DateTimeOffset.UtcNow;
             var info = new StoredBlobInfo
             {
                 Key = upload.Key,
@@ -130,7 +134,7 @@ public sealed class FileSystemBlobStoreProvider : IBlobStoreProvider, IBlobStore
             using var authority = await this.store.AcquireAsync(path, false, cancellationToken).ConfigureAwait(false);
             var record = this.store.ReadUnderAuthority(path, authority, Identity(key));
 
-            if (record is null)
+            if (record is null || record.Blob.ExpiresAt <= DateTimeOffset.UtcNow)
             {
                 return Result<StoredBlobDownload>.Failure(new BlobStoreNotFoundError(key));
             }
@@ -162,7 +166,7 @@ public sealed class FileSystemBlobStoreProvider : IBlobStoreProvider, IBlobStore
             var record = this.store.Read(path, Identity(key));
             await Task.CompletedTask;
 
-            return record is null ? Result<StoredBlobInfo>.Failure(new BlobStoreNotFoundError(key)) : Result<StoredBlobInfo>.Success(record.Blob);
+            return record is null || record.Blob.ExpiresAt <= DateTimeOffset.UtcNow ? Result<StoredBlobInfo>.Failure(new BlobStoreNotFoundError(key)) : Result<StoredBlobInfo>.Success(record.Blob);
         });
     }
 
@@ -193,7 +197,8 @@ public sealed class FileSystemBlobStoreProvider : IBlobStoreProvider, IBlobStore
             using var authority = await this.store.AcquireAsync(path, false, cancellationToken).ConfigureAwait(false);
             var current = this.store.ReadUnderAuthority(path, authority, identity);
 
-            if (current is null)
+            var now = DateTimeOffset.UtcNow;
+            if (current is null || current.Blob.ExpiresAt <= now)
             {
                 return Result<StoredBlobInfo>.Failure(new BlobStoreNotFoundError(update.Key));
             }
@@ -211,7 +216,7 @@ public sealed class FileSystemBlobStoreProvider : IBlobStoreProvider, IBlobStore
                 ContentType = update.ContentType,
                 ETag = Guid.NewGuid().ToString("N"),
                 CreatedAt = current.Blob.CreatedAt,
-                LastModifiedAt = DateTimeOffset.UtcNow,
+                LastModifiedAt = now,
                 ExpiresAt = update.ExpiresAt?.ToUniversalTime(),
                 Properties = BlobPropertyValues.Clone(update.Properties ?? current.Blob.Properties) ?? new(),
                 TransformMetadata = BlobPropertyValues.Clone(update.TransformMetadata ?? current.Blob.TransformMetadata) ?? new()
@@ -273,6 +278,7 @@ public sealed class FileSystemBlobStoreProvider : IBlobStoreProvider, IBlobStore
             var normalized = validation.Value;
             var rows = new SortedDictionary<string, StoredBlobInfo>(StringComparer.Ordinal);
             var inspected = 0;
+            var now = DateTimeOffset.UtcNow;
 
             foreach (var path in this.store.Paths("blobs", normalized.Query.Container))
             {
@@ -285,7 +291,7 @@ public sealed class FileSystemBlobStoreProvider : IBlobStoreProvider, IBlobStore
 
                 var record = this.store.Read(path);
 
-                if (record?.Blob is not { } info || info.Key.Container != normalized.Query.Container
+                if (record?.Blob is not { } info || info.ExpiresAt <= now || info.Key.Container != normalized.Query.Container
                 || !info.Key.Name.StartsWith(normalized.Query.Prefix ?? "", StringComparison.Ordinal)
                 || (!string.IsNullOrEmpty(normalized.ContinuationToken?.Name) && string.CompareOrdinal(info.Key.Name, normalized.ContinuationToken.Name) <= 0))
                 {
@@ -329,6 +335,7 @@ public sealed class FileSystemBlobStoreProvider : IBlobStoreProvider, IBlobStore
         {
             var containers = new SortedSet<string>(StringComparer.Ordinal);
             var inspected = 0;
+            var now = DateTimeOffset.UtcNow;
 
             foreach (var path in this.store.Paths("blobs"))
             {
@@ -341,9 +348,9 @@ public sealed class FileSystemBlobStoreProvider : IBlobStoreProvider, IBlobStore
 
                 var record = this.store.Read(path);
 
-                if (record?.Blob is not null)
+                if (record?.Blob is { } info && !(info.ExpiresAt <= now))
                 {
-                    containers.Add(record.Blob.Key.Container);
+                    containers.Add(info.Key.Container);
                 }
             }
 

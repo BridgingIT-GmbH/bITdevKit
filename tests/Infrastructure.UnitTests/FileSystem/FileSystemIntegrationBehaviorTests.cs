@@ -43,6 +43,7 @@ public sealed class FileSystemIntegrationBehaviorTests
         using var root = new OwnedFileSystemRoot();
         var sut = new FileSystemBlobStoreProvider(root.Options);
 
+        var now = DateTimeOffset.UtcNow;
         foreach (var name in new[]
         {
             "busy",
@@ -51,7 +52,7 @@ public sealed class FileSystemIntegrationBehaviorTests
         }
         )
         {
-            (await sut.UploadAsync(new() { Key = new("catalog", name), Content = new MemoryStream([1]), ExpiresAt = DateTimeOffset.UtcNow.AddDays(-1) })).IsSuccess.ShouldBeTrue();
+            (await sut.UploadAsync(new() { Key = new("catalog", name), Content = new MemoryStream([1]), ExpiresAt = name == "clear" ? now.AddHours(1) : now.AddDays(-1) })).IsSuccess.ShouldBeTrue();
         }
 
         var busyPath = sut.Store.Resolve(["blobs", "catalog", "busy"], false);
@@ -72,7 +73,7 @@ public sealed class FileSystemIntegrationBehaviorTests
                 throw new TimeoutException("Test barrier deadline.");
             }
         };
-        var sweeping = Task.Run(() => sut.SweepExpiredAsync(new() { ExpiresOnOrBefore = DateTimeOffset.UtcNow }));
+        var sweeping = Task.Run(() => sut.SweepExpiredAsync(new() { ExpiresOnOrBefore = now.AddHours(2) }));
         await discovered.Task.WaitAsync(TimeSpan.FromSeconds(10));
         var concurrent = new FileSystemBlobStoreProvider(root.Options);
         (await concurrent.UpdatePropertiesAsync(new() { Key = new("catalog", "clear"), ExpiresAt = null })).IsSuccess.ShouldBeTrue();
@@ -83,7 +84,7 @@ public sealed class FileSystemIntegrationBehaviorTests
         result.Value.SkippedCount.ShouldBe(1);
         busy.Dispose();
         sut.Store.Fault = null;
-        var next = await sut.SweepExpiredAsync(new() { ExpiresOnOrBefore = DateTimeOffset.UtcNow });
+        var next = await sut.SweepExpiredAsync(new() { ExpiresOnOrBefore = now.AddHours(2) });
         next.Value.DeletedKeys.ShouldBe(new[] { new BlobKey("catalog", "busy") });
         (await sut.ExistsAsync(new("catalog", "clear"))).Value.ShouldBeTrue();
     }

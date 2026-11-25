@@ -76,8 +76,17 @@ ids stay valid and no migration is needed.
   hold a row per blob even when the value is null. They cost writes and space but not reads, and
   removing them needs a schema migration, so they are left alone here.
 
+## Follow-up (2026-11-25)
+
+Use `Guid` for the blob row key and both foreign keys. `StorageBlob.CreateId()` now returns the UUIDv7 directly. EF applies a shared converter and writes the lowercase `N` form to `char(32)` columns. The public blob key remains the container and name.
+
+The standard setup discovers the key mappings from the entity annotations and uses the database's default collation. Call `UseBlobRowIdCollation` when creating a fresh schema that requires UUIDv7 timestamp order across distinct milliseconds regardless of the database default. The extension sets all three key columns to `Latin1_General_100_BIN2` on SQL Server, `C` on PostgreSQL, or `BINARY` on SQLite. SQL Server's native GUID comparison gives precedence to the last six bytes. The textual form puts the timestamp prefix first when the collation sorts bytewise.
+
+The measurements above compare the original random and time-ordered text keys. The follow-up verifies the mapping and order on fresh databases. The SQL Server benchmark opts into bytewise collation to control key ordering when comparing the two strategies.
+
 ## References
 
 - `benchmarks/Application.Benchmarks/BlobStorageEfSqlServerLargeTableReadBenchmarks.cs`
 - [ADR-0031](0031-single-query-ef-blob-read-for-small-blobs.md)
 - [ADR-0032](0032-batched-ef-blob-reads-for-many-keys.md)
+- [SQL Server GUID comparison](https://learn.microsoft.com/en-us/sql/connect/ado-net/sql/compare-guid-uniqueidentifier-values)

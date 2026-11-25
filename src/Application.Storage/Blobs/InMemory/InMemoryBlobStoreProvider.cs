@@ -18,43 +18,49 @@ namespace BridgingIT.DevKit.Application.Storage;
 /// var client = new BlobStoreClient(InMemoryBlobStoreProvider.ProviderName, provider);
 /// </code>
 /// </example>
-/// <remarks>
-/// Initializes a new instance of the <see cref="InMemoryBlobStoreProvider" /> class.
-/// </remarks>
-/// <param name="context">The optional shared in-memory context.</param>
-/// <param name="options">The optional blob-store options used by provider-side enforcement.</param>
-/// <param name="continuationTokenProtector">The optional continuation-token protector.</param>
-/// <example>
-/// <code>
-/// var provider = new InMemoryBlobStoreProvider(new InMemoryBlobStoreContext(), new BlobStoreOptions());
-/// </code>
-/// </example>
-public sealed class InMemoryBlobStoreProvider(
-    InMemoryBlobStoreContext context = null,
-    BlobStoreOptions options = null,
-    IContinuationTokenProtector continuationTokenProtector = null) : IBlobStoreProvider, IBlobStoreRetentionProvider, IBlobStoreContainerCatalog
+public sealed class InMemoryBlobStoreProvider : IBlobStoreProvider, IBlobStoreRetentionProvider, IBlobStoreContainerCatalog
 {
     /// <summary>
     /// Gets the provider discriminator used for diagnostics and continuation-token binding.
     /// </summary>
-    /// <example>
-    /// <code>
-    /// var providerName = InMemoryBlobStoreProvider.ProviderName;
-    /// </code>
-    /// </example>
+    /// <example><code>var providerName = InMemoryBlobStoreProvider.ProviderName;</code></example>
     public const string ProviderName = "InMemory";
 
-    private readonly BlobStoreOptions options = options ?? new BlobStoreOptions();
+    private readonly BlobStoreOptions options;
+    private readonly IContinuationTokenProtector continuationTokenProtector;
+    private readonly TimeProvider timeProvider;
 
-    /// <summary>
-    /// Gets the in-memory context backing this provider.
-    /// </summary>
-    /// <example>
-    /// <code>
-    /// var context = provider.Context;
-    /// </code>
-    /// </example>
-    public InMemoryBlobStoreContext Context { get; } = context ?? new InMemoryBlobStoreContext();
+    /// <summary>Initializes an in-memory blob store using the system clock.</summary>
+    /// <example><code>var provider = new InMemoryBlobStoreProvider();</code></example>
+    public InMemoryBlobStoreProvider(
+        InMemoryBlobStoreContext context = null,
+        BlobStoreOptions options = null,
+        IContinuationTokenProtector continuationTokenProtector = null)
+        : this(context, options, continuationTokenProtector, null)
+    {
+    }
+
+    /// <summary>Initializes an in-memory blob store with an optional clock.</summary>
+    /// <param name="context">The optional shared storage context.</param>
+    /// <param name="options">The optional provider options.</param>
+    /// <param name="continuationTokenProtector">The optional continuation-token protector.</param>
+    /// <param name="timeProvider">The clock. A null value selects the system clock.</param>
+    /// <example><code>var provider = new InMemoryBlobStoreProvider(null, null, null, clock);</code></example>
+    public InMemoryBlobStoreProvider(
+        InMemoryBlobStoreContext context,
+        BlobStoreOptions options,
+        IContinuationTokenProtector continuationTokenProtector,
+        TimeProvider timeProvider)
+    {
+        this.Context = context ?? new InMemoryBlobStoreContext();
+        this.options = options ?? new BlobStoreOptions();
+        this.continuationTokenProtector = continuationTokenProtector;
+        this.timeProvider = timeProvider ?? TimeProvider.System;
+    }
+
+    /// <summary>Gets the in-memory context backing this provider.</summary>
+    /// <example><code>var context = provider.Context;</code></example>
+    public InMemoryBlobStoreContext Context { get; }
 
     /// <inheritdoc />
     public BlobStoreProviderCapabilities Capabilities { get; } = CreateCapabilities();
@@ -63,7 +69,7 @@ public sealed class InMemoryBlobStoreProvider(
     public Task<Result<IReadOnlyList<string>>> ListContainersAsync(CancellationToken cancellationToken = default)
     {
         cancellationToken.ThrowIfCancellationRequested();
-        IReadOnlyList<string> containers = this.Context.GetSnapshot()
+        IReadOnlyList<string> containers = this.Context.GetSnapshot(this.timeProvider.GetUtcNow())
             .Select(entry => entry.Info.Key.Container)
             .Distinct(StringComparer.Ordinal)
             .Order(StringComparer.Ordinal)
@@ -105,7 +111,7 @@ public sealed class InMemoryBlobStoreProvider(
             return Result<StoredBlobInfo>.Failure(new BlobStoreIntegrityError("ExpectedContentHash does not match uploaded content."));
         }
 
-        var now = DateTimeOffset.UtcNow;
+        var now = this.timeProvider.GetUtcNow();
         var info = new StoredBlobInfo
         {
             Key = upload.Key,
@@ -123,6 +129,7 @@ public sealed class InMemoryBlobStoreProvider(
                 new InMemoryBlobEntry { Content = content, Info = info },
                 upload.OverwriteMode == BlobOverwriteMode.FailIfExists,
                 upload.IfMatchETag,
+                now,
                 out var stored))
         {
             return Result<StoredBlobInfo>.Failure(new BlobStoreConflictError(
@@ -145,7 +152,7 @@ public sealed class InMemoryBlobStoreProvider(
             return Task.FromResult(Result<StoredBlobDownload>.Failure(validation));
         }
 
-        if (!this.Context.TryGet(key, out var entry))
+        if (!this.Context.TryGet(key, this.timeProvider.GetUtcNow(), out var entry))
         {
             return Task.FromResult(Result<StoredBlobDownload>.Failure(new BlobStoreNotFoundError(key)));
         }
@@ -170,7 +177,7 @@ public sealed class InMemoryBlobStoreProvider(
             return Task.FromResult(Result<StoredBlobInfo>.Failure(validation));
         }
 
-        return Task.FromResult(this.Context.TryGet(key, out var entry)
+        return Task.FromResult(this.Context.TryGet(key, this.timeProvider.GetUtcNow(), out var entry)
             ? Result<StoredBlobInfo>.Success(entry.Info)
             : Result<StoredBlobInfo>.Failure(new BlobStoreNotFoundError(key)));
     }
@@ -189,6 +196,7 @@ public sealed class InMemoryBlobStoreProvider(
             return Task.FromResult(Result<StoredBlobInfo>.Failure(validation));
         }
 
+        var now = this.timeProvider.GetUtcNow();
         var updated = this.Context.TryUpdate(
             update.Key,
             update.IfMatchETag,
@@ -203,12 +211,13 @@ public sealed class InMemoryBlobStoreProvider(
                     ContentHash = entry.Info.ContentHash,
                     ETag = CreateETag(),
                     CreatedAt = entry.Info.CreatedAt,
-                    LastModifiedAt = DateTimeOffset.UtcNow,
+                    LastModifiedAt = now,
                     ExpiresAt = ToUtc(update.ExpiresAt),
                     Properties = CloneProperties(update.Properties ?? entry.Info.Properties),
                     TransformMetadata = CloneProperties(update.TransformMetadata ?? entry.Info.TransformMetadata)
                 }
             },
+            now,
             out var stored,
             out var etagMismatch);
         if (!updated)
@@ -237,7 +246,7 @@ public sealed class InMemoryBlobStoreProvider(
             return Task.FromResult(Result<bool>.Failure((IResult)validation));
         }
 
-        return Task.FromResult(Result<bool>.Success(this.Context.Contains(key)));
+        return Task.FromResult(Result<bool>.Success(this.Context.Contains(key, this.timeProvider.GetUtcNow())));
     }
 
     /// <inheritdoc />
@@ -254,13 +263,13 @@ public sealed class InMemoryBlobStoreProvider(
             query,
             this.options,
             this.Capabilities,
-            continuationTokenProtector);
+            this.continuationTokenProtector);
         if (validation.IsFailure)
         {
             return Task.FromResult(Result<StoredBlobPage>.Failure(validation));
         }
 
-        var rows = this.Context.GetSnapshot()
+        var rows = this.Context.GetSnapshot(this.timeProvider.GetUtcNow())
                 .Where(entry => string.Equals(entry.Info.Key.Container, validation.Value.Query.Container, StringComparison.Ordinal))
                 .Where(entry => string.IsNullOrEmpty(validation.Value.Query.Prefix) ||
                     entry.Info.Key.Name.StartsWith(validation.Value.Query.Prefix, StringComparison.Ordinal))
@@ -357,7 +366,7 @@ public sealed class InMemoryBlobStoreProvider(
             BatchCount = batches,
             DeletedCount = deleted,
             DeletedKeys = deletedKeys,
-            CompletedAt = DateTimeOffset.UtcNow
+            CompletedAt = this.timeProvider.GetUtcNow()
         });
     }
 
@@ -416,7 +425,7 @@ public sealed class InMemoryBlobStoreProvider(
             QueryHash = queryHash,
             Container = lastKey.Container,
             Name = lastKey.Name
-        }, continuationTokenProtector);
+        }, this.continuationTokenProtector);
 
         return result.IsSuccess ? result.Value : null;
     }

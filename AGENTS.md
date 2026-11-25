@@ -58,12 +58,13 @@ The toolkit includes ASP.NET Core minimal APIs, RazorSlices dashboards, EF Core 
 - Use PascalCase for types and public members, camelCase for locals and private instance fields, and `I` prefixes for interfaces. Do not prefix private fields with underscores.
 - Use PascalCase for private constants and private static readonly fields, as configured in `.editorconfig`.
 - Use `this.` qualification for instance fields, properties, methods, and events as configured.
+- Declare top-level C# classes you add or modify `public`. The rule also applies when you edit only a member of an existing class. Use `public` for nested classes and properties that callers outside the declaring type need. Keep implementation details private. Replace `internal` modifiers on classes, properties, and property accessors you edit.
 - Separate public members, including implicit public interface members, with one blank line. Place the blank line before the following member's XML documentation and attributes.
 - Use descriptive names and modern C# features where they improve clarity. Prefer records for suitable data models, pattern matching for branching, and null-conditional and null-coalescing operators where appropriate.
 - Preserve the target project's nullability settings. Most projects leave nullable annotations disabled, but some enable them.
 - Prefer `Result` or `Result<T>` for recoverable failures. Use FluentValidation for inputs and exceptions for exceptional failures.
 - Use asynchronous I/O and propagate cancellation where supported. Avoid N+1 queries and unnecessary materialization.
-- Document public types, methods, and properties with XML comments. Include usage examples for public-facing symbols.
+- Document public types, methods, and properties with meaningful XML comments and an `<example>` block. Before handoff, check the visibility and documentation of every class or property added or modified, the declaring classes of edited members, and any types exposed by newly public signatures.
 - Prefer BCL functionality and existing dependencies. Manage NuGet versions centrally in `Directory.Packages.props`.
 
 ## Build and test

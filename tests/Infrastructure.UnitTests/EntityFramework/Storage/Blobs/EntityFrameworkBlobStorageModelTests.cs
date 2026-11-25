@@ -12,6 +12,7 @@ using Application.Storage;
 using Infrastructure.EntityFramework;
 using Infrastructure.EntityFramework.Storage;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.Extensions.DependencyInjection;
 
 [UnitTest("Infrastructure")]
@@ -146,6 +147,48 @@ public sealed class EntityFrameworkBlobStorageModelTests
         primaryKey.Properties.Select(property => property.Name)
             .ShouldBe([nameof(StorageBlobChunk.BlobId), nameof(StorageBlobChunk.Index)]);
         redundantIndex.ShouldBeNull();
+    }
+
+    [Fact]
+    public void Model_WithDiscoveredBlobEntities_MapsAllRowKeysToFixedWidthText()
+    {
+        // Arrange
+        using var context = new BlobStoreDbContext(new DbContextOptionsBuilder<BlobStoreDbContext>()
+            .UseSqlite("Data Source=:memory:")
+            .Options);
+        var id = Guid.Parse("01890f3e-4c00-7000-8000-ffffffffffff");
+        const string ExpectedText = "01890f3e4c0070008000ffffffffffff";
+
+        // Act
+        var sut = context.Model;
+        var owner = sut.FindEntityType(typeof(StorageBlob));
+        var chunk = sut.FindEntityType(typeof(StorageBlobChunk));
+        var dimension = sut.FindEntityType(typeof(StorageBlobDimension));
+        var ownerKey = owner.FindPrimaryKey().Properties.Single();
+
+        // Assert
+        ownerKey.ValueGenerated.ShouldBe(ValueGenerated.Never);
+        chunk.FindPrimaryKey().Properties.Select(property => property.Name)
+            .ShouldBe([nameof(StorageBlobChunk.BlobId), nameof(StorageBlobChunk.Index)]);
+        dimension.FindPrimaryKey().Properties.Select(property => property.Name)
+            .ShouldBe([nameof(StorageBlobDimension.BlobId), nameof(StorageBlobDimension.NameId)]);
+        var chunkForeignKey = chunk.GetForeignKeys().Single(key => key.PrincipalEntityType == owner);
+        var dimensionForeignKey = dimension.GetForeignKeys().Single(key => key.PrincipalEntityType == owner);
+        chunkForeignKey.DeleteBehavior.ShouldBe(DeleteBehavior.Cascade);
+        dimensionForeignKey.DeleteBehavior.ShouldBe(DeleteBehavior.Cascade);
+
+        foreach (var key in new[] { ownerKey, chunkForeignKey.Properties.Single(), dimensionForeignKey.Properties.Single() })
+        {
+            key.ClrType.ShouldBe(typeof(Guid));
+            key.GetColumnType().ShouldBe("char(32)");
+            key.GetMaxLength().ShouldBe(32);
+            key.IsUnicode().ShouldBe(false);
+            key.IsFixedLength().ShouldBe(true);
+            var converter = key.GetTypeMapping().Converter;
+            converter.ProviderClrType.ShouldBe(typeof(string));
+            converter.ConvertToProvider(id).ShouldBe(ExpectedText);
+            converter.ConvertFromProvider(ExpectedText).ShouldBe(id);
+        }
     }
 
     [Fact]

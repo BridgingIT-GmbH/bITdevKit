@@ -6,8 +6,31 @@ namespace BridgingIT.DevKit.Infrastructure.EntityFramework;
 using Application.Storage;
 using System.Linq.Expressions;
 
-internal static class BlobDimensionQueryTranslator
+/// <summary>Translates blob dimension filters into composable EF queries over indexed dimension rows.</summary>
+/// <example>
+/// <code>
+/// var candidates = BlobDimensionQueryTranslator.BuildCandidates(context, ownerIds, filter, resolvedNames);
+/// </code>
+/// </example>
+public static class BlobDimensionQueryTranslator
 {
+    /// <summary>Validates a filter, resolves its dimension names, and builds a query for the matching blob rows.</summary>
+    /// <typeparam name="TContext">The relational context type that maps blobs and their dimension tables.</typeparam>
+    /// <param name="context">The context used to resolve names and query the dimension rows.</param>
+    /// <param name="owners">The blob rows already restricted to the requested container.</param>
+    /// <param name="scope">The container name used to resolve dimension names.</param>
+    /// <param name="filter">The filter to apply. A null filter returns the supplied owner query.</param>
+    /// <param name="capabilities">The dimension operations supported by the current provider.</param>
+    /// <param name="resolver">The resolver for dimension names in the current store.</param>
+    /// <param name="token">Cancels dimension name resolution.</param>
+    /// <returns>A composable owner query on success or the validation or name resolution errors on failure.</returns>
+    /// <example>
+    /// <code>
+    /// var result = await BlobDimensionQueryTranslator.ApplyAsync(
+    ///     context, context.StorageBlobs.Where(row =&gt; row.Container == "reports"), "reports",
+    ///     filter, capabilities, resolver, cancellationToken);
+    /// </code>
+    /// </example>
     public static async Task<Result<IQueryable<StorageBlob>>> ApplyAsync<TContext>(TContext context, IQueryable<StorageBlob> owners,
         string scope, BlobDimensionFilter filter, BlobDimensionCapabilities capabilities,
         BlobDimensionNameResolver<TContext> resolver, CancellationToken token) where TContext : DbContext
@@ -34,8 +57,19 @@ internal static class BlobDimensionQueryTranslator
         return filter.IsAny ? filter.Children.All(HasValueAnchor) : filter.Children.Any(HasValueAnchor);
     }
 
-    /// <summary>Builds indexed blob candidates using already resolved Dimension names.</summary>
-    public static IQueryable<string> BuildCandidates(DbContext context, IQueryable<string> universe, BlobDimensionFilter filter, IReadOnlyDictionary<string, long> names)
+    /// <summary>Builds a query for matching blob IDs using indexed dimension rows and resolved names.</summary>
+    /// <param name="context">The relational context that maps the blob dimension tables.</param>
+    /// <param name="universe">The blob IDs in scope, used for filter branches without an indexed match to start from.</param>
+    /// <param name="filter">A filter already validated against the provider's dimension capabilities.</param>
+    /// <param name="names">The dictionary IDs for the canonical dimension names found in scope.</param>
+    /// <returns>A deferred query for the candidate IDs. Join it to the scoped owner query before returning blobs.</returns>
+    /// <example>
+    /// <code>
+    /// var ownerIds = context.StorageBlobs.Where(row =&gt; row.Container == "reports").Select(row =&gt; row.Id);
+    /// var candidates = BlobDimensionQueryTranslator.BuildCandidates(context, ownerIds, filter, resolvedNames);
+    /// </code>
+    /// </example>
+    public static IQueryable<Guid> BuildCandidates(DbContext context, IQueryable<Guid> universe, BlobDimensionFilter filter, IReadOnlyDictionary<string, long> names)
     {
         if (filter.Predicate is { } predicate) return BuildConjunction(context, universe, [predicate], names);
         if (filter.IsAny)
@@ -51,7 +85,7 @@ internal static class BlobDimensionQueryTranslator
         }
 
         var children = FlattenAll(filter).ToArray();
-        var positive = new List<IQueryable<string>>();
+        var positive = new List<IQueryable<Guid>>();
         var deferred = new List<BlobDimensionFilter>();
         foreach (var group in children.Where(child => child.Predicate is not null)
             .GroupBy(child => BlobDimensionValues.CanonicalizeName(child.Predicate.Name), StringComparer.Ordinal))
@@ -75,11 +109,11 @@ internal static class BlobDimensionQueryTranslator
         return candidates;
     }
 
-    private static Expression<Func<string, bool>> BuildCandidatePredicate(DbContext context, BlobDimensionFilter filter, IReadOnlyDictionary<string, long> names)
+    private static Expression<Func<Guid, bool>> BuildCandidatePredicate(DbContext context, BlobDimensionFilter filter, IReadOnlyDictionary<string, long> names)
     {
         if (filter.Predicate is not { } predicate)
         {
-            var builder = new PredicateBuilder<string>();
+            var builder = new PredicateBuilder<Guid>();
             if (filter.IsAny) builder.Add(_ => false);
             foreach (var child in filter.Children)
             {
@@ -99,7 +133,7 @@ internal static class BlobDimensionQueryTranslator
         return ownerId => matching.Any(row => row.BlobId == ownerId);
     }
 
-    private static IQueryable<string> BuildConjunction(DbContext context, IQueryable<string> universe,
+    private static IQueryable<Guid> BuildConjunction(DbContext context, IQueryable<Guid> universe,
         BlobDimensionPredicate[] predicates, IReadOnlyDictionary<string, long> names)
     {
         var missing = predicates.Any(predicate => predicate.Operator == BlobDimensionOperator.Missing);

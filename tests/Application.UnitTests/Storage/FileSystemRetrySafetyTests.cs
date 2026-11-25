@@ -9,7 +9,7 @@ public sealed class FileSystemRetrySafetyTests
     {
         var inner = Substitute.For<IBlobStoreClient>();
         var key = new BlobKey("catalog", "item");
-        var failure = Result<bool>.Failure(new BlobStoreIndeterminateOperationError("publish", "test-mutation")).WithErrors([new BlobStoreProviderError("transient")]);
+        var failure = Result<bool>.Failure(new BlobStoreIndeterminateOperationError("publish", "test-mutation")).WithErrors([new BlobStoreProviderError("transient", isTransient: true)]);
         inner.ExistsAsync(key, Arg.Any<CancellationToken>()).Returns(failure);
         var sut = new RetryBlobStoreClientBehavior(inner, new() { Attempts = 3, Backoff = TimeSpan.Zero });
         (await sut.ExistsAsync(key)).HasError<BlobStoreIndeterminateOperationError>().ShouldBeTrue();

@@ -16,6 +16,29 @@ using Microsoft.Extensions.DependencyInjection;
 public sealed class AzureBlobStoreProviderTests
 {
     [Fact]
+    public async Task UploadAsync_WithExpiredAzureVersion_DeletesByETagAndCreatesOnly()
+    {
+        var sut = new RecordingAzureBlobStoreBackend();
+        var key = new BlobKey("reports", "expired.txt");
+        var initial = await sut.UploadAsync(new()
+        {
+            Key = key,
+            Content = new MemoryStream([1]),
+            ExpiresAt = DateTimeOffset.UtcNow.AddHours(-1)
+        });
+        initial.IsSuccess.ShouldBeTrue();
+        (await sut.DownloadAsync(key)).HasError<BlobStoreNotFoundError>().ShouldBeTrue();
+        sut.OpenReadCalls.ShouldBe(0);
+
+        var result = await sut.UploadAsync(new() { Key = key, Content = new MemoryStream([2]) });
+
+        result.IsSuccess.ShouldBeTrue();
+        sut.LastDeleteIfMatchETag.ShouldBe(initial.Value.ETag);
+        sut.LastFailIfExists.ShouldBeTrue();
+        result.Value.ETag.ShouldNotBe(initial.Value.ETag);
+    }
+
+    [Fact]
     public void WithAzureBlobClient_WhenRegistered_ResolvesNamedClient()
     {
         // Arrange

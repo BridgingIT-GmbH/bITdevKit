@@ -155,6 +155,7 @@ builder.Services.AddBlobStorage(o => o.Enabled())
     .WithProfilingBehavior()
     .WithLoggingBehavior()
     .WithMetricsBehavior()
+    .WithTracingBehavior()
     .WithEntityFrameworkClient<CoreDbContext>(o =>
     {
         o.AllowFullScans = true;

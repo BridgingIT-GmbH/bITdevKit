@@ -449,10 +449,23 @@ internal sealed class BlobStorageEfSqlServerReadBenchmarkStore : IDisposable
     }
 }
 
-internal sealed class BenchmarkBlobDbContext(DbContextOptions<BenchmarkBlobDbContext> options)
+/// <summary>Maps the owner and chunk rows used by the EF blob read benchmarks.</summary>
+/// <param name="options">The options for the SQL Server benchmark database.</param>
+/// <example><code>services.AddDbContext&lt;BenchmarkBlobDbContext&gt;(options =&gt; options.UseSqlServer(connectionString));</code></example>
+public sealed class BenchmarkBlobDbContext(DbContextOptions<BenchmarkBlobDbContext> options)
     : DbContext(options), IBlobStoreContext
 {
+    /// <summary>Gets or sets the blob metadata rows in the benchmark database.</summary>
+    /// <example><code>var count = await context.StorageBlobs.CountAsync();</code></example>
     public DbSet<StorageBlob> StorageBlobs { get; set; }
 
+    /// <summary>Gets or sets the blob content chunks in the benchmark database.</summary>
+    /// <example><code>var count = await context.StorageBlobChunks.CountAsync();</code></example>
     public DbSet<StorageBlobChunk> StorageBlobChunks { get; set; }
+
+    /// <summary>Applies the bytewise blob row key collation used by the benchmarks.</summary>
+    /// <param name="modelBuilder">The builder for the benchmark database model.</param>
+    /// <example><code>var schema = context.Database.GenerateCreateScript();</code></example>
+    protected override void OnModelCreating(ModelBuilder modelBuilder)
+        => modelBuilder.UseBlobRowIdCollation(this.Database.ProviderName);
 }

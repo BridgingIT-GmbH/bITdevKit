@@ -23,20 +23,19 @@ using System.ComponentModel.DataAnnotations.Schema;
 /// </code>
 /// </example>
 [Table("__Storage_BlobChunks")]
+[EntityTypeConfiguration(typeof(BlobRowIdConfiguration.Chunk))]
 [PrimaryKey(nameof(BlobId), nameof(Index))]
 public sealed class StorageBlobChunk
 {
     /// <summary>
-    /// Gets or sets the blob identifier that owns this chunk.
+    /// Gets or sets the GUID of the blob that owns this chunk.
     /// </summary>
     /// <example>
     /// <code>
     /// chunk.BlobId = blob.Id;
     /// </code>
     /// </example>
-    [Required]
-    [MaxLength(64)]
-    public string BlobId { get; set; }
+    public Guid BlobId { get; set; }
 
     /// <summary>
     /// Gets or sets the zero-based chunk index within the owning blob.

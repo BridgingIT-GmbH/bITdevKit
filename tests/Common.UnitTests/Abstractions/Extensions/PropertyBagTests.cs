@@ -15,6 +15,34 @@ using Xunit;
 public class PropertyBagTests
 {
     [Fact]
+    public void GetEnumerator_WhenBagChanges_EnumeratesTheOriginalEntries()
+    {
+        var sut = new PropertyBag { ["first"] = 1, ["second"] = 2 };
+        using var enumerator = sut.GetEnumerator();
+
+        enumerator.MoveNext().ShouldBeTrue();
+        enumerator.Current.Value.ShouldBe(1);
+        sut["second"] = 3;
+        sut["third"] = 4;
+
+        enumerator.MoveNext().ShouldBeTrue();
+        enumerator.Current.Value.ShouldBe(2);
+        enumerator.MoveNext().ShouldBeFalse();
+        sut.Count.ShouldBe(3);
+    }
+
+    [Fact]
+    public void Merge_WhenSourceIsTheSameBag_PreservesEntries()
+    {
+        var sut = new PropertyBag { ["item"] = 1 };
+
+        sut.Merge(sut);
+
+        sut.Count.ShouldBe(1);
+        sut["item"].ShouldBe(1);
+    }
+
+    [Fact]
     public void Set_And_Get_Value_By_String_Key()
     {
         var bag = new PropertyBag();

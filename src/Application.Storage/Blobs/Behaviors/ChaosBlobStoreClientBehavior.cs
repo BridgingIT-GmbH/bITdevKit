@@ -154,5 +154,5 @@ public sealed class ChaosBlobStoreClientBehavior : IBlobStoreClient
     }
 
     private BlobStoreProviderError CreateFailure(BlobStoreChaosOperation operation) =>
-        new($"{this.options.Message} Operation={operation.ToString().ToLowerInvariant()}; Store={this.StoreName}.");
+        new($"{this.options.Message} Operation={operation.ToString().ToLowerInvariant()}; Store={this.StoreName}.", isTransient: true);
 }

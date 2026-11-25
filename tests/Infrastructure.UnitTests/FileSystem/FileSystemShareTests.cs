@@ -175,7 +175,8 @@ public sealed class FileSystemShareTests
         var path = ProbeWorkspace.Open(profile.ScratchRoot, Guid.NewGuid().ToString("N"), profile.Id, true);
         var provider = new FileSystemBlobStoreProvider(new() { RootPath = path, AccessKind = Enum.Parse<FileSystemStorageAccessKind>(protocol) });
         var key = new BlobKey("qualification", "ttl");
-        var initial = await provider.UploadAsync(new() { Key = key, Content = new MemoryStream([3]), ExpiresAt = DateTimeOffset.UtcNow.AddMinutes(-1) });
+        var now = DateTimeOffset.UtcNow;
+        var initial = await provider.UploadAsync(new() { Key = key, Content = new MemoryStream([3]), ExpiresAt = now.AddHours(1) });
         initial.IsSuccess.ShouldBeTrue();
         var retention = Assert.IsAssignableFrom<IBlobStoreRetentionProvider>(provider);
         var discovered = new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously);
@@ -194,7 +195,7 @@ public sealed class FileSystemShareTests
                 throw new TimeoutException("Concurrent expiry update did not complete.");
             }
         };
-        var pending = Task.Run(() => retention.SweepExpiredAsync(new() { ExpiresOnOrBefore = DateTimeOffset.UtcNow, BatchSize = 1, MaxBatches = 1 }));
+        var pending = Task.Run(() => retention.SweepExpiredAsync(new() { ExpiresOnOrBefore = now.AddHours(2), BatchSize = 1, MaxBatches = 1 }));
 
         try
         {

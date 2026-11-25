@@ -359,9 +359,10 @@ public sealed class FileSystemProviderTests
         options.MaxRetentionMetadataEntries = 8;
         var sut = new FileSystemBlobStoreProvider(options);
 
+        var now = DateTimeOffset.UtcNow;
         foreach (var name in Enumerable.Range(0, 40).Select(i => "item-" + i))
         {
-            (await sut.UploadAsync(new() { Key = new("catalog", name), Content = new MemoryStream([1]), ExpiresAt = DateTimeOffset.UtcNow.AddDays(-1) })).IsSuccess.ShouldBeTrue();
+            (await sut.UploadAsync(new() { Key = new("catalog", name), Content = new MemoryStream([1]), ExpiresAt = name == "item-0" ? now.AddHours(1) : now.AddDays(-1) })).IsSuccess.ShouldBeTrue();
         }
 
         (await sut.UpdatePropertiesAsync(new() { Key = new("catalog", "item-0"), ExpiresAt = DateTimeOffset.UtcNow.AddDays(1) })).IsSuccess.ShouldBeTrue();
@@ -370,7 +371,7 @@ public sealed class FileSystemProviderTests
         for (var iteration = 0; iteration < 5000 && deleted.Count < 39; iteration++)
         {
             var restarted = new FileSystemBlobStoreProvider(options);
-            var completed = await restarted.SweepExpiredAsync(new() { ExpiresOnOrBefore = DateTimeOffset.UtcNow, BatchSize = 3, MaxBatches = 1 });
+            var completed = await restarted.SweepExpiredAsync(new() { ExpiresOnOrBefore = now.AddHours(2), BatchSize = 3, MaxBatches = 1 });
             completed.IsSuccess.ShouldBeTrue();
 
             foreach (var key in completed.Value.DeletedKeys)

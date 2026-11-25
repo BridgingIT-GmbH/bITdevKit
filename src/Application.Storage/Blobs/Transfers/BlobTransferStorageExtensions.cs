@@ -15,6 +15,8 @@ namespace BridgingIT.DevKit.Application.Storage;
 /// </example>
 public static class BlobTransferStorageExtensions
 {
+    private const int MaximumCandidateNames = 1000;
+
     private const int BufferSize = 81920;
 
     /// <summary>
@@ -290,8 +292,9 @@ public static class BlobTransferStorageExtensions
             Take = options.Take,
             AllowFullScan = options.AllowFullScan
         };
-        var candidates = new List<string>();
+        var candidateNames = new List<string>();
         var failures = new List<string>();
+        var candidateCount = 0;
         var deleted = 0;
 
         await foreach (var item in blobClient.EnumerateAsync(query, new BlobEnumerationOptions { MaxItems = options.MaxItems }, cancellationToken).ConfigureAwait(false))
@@ -301,7 +304,12 @@ public static class BlobTransferStorageExtensions
                 return Result<BlobDeletePrefixResult>.Failure(item);
             }
 
-            candidates.Add(item.Value.Key.Name);
+            candidateCount++;
+            if (candidateNames.Count < MaximumCandidateNames)
+            {
+                candidateNames.Add(item.Value.Key.Name);
+            }
+
             if (options.DryRun)
             {
                 continue;
@@ -319,7 +327,7 @@ public static class BlobTransferStorageExtensions
                 if (!options.ContinueOnError)
                 {
                     return Result<BlobDeletePrefixResult>.Failure(new BlobStoreTransferError(
-                        $"Delete by prefix failed for '{item.Value.Key.Name}'.",
+                        $"Delete by prefix failed for '{item.Value.Key.Name}' after deleting {deleted} of {candidateCount} observed candidate(s).",
                         item.Value.Key,
                         null,
                         false,
@@ -337,15 +345,15 @@ public static class BlobTransferStorageExtensions
             Container = container,
             Prefix = prefix,
             DryRun = options.DryRun,
-            CandidateCount = candidates.Count,
+            CandidateCount = candidateCount,
             DeletedCount = deleted,
-            CandidateNames = candidates,
+            CandidateNames = candidateNames,
             Failures = failures
         };
 
         return failures.Count > 0
-            ? Result<BlobDeletePrefixResult>.Failure(new BlobStoreTransferError(
-                $"Delete by prefix completed with {failures.Count} failure(s).",
+            ? Result<BlobDeletePrefixResult>.Failure(result).WithError(new BlobStoreTransferError(
+                $"Delete by prefix deleted {deleted} of {candidateCount} candidate(s) with {failures.Count} failure(s).",
                 null,
                 null,
                 false,

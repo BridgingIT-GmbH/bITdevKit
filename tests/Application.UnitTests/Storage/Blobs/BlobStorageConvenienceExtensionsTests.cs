@@ -14,6 +14,32 @@ using Microsoft.Extensions.Logging.Abstractions;
 [UnitTest("Application")]
 public sealed class BlobStorageConvenienceExtensionsTests
 {
+    [Fact]
+    public async Task DeleteByPrefixAsync_WithMoreThanOneThousandCandidates_CapsNamesAndReportsExactCounts()
+    {
+        var matches = Enumerable.Range(0, 1002)
+            .Select(index => new BlobInfo { Key = new("reports", $"tmp/{index:D4}") })
+            .ToArray();
+        var sut = Substitute.For<IBlobStoreClient>();
+        sut.ListPageAsync(Arg.Any<BlobQuery>(), Arg.Any<CancellationToken>())
+            .Returns(Task.FromResult(Result<BlobPage>.Success(new() { Items = matches })));
+        sut.DeleteAsync(Arg.Any<BlobKey>(), Arg.Any<BlobDeleteOptions>(), Arg.Any<CancellationToken>())
+            .Returns(call => Task.FromResult(call.Arg<BlobKey>() == matches[^1].Key
+                ? Result.Failure(new BlobStoreConflictError("The blob changed."))
+                : Result.Success()));
+
+        var dryRun = await sut.DeleteByPrefixAsync("reports", "tmp/", new() { DryRun = true });
+        var result = await sut.DeleteByPrefixAsync("reports", "tmp/", new() { ContinueOnError = true });
+
+        dryRun.IsSuccess.ShouldBeTrue();
+        dryRun.Value.CandidateCount.ShouldBe(1002);
+        dryRun.Value.CandidateNames.ShouldBe(matches.Take(1000).Select(info => info.Key.Name));
+        result.GetError<BlobStoreTransferError>().Message.ShouldContain("deleted 1001 of 1002");
+        result.Value.CandidateCount.ShouldBe(1002);
+        result.Value.DeletedCount.ShouldBe(1001);
+        result.Value.CandidateNames.Count.ShouldBe(1000);
+    }
+
     [Theory]
     [InlineData(false, false)]
     [InlineData(false, true)]

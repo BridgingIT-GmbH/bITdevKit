@@ -2,6 +2,14 @@
 
 This changelog includes unreleased changes on `main` and the full tagged release history from the `main` branch.
 
+## [Unreleased]
+
+- Fixed Blob Storage so expired blobs are hidden immediately, including in listings and cached downloads. Expired keys accept create-only uploads as fresh blobs.
+- Blob Storage retries only when every error is marked transient. The Entity Framework provider classifies timeouts and transient SQL Server errors.
+- EF Blob Storage uses the host's `TimeProvider` for timestamps, expiration checks, and leases.
+- Added opt-in tracing for named blob clients with operation, store, and error type information.
+- Changed EF blob row IDs and their foreign keys to C# `Guid`, stored as 32-character UUID text. Fresh schemas can use `UseBlobRowIdCollation` to preserve UUIDv7 timestamp order.
+
 ## [10.0.131] - 2026-11-24
 
 - Fixed `AddResponseProblemDetails()` to map `NotImplementedException` to HTTP 501 Not Implemented and `HttpRequestException` to HTTP 503 Service Unavailable by default. Host and module mappings take precedence.

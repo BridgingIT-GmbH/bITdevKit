@@ -1,4 +1,4 @@
-// MIT-License
+﻿// MIT-License
 // Copyright BridgingIT GmbH - All Rights Reserved
 // Use of this source code is governed by an MIT-style license that can be
 // found in the LICENSE file at https://github.com/bridgingit/bitdevkit/license
@@ -305,7 +305,7 @@ public sealed class BlobStoreClientBehaviorTests
         var retryInner = new ScriptedBlobStoreClient
         {
             Exists = _ => ++retryAttempts == 1
-                ? Result<bool>.Failure(new BlobStoreProviderError("transient"))
+                ? Result<bool>.Failure(new BlobStoreProviderError("transient", isTransient: true))
                 : Result<bool>.Success(true)
         };
         var retry = new RetryBlobStoreClientBehavior(
@@ -573,7 +573,7 @@ public sealed class BlobStoreClientBehaviorTests
         var inner = new ScriptedBlobStoreClient
         {
             Exists = _ => ++attempts == 1
-                ? Result<bool>.Failure(new BlobStoreProviderError("transient"))
+                ? Result<bool>.Failure(new BlobStoreProviderError("transient", isTransient: true))
                 : Result<bool>.Success(true)
         };
         var sut = new RetryBlobStoreClientBehavior(
@@ -587,6 +587,41 @@ public sealed class BlobStoreClientBehaviorTests
         result.IsSuccess.ShouldBeTrue();
         result.Value.ShouldBeTrue();
         attempts.ShouldBe(2);
+    }
+
+    [Theory]
+    [InlineData("permanent", 1)]
+    [InlineData("transient", 3)]
+    [InlineData("timeout", 3)]
+    [InlineData("mixed", 1)]
+    [InlineData("empty", 1)]
+    public async Task RetryBehavior_WithDeleteFailure_RetriesOnlyWhenEveryErrorIsTransient(string kind, int expectedAttempts)
+    {
+        var transient = new BlobStoreProviderError("transient", isTransient: true);
+        var permanent = new BlobStoreProviderError("permanent");
+        var failure = kind switch
+        {
+            "permanent" => Result.Failure(permanent),
+            "transient" => Result.Failure(transient),
+            "timeout" => Result.Failure(new BlobStoreTimeoutError("delete", TimeSpan.FromSeconds(1))),
+            "mixed" => Result.Failure(transient).WithError(permanent),
+            _ => Result.Failure()
+        };
+        var attempts = 0;
+        var inner = Substitute.For<IBlobStoreClient>();
+        inner.DeleteAsync(Arg.Any<BlobKey>(), Arg.Any<BlobDeleteOptions>(), Arg.Any<CancellationToken>())
+            .Returns(_ =>
+            {
+                attempts++;
+                return Task.FromResult(failure);
+            });
+        var sut = new RetryBlobStoreClientBehavior(inner,
+            new RetryBlobStoreClientBehaviorOptions { Attempts = 3, Backoff = TimeSpan.Zero });
+
+        var result = await sut.DeleteAsync(new BlobKey("reports", "probe"));
+
+        result.IsFailure.ShouldBeTrue();
+        attempts.ShouldBe(expectedAttempts);
     }
 
     [Theory]
@@ -629,7 +664,7 @@ public sealed class BlobStoreClientBehaviorTests
                 positions.Add(upload.Content.Position);
                 await upload.Content.CopyToAsync(Stream.Null, cancellationToken);
                 return attempts == 1
-                    ? Result<BlobInfo>.Failure(new BlobStoreProviderError("transient"))
+                    ? Result<BlobInfo>.Failure(new BlobStoreProviderError("transient", isTransient: true))
                     : Result<BlobInfo>.Success(new BlobInfo { Key = upload.Key, Length = 3 });
             }
         };
@@ -659,7 +694,7 @@ public sealed class BlobStoreClientBehaviorTests
             Upload = _ =>
             {
                 attempts++;
-                return Result<BlobInfo>.Failure(new BlobStoreProviderError("transient"));
+                return Result<BlobInfo>.Failure(new BlobStoreProviderError("transient", isTransient: true));
             }
         };
         var sut = new RetryBlobStoreClientBehavior(
@@ -819,6 +854,126 @@ public sealed class BlobStoreClientBehaviorTests
         result.HasError<BlobStoreTimeoutError>().ShouldBeTrue();
     }
 
+    [Fact]
+    public async Task TimeoutBehavior_WhenOperationWins_DisposesItsPendingTimer()
+    {
+        var completion = new TaskCompletionSource<Result<bool>>(TaskCreationOptions.RunContinuationsAsynchronously);
+        var inner = new ScriptedBlobStoreClient { ExistsHandlerAsync = (_, _) => completion.Task };
+        var clock = new CountingTimeProvider();
+        var sut = new TimeoutBlobStoreClientBehavior(inner, timeProvider: clock);
+
+        var pending = sut.ExistsAsync(new BlobKey("reports", "ready"));
+        clock.PendingTimers.ShouldBe(1);
+        completion.SetResult(Result<bool>.Success(true));
+
+        (await pending).Value.ShouldBeTrue();
+        clock.PendingTimers.ShouldBe(0);
+    }
+
+    [Fact]
+    public async Task TimeoutBehavior_WhenOperationSucceedsAfterDeadline_ReturnsItsResult()
+    {
+        var clock = new CountingTimeProvider();
+        var key = new BlobKey("reports", "late");
+        var inner = new ScriptedBlobStoreClient
+        {
+            ExistsHandlerAsync = async (_, token) =>
+            {
+                try
+                {
+                    await Task.Delay(Timeout.InfiniteTimeSpan, token);
+                }
+                catch (OperationCanceledException) when (token.IsCancellationRequested)
+                {
+                    return Result<bool>.Success(true);
+                }
+
+                throw new InvalidOperationException("Expected the deadline to cancel the operation.");
+            }
+        };
+        var timeout = TimeSpan.FromSeconds(1);
+        var sut = new TimeoutBlobStoreClientBehavior(inner, new() { Timeout = timeout }, timeProvider: clock);
+
+        var operation = sut.ExistsAsync(key);
+        clock.Advance(timeout);
+
+        (await operation).Value.ShouldBeTrue();
+        clock.PendingTimers.ShouldBe(0);
+    }
+
+    [Fact]
+    public async Task TimeoutBehavior_WhenDownloadSucceedsAfterCallerCancellation_DisposesIt()
+    {
+        var key = new BlobKey("reports", "late-download");
+        var content = new MemoryStream([1]);
+        var inner = Substitute.For<IBlobStoreClient>();
+        inner.DownloadAsync(key, Arg.Any<CancellationToken>()).Returns(async call =>
+        {
+            var token = call.Arg<CancellationToken>();
+            try
+            {
+                await Task.Delay(Timeout.InfiniteTimeSpan, token);
+            }
+            catch (OperationCanceledException) when (token.IsCancellationRequested)
+            {
+                return Result<BlobDownload>.Success(new() { Content = content });
+            }
+
+            throw new InvalidOperationException("Expected caller cancellation.");
+        });
+        var clock = new CountingTimeProvider();
+        var sut = new TimeoutBlobStoreClientBehavior(inner, timeProvider: clock);
+        using var caller = new CancellationTokenSource();
+
+        var operation = sut.DownloadAsync(key, caller.Token);
+        clock.PendingTimers.ShouldBe(1);
+        await caller.CancelAsync();
+
+        var exception = await Should.ThrowAsync<OperationCanceledException>(operation);
+        exception.CancellationToken.ShouldBe(caller.Token);
+        content.CanRead.ShouldBeFalse();
+        clock.PendingTimers.ShouldBe(0);
+    }
+
+    private sealed class CountingTimeProvider : TimeProvider
+    {
+        private readonly FakeTimeProvider clock = new();
+        private int pendingTimers;
+
+        public int PendingTimers => Volatile.Read(ref this.pendingTimers);
+
+        public void Advance(TimeSpan duration) => this.clock.Advance(duration);
+
+        public override ITimer CreateTimer(TimerCallback callback, object state, TimeSpan dueTime, TimeSpan period)
+        {
+            var timer = this.clock.CreateTimer(callback, state, dueTime, period);
+            Interlocked.Increment(ref this.pendingTimers);
+            return new CountingTimer(timer, this);
+        }
+
+        private sealed class CountingTimer(ITimer timer, CountingTimeProvider owner) : ITimer
+        {
+            private int disposed;
+
+            public bool Change(TimeSpan dueTime, TimeSpan period) => timer.Change(dueTime, period);
+
+            public void Dispose()
+            {
+                timer.Dispose();
+                if (Interlocked.Exchange(ref this.disposed, 1) == 0)
+                {
+                    Interlocked.Decrement(ref owner.pendingTimers);
+                }
+            }
+
+            public ValueTask DisposeAsync()
+            {
+                this.Dispose();
+                return ValueTask.CompletedTask;
+            }
+        }
+    }
+
     public static IEnumerable<object[]> NonRetryableErrors()
     {
         yield return [new BlobStoreValidationError("invalid")];
@@ -936,7 +1091,7 @@ public sealed class BlobStoreClientBehaviorTests
             this.ActiveUploads.Add(coordinator.GetSnapshots().Single().ActiveUploads);
 
             return this.Attempts == 1
-                ? Result<BlobInfo>.Failure(new BlobStoreProviderError("transient"))
+                ? Result<BlobInfo>.Failure(new BlobStoreProviderError("transient", isTransient: true))
                 : Result<BlobInfo>.Success(new BlobInfo
                 {
                     Key = upload.Key,

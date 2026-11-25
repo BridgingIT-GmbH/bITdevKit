@@ -12,6 +12,40 @@ using Microsoft.Extensions.Primitives;
 public class ToTests
 {
     [Fact]
+    public void To_WhenValueAlreadyMatches_ReturnsItsOriginalPrecisionAndOffset()
+    {
+        var offset = new DateTimeOffset(2026, 2, 5, 10, 30, 0, TimeSpan.FromHours(3)).AddTicks(123);
+        var dateTime = offset.DateTime;
+        var value = new object();
+
+        offset.To<DateTimeOffset>().EqualsExact(offset).ShouldBeTrue();
+        ((DateTimeOffset)offset.To(typeof(DateTimeOffset?))).EqualsExact(offset).ShouldBeTrue();
+        offset.TryTo<DateTimeOffset?>(out var nullable).ShouldBeTrue();
+        nullable.Value.EqualsExact(offset).ShouldBeTrue();
+        dateTime.To<DateTime>().Kind.ShouldBe(DateTimeKind.Unspecified);
+        dateTime.To<DateTime>().Ticks.ShouldBe(dateTime.Ticks);
+        value.To<object>().ShouldBeSameAs(value);
+    }
+
+    [Fact]
+    public void To_WhenTargetIsNullable_ConvertsAndPreservesTemporalPrecision()
+    {
+        var timestamp = new DateTime(2026, 2, 5, 8, 0, 0, DateTimeKind.Utc).AddTicks(123);
+        var duration = TimeSpan.FromDays(2).Add(TimeSpan.FromTicks(123));
+
+        timestamp.To<DateTimeOffset?>().Value.UtcDateTime.ShouldBe(timestamp);
+        timestamp.TryTo(typeof(DateTimeOffset?), out var boxed).ShouldBeTrue();
+        ((DateTimeOffset)boxed).UtcDateTime.ShouldBe(timestamp);
+        timestamp.To<string>().ShouldBe(timestamp.ToString("O", CultureInfo.InvariantCulture));
+        duration.To(typeof(string)).ShouldBe(duration.ToString("c", CultureInfo.InvariantCulture));
+        duration.To<string>().TryTo<TimeSpan?>(out var parsed).ShouldBeTrue();
+        parsed.ShouldBe(duration);
+        "42".To<int?>().ShouldBe(42);
+        "42".To(typeof(int?)).ShouldBe(42);
+        "invalid".TryTo(typeof(int?), out _).ShouldBeFalse();
+    }
+
+    [Fact]
     public void To_Tests()
     {
         const string s = null;

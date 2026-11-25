@@ -65,7 +65,24 @@ public sealed class AzureBlobPublicationTests
         transport.CommitAttempts.ShouldBe(0);
     }
 
-    private sealed class PublicationHandler(int conflicts) : HttpMessageHandler
+    [Fact]
+    public async Task UploadAsync_WithExpiredTarget_DeletesVersionBeforeStagingAndCommitsCreateOnly()
+    {
+        using var transport = new PublicationHandler(0, expired: true);
+        using var http = new HttpClient(transport);
+        var options = new BlobClientOptions { Transport = new HttpClientTransport(http) };
+        options.Retry.MaxRetries = 0;
+        var sut = new AzureBlobStoreProvider(new BlobServiceClient(new Uri("https://account.blob.core.windows.net"), options));
+
+        var result = await sut.UploadAsync(new StoredBlobUpload { Key = new("reports", "item"), Content = new MemoryStream([1]) });
+
+        result.IsSuccess.ShouldBeTrue(string.Join(Environment.NewLine, result.Errors.Select(error => error.Message)));
+        transport.DeletedVersion.ShouldBe("\"v0\"");
+        transport.CommitAttempts.ShouldBe(1);
+        transport.Published.ShouldBeTrue();
+    }
+
+    private sealed class PublicationHandler(int conflicts, bool expired = false) : HttpMessageHandler
     {
         private int generation;
         private Dictionary<string, string> metadata = new(StringComparer.OrdinalIgnoreCase);
@@ -74,9 +91,17 @@ public sealed class AzureBlobPublicationTests
 
         public bool Published { get; private set; }
 
+        public string DeletedVersion { get; private set; }
+
         protected override async Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
         {
             var query = request.RequestUri.Query;
+            if (request.Method == HttpMethod.Delete)
+            {
+                this.DeletedVersion = request.Headers.GetValues("If-Match").Single();
+                return new HttpResponseMessage(HttpStatusCode.Accepted);
+            }
+
             if (query.Contains("comp=blocklist", StringComparison.Ordinal))
             {
                 this.CommitAttempts++;
@@ -88,7 +113,15 @@ public sealed class AzureBlobPublicationTests
                     return failure;
                 }
 
-                request.Headers.GetValues("If-Match").Single().ShouldBe($"\"v{this.generation}\"");
+                if (expired)
+                {
+                    request.Headers.GetValues("If-None-Match").Single().ShouldBe("*");
+                }
+                else
+                {
+                    request.Headers.GetValues("If-Match").Single().ShouldBe($"\"v{this.generation}\"");
+                }
+
                 this.Published = true;
                 this.metadata = request.Headers.Where(header => header.Key.StartsWith("x-ms-meta-", StringComparison.OrdinalIgnoreCase))
                     .ToDictionary(header => header.Key[10..], header => header.Value.Single(), StringComparer.OrdinalIgnoreCase);
@@ -96,6 +129,11 @@ public sealed class AzureBlobPublicationTests
 
             if (query.Contains("comp=block&", StringComparison.Ordinal))
             {
+                if (expired)
+                {
+                    this.DeletedVersion.ShouldNotBeNull();
+                }
+
                 _ = await request.Content.ReadAsByteArrayAsync(cancellationToken);
             }
 
@@ -113,6 +151,11 @@ public sealed class AzureBlobPublicationTests
                 {
                     ["bdk_properties"] = Base64UrlHelper.Encode(Encoding.UTF8.GetBytes(BlobPropertyValues.Serialize(new() { ["generation"] = this.generation })))
                 };
+                if (expired && this.DeletedVersion is null)
+                {
+                    current["bdk_expiresat"] = "202001010000000000000";
+                }
+
                 foreach (var item in current) response.Headers.Add("x-ms-meta-" + item.Key, item.Value);
             }
 

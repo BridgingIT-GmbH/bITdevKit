@@ -42,6 +42,7 @@ public sealed partial class EntityFrameworkBlobStoreProvider<TContext> : EntityF
     private readonly IMetricsService metricsService;
     private readonly ILogger logger;
     private readonly string storeName;
+    private readonly TimeProvider timeProvider;
     private readonly string leaseOwner = $"{Environment.MachineName}:{Guid.NewGuid():N}";
 
     // Per instance on purpose: EF binds a compiled query to the first provider it runs against, and the same
@@ -92,12 +93,34 @@ public sealed partial class EntityFrameworkBlobStoreProvider<TContext> : EntityF
     /// </example>
     public EntityFrameworkBlobStoreProvider(
         IServiceScopeFactory scopeFactory,
+        BlobStoreOptions options,
+        IContinuationTokenProtector continuationTokenProtector,
+        IMetricsService metricsService,
+        ILoggerFactory loggerFactory,
+        string storeName)
+        : this(scopeFactory, options, continuationTokenProtector, metricsService, loggerFactory, storeName, null)
+    {
+    }
+
+    /// <summary>Initializes an EF blob store using the supplied clock.</summary>
+    /// <param name="scopeFactory">The root scope factory for operation contexts.</param>
+    /// <param name="options">The blob-store options.</param>
+    /// <param name="continuationTokenProtector">The optional continuation-token protector.</param>
+    /// <param name="metricsService">The optional shared metrics service.</param>
+    /// <param name="loggerFactory">The optional logger factory.</param>
+    /// <param name="storeName">The configured blob-store name.</param>
+    /// <param name="timeProvider">The clock. A null value selects the system clock.</param>
+    /// <example><code>var provider = new EntityFrameworkBlobStoreProvider&lt;AppDbContext&gt;(scopeFactory, timeProvider: clock);</code></example>
+    public EntityFrameworkBlobStoreProvider(
+        IServiceScopeFactory scopeFactory,
         BlobStoreOptions options = null,
         IContinuationTokenProtector continuationTokenProtector = null,
         IMetricsService metricsService = null,
         ILoggerFactory loggerFactory = null,
-        string storeName = null)
+        string storeName = null,
+        TimeProvider timeProvider = null)
     {
+        this.timeProvider = timeProvider ?? TimeProvider.System;
         this.scopeFactory = scopeFactory ?? throw new ArgumentNullException(nameof(scopeFactory));
         this.dimensionNames = new(scopeFactory);
         this.Capabilities = ResolveCapabilities(scopeFactory);
@@ -150,7 +173,7 @@ public sealed partial class EntityFrameworkBlobStoreProvider<TContext> : EntityF
         {
             await using var scope = this.scopeFactory.CreateAsyncScope();
             var dbContext = scope.ServiceProvider.GetRequiredService<TContext>();
-            IReadOnlyList<string> containers = await dbContext.StorageBlobs.AsNoTracking()
+            IReadOnlyList<string> containers = await QueryLiveBlobs(dbContext, this.timeProvider.GetUtcNow()).AsNoTracking()
                 .Select(blob => blob.Container)
                 .Distinct()
                 .OrderBy(container => container)
@@ -160,7 +183,7 @@ public sealed partial class EntityFrameworkBlobStoreProvider<TContext> : EntityF
         catch (OperationCanceledException) { throw; }
         catch (Exception exception)
         {
-            return Result<IReadOnlyList<string>>.Failure(new BlobStoreProviderError(exception.GetFullMessage()));
+            return Result<IReadOnlyList<string>>.Failure(SqlServerBlobErrors.ProviderError(exception));
         }
     }
 
@@ -223,6 +246,39 @@ public sealed partial class EntityFrameworkBlobStoreProvider<TContext> : EntityF
 
             var key = CreateKeyIdentity(upload.Key);
             var blob = await this.QueryExactBlob(dbContext, key).SingleOrDefaultAsync(cancellationToken).ConfigureAwait(false);
+            var now = this.timeProvider.GetUtcNow();
+            if (blob is not null && IsExpired(blob, now))
+            {
+                if (!string.IsNullOrWhiteSpace(upload.IfMatchETag))
+                {
+                    await this.RollbackAsync(transaction, cancellationToken).ConfigureAwait(false);
+                    return Result<StoredBlobInfo>.Failure(new BlobStoreConflictError("The blob ETag changed or the blob was deleted."));
+                }
+
+                if (!await this.TryAcquireLeaseAsync(dbContext, blob, cancellationToken, throwOnConcurrency: true).ConfigureAwait(false))
+                {
+                    await this.RollbackAsync(transaction, cancellationToken).ConfigureAwait(false);
+                    return Result<StoredBlobInfo>.Failure(new BlobStoreLeaseError("Could not acquire the expired blob's upload lease."));
+                }
+
+                if (!dbContext.Database.IsRelational())
+                {
+                    var chunks = await dbContext.StorageBlobChunks.Where(chunk => chunk.BlobId == blob.Id)
+                        .ToListAsync(cancellationToken).ConfigureAwait(false);
+                    dbContext.StorageBlobChunks.RemoveRange(chunks);
+                    if (dbContext.Model.FindEntityType(typeof(StorageBlobDimension)) is not null)
+                    {
+                        var values = await dbContext.Set<StorageBlobDimension>().Where(value => value.BlobId == blob.Id)
+                            .ToListAsync(cancellationToken).ConfigureAwait(false);
+                        dbContext.RemoveRange(values);
+                    }
+                }
+
+                dbContext.StorageBlobs.Remove(blob);
+                await dbContext.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
+                blob = null;
+            }
+
             var isNew = blob is null;
 
             if (blob is not null && upload.OverwriteMode == BlobOverwriteMode.FailIfExists)
@@ -238,7 +294,6 @@ public sealed partial class EntityFrameworkBlobStoreProvider<TContext> : EntityF
                 return Result<StoredBlobInfo>.Failure(new BlobStoreConflictError("The blob ETag changed or the blob was deleted."));
             }
 
-            var now = DateTimeOffset.UtcNow;
             var createdAt = blob?.CreatedAt ?? now;
             if (blob is null)
             {
@@ -258,7 +313,7 @@ public sealed partial class EntityFrameworkBlobStoreProvider<TContext> : EntityF
                 dbContext.StorageBlobs.Add(blob);
                 await dbContext.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
             }
-            else if (!await this.TryAcquireLeaseAsync(dbContext, blob, cancellationToken).ConfigureAwait(false))
+            else if (!await this.TryAcquireLeaseAsync(dbContext, blob, cancellationToken, throwOnConcurrency: true).ConfigureAwait(false))
             {
                 await this.RollbackAsync(transaction, cancellationToken).ConfigureAwait(false);
                 if (!string.IsNullOrWhiteSpace(upload.IfMatchETag))
@@ -283,7 +338,10 @@ public sealed partial class EntityFrameworkBlobStoreProvider<TContext> : EntityF
                 return Result<StoredBlobInfo>.Failure(new BlobStoreConflictError("The blob ETag changed."));
             }
 
-            await this.DeleteChunksAsync(dbContext, blob.Id, cancellationToken).ConfigureAwait(false);
+            if (!isNew)
+            {
+                await this.DeleteChunksAsync(dbContext, blob.Id, cancellationToken).ConfigureAwait(false);
+            }
 
             var contentHash = await this.WriteChunksAsync(
                 dbContext,
@@ -309,7 +367,7 @@ public sealed partial class EntityFrameworkBlobStoreProvider<TContext> : EntityF
             blob.ContentTypeMimeType = upload.ContentType?.MimeType();
             blob.ETag = CreateETag();
             blob.CreatedAt = createdAt;
-            blob.LastModifiedAt = DateTimeOffset.UtcNow;
+            blob.LastModifiedAt = this.timeProvider.GetUtcNow();
             blob.ExpiresAt = ToUtc(upload.ExpiresAt);
             blob.Properties = ToDictionary(upload.Properties ?? new PropertyBag(blob.Properties));
             blob.TransformMetadata = ToDictionary(upload.TransformMetadata);
@@ -345,18 +403,22 @@ public sealed partial class EntityFrameworkBlobStoreProvider<TContext> : EntityF
             await this.RestoreSnapshotIfNeededAsync(dbContext, snapshot, mutationLease, transaction, CancellationToken.None).ConfigureAwait(false);
             throw;
         }
-        catch (DbUpdateException exception) when (IsUniqueConstraintViolation(exception))
+        catch (DbUpdateException exception) when (exception is DbUpdateConcurrencyException || IsUniqueConstraintViolation(exception))
         {
             await this.RollbackAsync(transaction, CancellationToken.None).ConfigureAwait(false);
             await this.RestoreSnapshotIfNeededAsync(dbContext, snapshot, mutationLease, transaction, CancellationToken.None).ConfigureAwait(false);
-            return Result<StoredBlobInfo>.Failure(new BlobStoreConflictError(
-                $"Blob with container '{upload.Key.Container}' and name '{upload.Key.Name}' already exists."));
+
+            return exception is not DbUpdateConcurrencyException && upload.OverwriteMode == BlobOverwriteMode.FailIfExists
+                ? Result<StoredBlobInfo>.Failure(new BlobStoreConflictError(
+                    $"Blob with container '{upload.Key.Container}' and name '{upload.Key.Name}' already exists."))
+                : Result<StoredBlobInfo>.Failure(new BlobStoreLeaseError(
+                    $"Lost the blob upload lease for '{upload.Key.Container}/{upload.Key.Name}'."));
         }
         catch (Exception exception)
         {
             await this.RollbackAsync(transaction, CancellationToken.None).ConfigureAwait(false);
             await this.RestoreSnapshotIfNeededAsync(dbContext, snapshot, mutationLease, transaction, CancellationToken.None).ConfigureAwait(false);
-            return Result<StoredBlobInfo>.Failure(new BlobStoreProviderError(exception.GetFullMessage()));
+            return Result<StoredBlobInfo>.Failure(SqlServerBlobErrors.ProviderError(exception));
         }
         finally
         {
@@ -385,6 +447,7 @@ public sealed partial class EntityFrameworkBlobStoreProvider<TContext> : EntityF
         {
             var identity = CreateKeyIdentity(key);
             var inlineLimit = this.options.ChunkSize;
+            var now = this.timeProvider.GetUtcNow();
 
             // Blobs up to one chunk are loaded together with their first chunk in a single round trip.
             var row = await this.ReadBlobWithInlineContentAsync(
@@ -394,7 +457,7 @@ public sealed partial class EntityFrameworkBlobStoreProvider<TContext> : EntityF
                 inlineLimit,
                 cancellationToken).ConfigureAwait(false);
 
-            if (row is null)
+            if (row is null || IsExpired(row.Blob, now))
             {
                 await lease.DisposeAsync().ConfigureAwait(false);
                 return Result<StoredBlobDownload>.Failure(new BlobStoreNotFoundError(key));
@@ -426,7 +489,7 @@ public sealed partial class EntityFrameworkBlobStoreProvider<TContext> : EntityF
         catch (Exception exception)
         {
             await lease.DisposeAsync().ConfigureAwait(false);
-            return Result<StoredBlobDownload>.Failure(new BlobStoreProviderError(exception.GetFullMessage()));
+            return Result<StoredBlobDownload>.Failure(SqlServerBlobErrors.ProviderError(exception));
         }
     }
 
@@ -450,6 +513,7 @@ public sealed partial class EntityFrameworkBlobStoreProvider<TContext> : EntityF
         try
         {
             var inlineLimit = this.options.ChunkSize;
+            var now = this.timeProvider.GetUtcNow();
             var requested = keys.Where(key => BlobValidator.Validate(key).IsSuccess).Distinct();
 
             foreach (var container in requested.GroupBy(key => key.Container))
@@ -466,7 +530,7 @@ public sealed partial class EntityFrameworkBlobStoreProvider<TContext> : EntityF
                     .WithCancellation(cancellationToken)
                     .ConfigureAwait(false))
                 {
-                    if (!byNameHash.TryGetValue(row.Blob.NameHash, out var key))
+                    if (IsExpired(row.Blob, now) || !byNameHash.TryGetValue(row.Blob.NameHash, out var key))
                     {
                         continue;
                     }
@@ -523,7 +587,7 @@ public sealed partial class EntityFrameworkBlobStoreProvider<TContext> : EntityF
                 .SingleOrDefaultAsync(cancellationToken)
                 .ConfigureAwait(false);
 
-            return blob is null
+            return blob is null || IsExpired(blob, this.timeProvider.GetUtcNow())
                 ? Result<StoredBlobInfo>.Failure(new BlobStoreNotFoundError(key))
                 : Result<StoredBlobInfo>.Success(ToInfo(blob));
         }
@@ -533,7 +597,7 @@ public sealed partial class EntityFrameworkBlobStoreProvider<TContext> : EntityF
         }
         catch (Exception exception)
         {
-            return Result<StoredBlobInfo>.Failure(new BlobStoreProviderError(exception.GetFullMessage()));
+            return Result<StoredBlobInfo>.Failure(SqlServerBlobErrors.ProviderError(exception));
         }
     }
 
@@ -572,7 +636,7 @@ public sealed partial class EntityFrameworkBlobStoreProvider<TContext> : EntityF
             var identity = CreateKeyIdentity(update.Key);
             var blob = await this.QueryExactBlob(dbContext, identity).SingleOrDefaultAsync(cancellationToken).ConfigureAwait(false);
 
-            if (blob is null)
+            if (blob is null || IsExpired(blob, this.timeProvider.GetUtcNow()))
             {
                 await this.RollbackAsync(transaction, cancellationToken).ConfigureAwait(false);
                 return Result<StoredBlobInfo>.Failure(new BlobStoreNotFoundError(update.Key));
@@ -597,7 +661,7 @@ public sealed partial class EntityFrameworkBlobStoreProvider<TContext> : EntityF
             snapshot = CloneBlob(blob);
             ApplyPropertyUpdate(blob, update);
             blob.ETag = CreateETag();
-            blob.LastModifiedAt = DateTimeOffset.UtcNow;
+            blob.LastModifiedAt = this.timeProvider.GetUtcNow();
             blob.LeaseId = null;
             blob.LeaseAcquiredBy = null;
             blob.LeaseAcquiredUntil = null;
@@ -622,7 +686,7 @@ public sealed partial class EntityFrameworkBlobStoreProvider<TContext> : EntityF
         {
             await this.RollbackAsync(transaction, CancellationToken.None).ConfigureAwait(false);
             await this.RestoreMetadataSnapshotIfNeededAsync(dbContext, snapshot, mutationLease, transaction, CancellationToken.None).ConfigureAwait(false);
-            return Result<StoredBlobInfo>.Failure(new BlobStoreProviderError(exception.GetFullMessage()));
+            return Result<StoredBlobInfo>.Failure(SqlServerBlobErrors.ProviderError(exception));
         }
         finally
         {
@@ -663,9 +727,8 @@ public sealed partial class EntityFrameworkBlobStoreProvider<TContext> : EntityF
         try
         {
             var identity = CreateKeyIdentity(key);
-            var exists = await this.QueryExactBlob(lease.Context, identity)
-                .AsNoTracking()
-                .AnyAsync(cancellationToken)
+            var exists = await QueryLiveBlobs(lease.Context, this.timeProvider.GetUtcNow())
+                .AnyAsync(blob => blob.ContainerHash == identity.ContainerHash && blob.NameHash == identity.NameHash, cancellationToken)
                 .ConfigureAwait(false);
 
             return Result<bool>.Success(exists);
@@ -676,7 +739,7 @@ public sealed partial class EntityFrameworkBlobStoreProvider<TContext> : EntityF
         }
         catch (Exception exception)
         {
-            return Result<bool>.Failure(new BlobStoreProviderError(exception.GetFullMessage()));
+            return Result<bool>.Failure(SqlServerBlobErrors.ProviderError(exception));
         }
     }
 
@@ -701,7 +764,7 @@ public sealed partial class EntityFrameworkBlobStoreProvider<TContext> : EntityF
         await using var lease = this.CreateContextLease();
         try
         {
-            var rows = lease.Context.StorageBlobs
+            var rows = QueryLiveBlobs(lease.Context, this.timeProvider.GetUtcNow())
                 .AsNoTracking()
                 .Where(e => e.Container == validation.Value.Query.Container);
 
@@ -766,7 +829,7 @@ public sealed partial class EntityFrameworkBlobStoreProvider<TContext> : EntityF
         }
         catch (Exception exception)
         {
-            return Result<StoredBlobPage>.Failure(new BlobStoreProviderError(exception.GetFullMessage()));
+            return Result<StoredBlobPage>.Failure(SqlServerBlobErrors.ProviderError(exception));
         }
     }
 
@@ -856,7 +919,7 @@ public sealed partial class EntityFrameworkBlobStoreProvider<TContext> : EntityF
         {
             await this.RollbackAsync(transaction, CancellationToken.None).ConfigureAwait(false);
             await this.RestoreSnapshotIfNeededAsync(dbContext, snapshot, mutationLease, transaction, CancellationToken.None).ConfigureAwait(false);
-            return Result.Failure(new BlobStoreProviderError(exception.GetFullMessage()));
+            return Result.Failure(SqlServerBlobErrors.ProviderError(exception));
         }
         finally
         {
@@ -896,14 +959,15 @@ public sealed partial class EntityFrameworkBlobStoreProvider<TContext> : EntityF
                 }
 
                 batches++;
-                IDbContextTransaction transaction = null;
-                try
+                foreach (var blob in candidates)
                 {
-                    transaction = await this.BeginTransactionIfSupportedAsync(dbContext, cancellationToken).ConfigureAwait(false);
+                    var key = new BlobKey(blob.Container, blob.Name);
+                    using var mutationGate = await AcquireMutationGateAsync(dbContext, key, cancellationToken).ConfigureAwait(false);
+                    await using var transaction = await this.BeginTransactionIfSupportedAsync(dbContext, cancellationToken).ConfigureAwait(false);
+                    List<StorageBlobChunk> chunks = null;
 
-                    foreach (var blob in candidates)
+                    try
                     {
-                        using var mutationGate = await AcquireMutationGateAsync(dbContext, new(blob.Container, blob.Name), cancellationToken).ConfigureAwait(false);
                         if (mutationGate is not null)
                         {
                             await dbContext.Entry(blob).ReloadAsync(cancellationToken).ConfigureAwait(false);
@@ -914,7 +978,7 @@ public sealed partial class EntityFrameworkBlobStoreProvider<TContext> : EntityF
                             }
                         }
 
-                        if (!await this.TryAcquireLeaseAsync(dbContext, blob, cancellationToken).ConfigureAwait(false))
+                        if (!await this.TryAcquireLeaseAsync(dbContext, blob, cancellationToken, throwOnConcurrency: true).ConfigureAwait(false))
                         {
                             skipped++;
                             continue;
@@ -922,30 +986,39 @@ public sealed partial class EntityFrameworkBlobStoreProvider<TContext> : EntityF
 
                         if (!dbContext.Database.IsRelational())
                         {
-                            await this.DeleteChunksAsync(dbContext, blob.Id, cancellationToken).ConfigureAwait(false);
+                            chunks = await dbContext.StorageBlobChunks.Where(chunk => chunk.BlobId == blob.Id)
+                                .ToListAsync(cancellationToken).ConfigureAwait(false);
+                            dbContext.StorageBlobChunks.RemoveRange(chunks);
                         }
 
                         dbContext.StorageBlobs.Remove(blob);
                         await dbContext.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
-                        deleted++;
-                        deletedKeys.Add(new(blob.Container, blob.Name));
-                    }
+                        if (transaction is not null)
+                        {
+                            await transaction.CommitAsync(cancellationToken).ConfigureAwait(false);
+                        }
 
-                    if (transaction is not null)
-                    {
-                        await transaction.CommitAsync(cancellationToken).ConfigureAwait(false);
+                        deleted++;
+                        deletedKeys.Add(key);
                     }
-                }
-                catch
-                {
-                    await this.RollbackAsync(transaction, CancellationToken.None).ConfigureAwait(false);
-                    throw;
-                }
-                finally
-                {
-                    if (transaction is not null)
+                    catch (DbUpdateConcurrencyException)
                     {
-                        await transaction.DisposeAsync().ConfigureAwait(false);
+                        await this.RollbackAsync(transaction, CancellationToken.None).ConfigureAwait(false);
+                        dbContext.Entry(blob).State = EntityState.Detached;
+                        if (chunks is not null)
+                        {
+                            foreach (var chunk in chunks)
+                            {
+                                dbContext.Entry(chunk).State = EntityState.Unchanged;
+                            }
+                        }
+
+                        skipped++;
+                    }
+                    catch
+                    {
+                        await this.RollbackAsync(transaction, CancellationToken.None).ConfigureAwait(false);
+                        throw;
                     }
                 }
 
@@ -963,7 +1036,7 @@ public sealed partial class EntityFrameworkBlobStoreProvider<TContext> : EntityF
                 DeletedCount = deleted,
                 DeletedKeys = deletedKeys,
                 SkippedCount = skipped,
-                CompletedAt = DateTimeOffset.UtcNow
+                CompletedAt = this.timeProvider.GetUtcNow()
             });
         }
         catch (OperationCanceledException)
@@ -972,7 +1045,7 @@ public sealed partial class EntityFrameworkBlobStoreProvider<TContext> : EntityF
         }
         catch (Exception exception)
         {
-            return Result<BlobRetentionSweepResult>.Failure(new BlobStoreProviderError(exception.GetFullMessage()));
+            return Result<BlobRetentionSweepResult>.Failure(SqlServerBlobErrors.ProviderError(exception));
         }
     }
 
@@ -1146,7 +1219,7 @@ public sealed partial class EntityFrameworkBlobStoreProvider<TContext> : EntityF
         return new BlobSnapshot(key, CloneBlob(blob), chunks);
     }
 
-    private async Task DeleteChunksAsync(TContext dbContext, string blobId, CancellationToken cancellationToken)
+    private async Task DeleteChunksAsync(TContext dbContext, Guid blobId, CancellationToken cancellationToken)
     {
         if (dbContext.Database.IsRelational() && !IsSqlite(dbContext))
         {
@@ -1168,12 +1241,13 @@ public sealed partial class EntityFrameworkBlobStoreProvider<TContext> : EntityF
 
     private async Task<ContentWriteResult> WriteChunksAsync(
         TContext dbContext,
-        string blobId,
+        Guid blobId,
         Stream content,
         CancellationToken cancellationToken)
     {
         using var hash = IncrementalHash.CreateHash(HashAlgorithmName.SHA256);
-        var bufferSize = Math.Max(1, this.options.ChunkSize);
+        var chunkSize = Math.Max(1, this.options.ChunkSize);
+        var bufferSize = GetInitialChunkBufferSize(content, chunkSize);
         var buffer = ArrayPool<byte>.Shared.Rent(bufferSize);
         var total = 0L;
         var index = 0;
@@ -1184,29 +1258,57 @@ public sealed partial class EntityFrameworkBlobStoreProvider<TContext> : EntityF
 
         try
         {
-            int read;
-            while ((read = await content.ReadAsync(buffer.AsMemory(0, bufferSize), cancellationToken).ConfigureAwait(false)) > 0)
+            var endOfStream = false;
+            while (!endOfStream)
             {
-                total += read;
-                if (this.options.MaxBlobSize is not null && total > this.options.MaxBlobSize.Value)
+                var filled = 0;
+                while (filled < chunkSize)
                 {
-                    throw new BlobStoreResultException(new BlobStoreSizeLimitExceededError(total, this.options.MaxBlobSize.Value));
+                    var read = await content.ReadAsync(buffer.AsMemory(filled, bufferSize - filled), cancellationToken).ConfigureAwait(false);
+                    if (read == 0)
+                    {
+                        endOfStream = true;
+                        break;
+                    }
+
+                    total += read;
+                    if (this.options.MaxBlobSize is { } maximum && total > maximum)
+                    {
+                        throw new BlobStoreResultException(new BlobStoreSizeLimitExceededError(total, maximum));
+                    }
+
+                    filled += read;
+                    if (filled == bufferSize && bufferSize < chunkSize)
+                    {
+                        bufferSize = (int)Math.Min((long)bufferSize * 2, chunkSize);
+                        if (bufferSize > buffer.Length)
+                        {
+                            var largerBuffer = ArrayPool<byte>.Shared.Rent(bufferSize);
+                            buffer.AsSpan(0, filled).CopyTo(largerBuffer);
+                            ArrayPool<byte>.Shared.Return(buffer);
+                            buffer = largerBuffer;
+                        }
+                    }
                 }
 
-                hash.AppendData(buffer.AsSpan(0, read));
-                var bytes = new byte[read];
-                buffer.AsSpan(0, read).CopyTo(bytes);
+                if (filled == 0)
+                {
+                    break;
+                }
+
+                var contentBytes = buffer.AsSpan(0, filled);
+                hash.AppendData(contentBytes);
                 var chunk = new StorageBlobChunk
                 {
                     BlobId = blobId,
                     Index = index++,
-                    Content = bytes,
-                    Length = read
+                    Content = contentBytes.ToArray(),
+                    Length = filled
                 };
 
                 dbContext.StorageBlobChunks.Add(chunk);
                 pendingChunks.Add(chunk);
-                pendingChunkBytes += read;
+                pendingChunkBytes += filled;
 
                 if (pendingChunks.Count >= this.options.ChunkFlushCount ||
                     pendingChunkBytes >= this.options.MaxPendingChunkBytes)
@@ -1241,6 +1343,24 @@ public sealed partial class EntityFrameworkBlobStoreProvider<TContext> : EntityF
         {
             ArrayPool<byte>.Shared.Return(buffer);
         }
+    }
+
+    private static int GetInitialChunkBufferSize(Stream content, int chunkSize)
+    {
+        if (content.CanSeek)
+        {
+            try
+            {
+                var remaining = Math.Max(0L, content.Length - content.Position);
+                return (int)Math.Min(remaining, chunkSize - 1L) + 1;
+            }
+            catch (NotSupportedException)
+            {
+                // Some seekable streams cannot report their length.
+            }
+        }
+
+        return Math.Min(chunkSize, 64 * 1024);
     }
 
     private async Task FlushChunksAsync(
@@ -1299,9 +1419,9 @@ public sealed partial class EntityFrameworkBlobStoreProvider<TContext> : EntityF
         }
     }
 
-    private async Task<bool> TryAcquireLeaseAsync(TContext dbContext, StorageBlob blob, CancellationToken cancellationToken, bool reload = true)
+    private async Task<bool> TryAcquireLeaseAsync(TContext dbContext, StorageBlob blob, CancellationToken cancellationToken, bool reload = true, bool throwOnConcurrency = false)
     {
-        var now = DateTimeOffset.UtcNow;
+        var now = this.timeProvider.GetUtcNow();
         var owner = this.GetLeaseOwner();
         var leaseUntil = now.Add(this.options.LeaseDuration);
 
@@ -1365,7 +1485,7 @@ public sealed partial class EntityFrameworkBlobStoreProvider<TContext> : EntityF
             await dbContext.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
             return true;
         }
-        catch (DbUpdateConcurrencyException)
+        catch (DbUpdateConcurrencyException) when (!throwOnConcurrency)
         {
             return false;
         }
@@ -1375,7 +1495,7 @@ public sealed partial class EntityFrameworkBlobStoreProvider<TContext> : EntityF
     {
         blob.LeaseId = Guid.NewGuid().ToString("N");
         blob.LeaseAcquiredBy = this.GetLeaseOwner();
-        blob.LeaseAcquiredUntil = DateTimeOffset.UtcNow.Add(this.options.LeaseDuration);
+        blob.LeaseAcquiredUntil = this.timeProvider.GetUtcNow().Add(this.options.LeaseDuration);
         blob.ConcurrencyVersion = Guid.NewGuid();
     }
 
@@ -1544,7 +1664,7 @@ public sealed partial class EntityFrameworkBlobStoreProvider<TContext> : EntityF
         string TransformMetadataJson,
         string DimensionsJson);
 
-    private sealed record BlobMutationLease(string BlobId, string LeaseId, Guid ConcurrencyVersion);
+    private sealed record BlobMutationLease(Guid BlobId, string LeaseId, Guid ConcurrencyVersion);
 
     private sealed record BlobSnapshot(KeyIdentity Key, StorageBlob Blob, IReadOnlyList<StorageBlobChunk> Chunks);
 
@@ -1591,7 +1711,7 @@ public sealed partial class EntityFrameworkBlobStoreProvider<TContext> : EntityF
             string error);
     }
 
-    private sealed class BlobChunkReadStream(ContextLease lease, string blobId, long length) : Stream
+    private sealed class BlobChunkReadStream(ContextLease lease, Guid blobId, long length) : Stream
     {
         private byte[] currentChunk;
         private int currentOffset;

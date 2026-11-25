@@ -40,9 +40,19 @@ public partial class AzureBlobStoreProvider
         /// <example><code>await using var stream = await backend.OpenReadAsync(key, cancellationToken);</code></example>
         Task<Stream> OpenReadAsync(BlobKey key, CancellationToken cancellationToken);
 
+        /// <summary>Opens content for the ETag observed during the metadata read.</summary>
+        /// <example><code>await using var stream = await backend.OpenReadAsync(key, etag, cancellationToken);</code></example>
+        Task<Stream> OpenReadAsync(BlobKey key, string ifMatchETag, CancellationToken cancellationToken) =>
+            this.OpenReadAsync(key, cancellationToken);
+
         /// <summary>Reads complete provider properties for an existing blob.</summary>
         /// <example><code>var properties = await backend.GetPropertiesAsync(key, cancellationToken);</code></example>
         Task<AzureBlobProperties> GetPropertiesAsync(BlobKey key, CancellationToken cancellationToken);
+
+        /// <summary>Reads the metadata and ETag needed to check expiration.</summary>
+        /// <example><code>var properties = await backend.GetPropertiesForExpirationAsync(key, cancellationToken);</code></example>
+        Task<AzureBlobProperties> GetPropertiesForExpirationAsync(BlobKey key, CancellationToken cancellationToken) =>
+            this.GetPropertiesAsync(key, cancellationToken);
 
         /// <summary>Updates headers, metadata, and tags with compensation on failure.</summary>
         /// <example><code>var updated = await backend.UpdatePropertiesAsync(key, type, metadata, tags, etag, cancellationToken);</code></example>
@@ -225,6 +235,21 @@ public partial class AzureBlobStoreProvider
                 .GetBlobClient(key.Name)
                 .OpenReadAsync(cancellationToken: cancellationToken)
                 .ConfigureAwait(false);
+
+        public Task<Stream> OpenReadAsync(BlobKey key, string ifMatchETag, CancellationToken cancellationToken) =>
+            this.GetContainerClient(key.Container)
+                .GetBlobClient(key.Name)
+                .OpenReadAsync(new BlobOpenReadOptions(allowModifications: false)
+                {
+                    Conditions = new BlobRequestConditions { IfMatch = new ETag(ifMatchETag) }
+                }, cancellationToken);
+
+        public async Task<AzureBlobProperties> GetPropertiesForExpirationAsync(BlobKey key, CancellationToken cancellationToken)
+        {
+            var blobClient = this.GetContainerClient(key.Container).GetBlobClient(key.Name);
+            var properties = await blobClient.GetPropertiesAsync(cancellationToken: cancellationToken).ConfigureAwait(false);
+            return ToProperties(key, properties.Value, null);
+        }
 
         public Task<AzureBlobProperties> GetPropertiesAsync(BlobKey key, CancellationToken cancellationToken) =>
             this.GetPropertiesSnapshotAsync(key, null, cancellationToken);

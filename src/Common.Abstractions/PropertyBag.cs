@@ -289,11 +289,13 @@ public class PropertyBag : IEnumerable<KeyValuePair<string, object>>
     /// </summary>
     public void Merge(PropertyBag other)
     {
-        if (other == null) return;
+        if (other is null || ReferenceEquals(this, other)) return;
+
+        var entries = other.Snapshot();
         this.@lock.EnterWriteLock();
         try
         {
-            foreach (var kv in other)
+            foreach (var kv in entries)
                 this.items[kv.Key] = kv.Value;
         }
         finally
@@ -303,21 +305,23 @@ public class PropertyBag : IEnumerable<KeyValuePair<string, object>>
     }
 
     /// <inheritdoc/>
-    public IEnumerator<KeyValuePair<string, object>> GetEnumerator()
+    public IEnumerator<KeyValuePair<string, object>> GetEnumerator() =>
+        ((IEnumerable<KeyValuePair<string, object>>)this.Snapshot()).GetEnumerator();
+
+    IEnumerator IEnumerable.GetEnumerator() => this.GetEnumerator();
+
+    private KeyValuePair<string, object>[] Snapshot()
     {
         this.@lock.EnterReadLock();
         try
         {
-            foreach (var kv in this.items)
-                yield return kv;
+            return [.. this.items];
         }
         finally
         {
             this.@lock.ExitReadLock();
         }
     }
-
-    IEnumerator IEnumerable.GetEnumerator() => this.GetEnumerator();
 
     /// <summary>Associates a value with a strongly typed key and raises <see cref="ItemChanged"/>.</summary>
     /// <typeparam name="T">The value type represented by the key.</typeparam>

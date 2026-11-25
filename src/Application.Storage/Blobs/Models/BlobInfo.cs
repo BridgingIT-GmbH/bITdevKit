@@ -94,7 +94,7 @@ public sealed class BlobInfo
     public DateTimeOffset? LastModifiedAt { get; init; }
 
     /// <summary>
-    /// Gets the optional UTC expiration timestamp after which retention sweeping may delete the blob.
+    /// Gets the UTC instant at which the blob becomes unavailable and eligible for retention cleanup.
     /// </summary>
     /// <example>
     /// <code>

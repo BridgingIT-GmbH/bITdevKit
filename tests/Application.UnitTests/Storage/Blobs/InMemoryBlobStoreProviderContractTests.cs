@@ -19,6 +19,52 @@ public sealed class InMemoryBlobStoreProviderContractTests : BlobStoreProviderCo
         new InMemoryBlobStoreProvider(options: options);
 
     [Fact]
+    public async Task DownloadAsync_WhenClockReachesExpiration_HidesEntryUntilReplacement()
+    {
+        var start = new DateTimeOffset(2026, 7, 16, 10, 0, 0, TimeSpan.Zero);
+        var clock = new FakeTimeProvider(start);
+        var context = new InMemoryBlobStoreContext();
+        var services = new ServiceCollection();
+        services.AddSingleton<TimeProvider>(clock);
+        services.AddBlobStorage().WithInMemoryClient("memory", contextFactory: _ => context);
+        using var serviceProvider = services.BuildServiceProvider();
+        var sut = serviceProvider.GetRequiredService<IBlobStoreClientFactory>().CreateClient("memory");
+        var key = new BlobKey("reports", "expiry.txt");
+        var expires = start.AddMinutes(1);
+        var uploaded = await sut.UploadAsync(new()
+        {
+            Key = key,
+            Content = new MemoryStream([1]),
+            ExpiresAt = expires.ToOffset(TimeSpan.FromHours(2))
+        });
+        uploaded.Value.CreatedAt.ShouldBe(start);
+
+        clock.Advance(expires - start - TimeSpan.FromTicks(1));
+        var download = await sut.DownloadAsync(key);
+        download.IsSuccess.ShouldBeTrue();
+        await download.Value.DisposeAsync();
+
+        clock.Advance(TimeSpan.FromTicks(1));
+        (await sut.DownloadAsync(key)).HasError<BlobStoreNotFoundError>().ShouldBeTrue();
+        (await sut.GetPropertiesAsync(key)).HasError<BlobStoreNotFoundError>().ShouldBeTrue();
+        (await sut.UpdatePropertiesAsync(new() { Key = key })).HasError<BlobStoreNotFoundError>().ShouldBeTrue();
+        (await sut.ExistsAsync(key)).Value.ShouldBeFalse();
+        context.TryGet(key, out var old).ShouldBeTrue();
+        old.Info.ETag.ShouldBe(uploaded.Value.ETag);
+
+        clock.Advance(TimeSpan.FromTicks(1));
+        var replacement = await sut.UploadAsync(new()
+        {
+            Key = key,
+            Content = new MemoryStream([2]),
+            OverwriteMode = BlobOverwriteMode.FailIfExists
+        });
+        replacement.IsSuccess.ShouldBeTrue();
+        replacement.Value.CreatedAt.ShouldBe(clock.GetUtcNow());
+        replacement.Value.ETag.ShouldNotBe(uploaded.Value.ETag);
+    }
+
+    [Fact]
     public async Task SweepExpiredAsync_WithExpiredBlobs_DeletesExpiredOnly()
     {
         // Arrange

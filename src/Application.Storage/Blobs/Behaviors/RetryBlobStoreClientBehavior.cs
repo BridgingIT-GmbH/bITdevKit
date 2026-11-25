@@ -160,31 +160,8 @@ public sealed class RetryBlobStoreClientBehavior(
             : this.Options.Backoff;
     }
 
-    private static bool IsTransient(IResult result)
-    {
-        if (result.HasError<BlobStorePartialUpdateError>() ||
-            result.HasError<BlobStoreIndeterminateOperationError>() ||
-            result.HasError<BlobStoreValidationError>() ||
-            result.HasError<BlobStoreNotFoundError>() ||
-            result.HasError<BlobStoreConflictError>() ||
-            result.HasError<BlobStoreLeaseError>() ||
-            result.HasError<BlobStoreSizeLimitExceededError>() ||
-            result.HasError<BlobStoreIntegrityError>() ||
-            result.HasError<BlobStoreUploadOverloadedError>() ||
-            result.HasError<BlobStoreUploadAdmissionTimeoutError>() ||
-            result.HasError<BlobStoreQueryTooBroadError>() ||
-            result.HasError<BlobStorePageSizeExceededError>() ||
-            result.HasError<BlobStoreQueryNotSupportedError>() ||
-            result.HasError<BlobStoreInvalidContinuationTokenError>() ||
-            result.HasError<OperationCancelledError>())
-        {
-            return false;
-        }
-
-        return result.HasError<BlobStoreProviderError>()
-            || result.HasError<BlobStoreTimeoutError>()
-            || (result.Errors.Any() && result.Errors.All(error => error is ITransientStorageError { IsTransient: true }));
-    }
+    private static bool IsTransient(IResult result) =>
+        result.Errors.Any() && result.Errors.All(error => error is ITransientStorageError { IsTransient: true });
 
     private static long? GetUploadStartPosition(BlobStoreOperationContext context)
     {

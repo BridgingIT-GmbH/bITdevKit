@@ -24,6 +24,7 @@ using System.Text.Json;
 /// </code>
 /// </example>
 [Table("__Storage_Blobs")]
+[EntityTypeConfiguration(typeof(BlobRowIdConfiguration.Owner))]
 [Index(nameof(ContainerHash), nameof(NameHash), IsUnique = true)]
 [Index(nameof(Container), nameof(Name))]
 [Index(nameof(LeaseAcquiredUntil))]
@@ -73,22 +74,18 @@ public sealed class StorageBlob
     public const int MaximumLeaseValueLength = 256;
 
     /// <summary>
-    /// Gets or sets the internal blob row identifier.
+    /// Gets or sets the internal blob row identifier, stored as 32 lowercase hexadecimal characters.
     /// </summary>
     /// <example>
     /// <code>
-    /// var id = blob.Id;
+    /// Guid id = blob.Id;
     /// </code>
     /// </example>
     [Key]
-    [Required]
-    [MaxLength(64)]
-    public string Id { get; set; } = CreateId();
+    public Guid Id { get; set; } = CreateId();
 
     /// <summary>
-    /// Creates a new blob row identifier. The identifier is a time ordered (version 7) GUID in the 32 character
-    /// <c>N</c> format, so new rows are appended to the end of the clustered primary key and of the chunk table
-    /// instead of splitting random pages. Identifiers created before this change stay random and remain valid.
+    /// Creates a version 7 GUID for a new blob row.
     /// </summary>
     /// <returns>The new identifier.</returns>
     /// <example>
@@ -96,7 +93,7 @@ public sealed class StorageBlob
     /// var blob = new StorageBlob { Id = StorageBlob.CreateId() };
     /// </code>
     /// </example>
-    public static string CreateId() => Guid.CreateVersion7().ToString("N");
+    public static Guid CreateId() => Guid.CreateVersion7();
 
     /// <summary>
     /// Gets or sets the logical top-level blob container.

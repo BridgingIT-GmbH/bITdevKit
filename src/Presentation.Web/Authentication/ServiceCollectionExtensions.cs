@@ -17,6 +17,8 @@ using Microsoft.IdentityModel.Tokens;
 /// <summary>
 /// Extension methods for adding JWT Bearer authentication to the dependency injection container.
 /// </summary>
+/// <remarks>JWT event logging skips request paths that match <see cref="RequestPathDefaults.Blacklist"/>.</remarks>
+/// <example><code>services.AddJwtBearerAuthentication(configuration);</code></example>
 public static partial class ServiceCollectionExtensions
 {
     /// <summary>
@@ -230,36 +232,42 @@ public static partial class ServiceCollectionExtensions
         {
             OnAuthenticationFailed = context =>
             {
-                var logger = context.HttpContext.RequestServices.GetRequiredService<ILogger<JwtBearerHandler>>();
+                var logger = GetJwtEventLogger(context.HttpContext);
 
-                logger.LogError("JwtAuthentication - Authentication failed: {Error}", context.Exception.Message);
+                logger?.LogError("JwtAuthentication - Authentication failed: {Error}", context.Exception.Message);
                 return Task.CompletedTask;
             },
 
             OnTokenValidated = context =>
             {
-                var logger = context.HttpContext.RequestServices.GetRequiredService<ILogger<JwtBearerHandler>>();
+                var logger = GetJwtEventLogger(context.HttpContext);
 
-                //logger.LogInformation("JwtAuthentication - Token validated successfully for user: {Name}", context.Principal?.Identity?.Name);
-                logger.LogInformation("JwtAuthentication - Token validated successfully");
+                logger?.LogInformation("JwtAuthentication - Token validated successfully");
                 return Task.CompletedTask;
             },
 
             OnChallenge = context =>
             {
-                var logger = context.HttpContext.RequestServices.GetRequiredService<ILogger<JwtBearerHandler>>();
+                var logger = GetJwtEventLogger(context.HttpContext);
 
-                logger.LogInformation("JwtAuthentication - Authentication challenge issued for request to {Path}", context.Request.Path);
+                logger?.LogInformation("JwtAuthentication - Authentication challenge issued for request to {Path}", context.Request.Path);
                 return Task.CompletedTask;
             },
 
             OnMessageReceived = context =>
             {
-                var logger = context.HttpContext.RequestServices.GetRequiredService<ILogger<JwtBearerHandler>>();
+                var logger = GetJwtEventLogger(context.HttpContext);
 
-                logger.LogInformation("JwtAuthentication - Token received for request to {Path}", context.HttpContext.Request.Path);
+                logger?.LogInformation("JwtAuthentication - Token received for request to {Path}", context.HttpContext.Request.Path);
                 return Task.CompletedTask;
             }
         };
+    }
+
+    private static ILogger<JwtBearerHandler> GetJwtEventLogger(HttpContext context)
+    {
+        return RequestPathDefaults.GetPath(context).MatchAny(RequestPathDefaults.Blacklist)
+            ? null
+            : context.RequestServices.GetRequiredService<ILogger<JwtBearerHandler>>();
     }
 }

@@ -2,10 +2,10 @@
 
 This changelog includes unreleased changes on `main` and the full tagged release history from the `main` branch.
 
-## [Unreleased]
+## [10.0.135] - 2026-11-26
 
 - Fixed EF Blob Storage downloads to honor caller-owned SQL Server transactions.
-- Fixed EF Document Storage batch upserts to honor caller-owned transactions and prevent replay after a post-commit cleanup failure.
+- Fixed EF Document Storage batch upserts without dimension updates to honor caller-owned transactions on providers that support enlistment. A post-commit cleanup failure preserves the batch outcome and prevents replay.
 - Fixed EF Document Storage to stop retrying permanent upsert failures.
 - Fixed EF Document Storage to report unconfirmed upsert batch commits without replaying them.
 - Fixed EF Blob Storage to classify PostgreSQL and SQLite lock contention as transient.

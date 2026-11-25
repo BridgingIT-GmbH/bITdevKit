@@ -147065,6 +147065,15 @@ references:
   fullName.vb: BridgingIT.DevKit.Application.Storage.BlobStoreProviderError.New(String)
   nameWithType: BlobStoreProviderError.BlobStoreProviderError(string)
   nameWithType.vb: BlobStoreProviderError.New(String)
+- uid: BridgingIT.DevKit.Application.Storage.BlobStoreProviderError.#ctor(System.String,System.Boolean)
+  name: BlobStoreProviderError(string, bool)
+  href: obj/api/BridgingIT.DevKit.Application.Storage.BlobStoreProviderError.html#BridgingIT_DevKit_Application_Storage_BlobStoreProviderError__ctor_System_String_System_Boolean_
+  commentId: M:BridgingIT.DevKit.Application.Storage.BlobStoreProviderError.#ctor(System.String,System.Boolean)
+  name.vb: New(String, Boolean)
+  fullName: BridgingIT.DevKit.Application.Storage.BlobStoreProviderError.BlobStoreProviderError(string, bool)
+  fullName.vb: BridgingIT.DevKit.Application.Storage.BlobStoreProviderError.New(String, Boolean)
+  nameWithType: BlobStoreProviderError.BlobStoreProviderError(string, bool)
+  nameWithType.vb: BlobStoreProviderError.New(String, Boolean)
 - uid: BridgingIT.DevKit.Application.Storage.BlobStoreProviderError.#ctor*
   name: BlobStoreProviderError
   href: obj/api/BridgingIT.DevKit.Application.Storage.BlobStoreProviderError.html#BridgingIT_DevKit_Application_Storage_BlobStoreProviderError__ctor_
@@ -147074,6 +147083,18 @@ references:
   fullName.vb: BridgingIT.DevKit.Application.Storage.BlobStoreProviderError.New
   nameWithType: BlobStoreProviderError.BlobStoreProviderError
   nameWithType.vb: BlobStoreProviderError.New
+- uid: BridgingIT.DevKit.Application.Storage.BlobStoreProviderError.IsTransient
+  name: IsTransient
+  href: obj/api/BridgingIT.DevKit.Application.Storage.BlobStoreProviderError.html#BridgingIT_DevKit_Application_Storage_BlobStoreProviderError_IsTransient
+  commentId: P:BridgingIT.DevKit.Application.Storage.BlobStoreProviderError.IsTransient
+  fullName: BridgingIT.DevKit.Application.Storage.BlobStoreProviderError.IsTransient
+  nameWithType: BlobStoreProviderError.IsTransient
+- uid: BridgingIT.DevKit.Application.Storage.BlobStoreProviderError.IsTransient*
+  name: IsTransient
+  href: obj/api/BridgingIT.DevKit.Application.Storage.BlobStoreProviderError.html#BridgingIT_DevKit_Application_Storage_BlobStoreProviderError_IsTransient_
+  commentId: Overload:BridgingIT.DevKit.Application.Storage.BlobStoreProviderError.IsTransient
+  fullName: BridgingIT.DevKit.Application.Storage.BlobStoreProviderError.IsTransient
+  nameWithType: BlobStoreProviderError.IsTransient
 - uid: BridgingIT.DevKit.Application.Storage.BlobStoreQueryNotSupportedError
   name: BlobStoreQueryNotSupportedError
   href: obj/api/BridgingIT.DevKit.Application.Storage.BlobStoreQueryNotSupportedError.html
@@ -147218,6 +147239,18 @@ references:
   fullName.vb: BridgingIT.DevKit.Application.Storage.BlobStoreTimeoutError.New
   nameWithType: BlobStoreTimeoutError.BlobStoreTimeoutError
   nameWithType.vb: BlobStoreTimeoutError.New
+- uid: BridgingIT.DevKit.Application.Storage.BlobStoreTimeoutError.IsTransient
+  name: IsTransient
+  href: obj/api/BridgingIT.DevKit.Application.Storage.BlobStoreTimeoutError.html#BridgingIT_DevKit_Application_Storage_BlobStoreTimeoutError_IsTransient
+  commentId: P:BridgingIT.DevKit.Application.Storage.BlobStoreTimeoutError.IsTransient
+  fullName: BridgingIT.DevKit.Application.Storage.BlobStoreTimeoutError.IsTransient
+  nameWithType: BlobStoreTimeoutError.IsTransient
+- uid: BridgingIT.DevKit.Application.Storage.BlobStoreTimeoutError.IsTransient*
+  name: IsTransient
+  href: obj/api/BridgingIT.DevKit.Application.Storage.BlobStoreTimeoutError.html#BridgingIT_DevKit_Application_Storage_BlobStoreTimeoutError_IsTransient_
+  commentId: Overload:BridgingIT.DevKit.Application.Storage.BlobStoreTimeoutError.IsTransient
+  fullName: BridgingIT.DevKit.Application.Storage.BlobStoreTimeoutError.IsTransient
+  nameWithType: BlobStoreTimeoutError.IsTransient
 - uid: BridgingIT.DevKit.Application.Storage.BlobStoreTimeoutError.Operation
   name: Operation
   href: obj/api/BridgingIT.DevKit.Application.Storage.BlobStoreTimeoutError.html#BridgingIT_DevKit_Application_Storage_BlobStoreTimeoutError_Operation
@@ -147470,6 +147503,30 @@ references:
   fullName.vb: BridgingIT.DevKit.Application.Storage.BlobStoreValidationError.New
   nameWithType: BlobStoreValidationError.BlobStoreValidationError
   nameWithType.vb: BlobStoreValidationError.New
+- uid: BridgingIT.DevKit.Application.Storage.BlobTelemetry
+  name: BlobTelemetry
+  href: obj/api/BridgingIT.DevKit.Application.Storage.BlobTelemetry.html
+  commentId: T:BridgingIT.DevKit.Application.Storage.BlobTelemetry
+  fullName: BridgingIT.DevKit.Application.Storage.BlobTelemetry
+  nameWithType: BlobTelemetry
+- uid: BridgingIT.DevKit.Application.Storage.BlobTelemetry.ActivitySourceName
+  name: ActivitySourceName
+  href: obj/api/BridgingIT.DevKit.Application.Storage.BlobTelemetry.html#BridgingIT_DevKit_Application_Storage_BlobTelemetry_ActivitySourceName
+  commentId: F:BridgingIT.DevKit.Application.Storage.BlobTelemetry.ActivitySourceName
+  fullName: BridgingIT.DevKit.Application.Storage.BlobTelemetry.ActivitySourceName
+  nameWithType: BlobTelemetry.ActivitySourceName
+- uid: BridgingIT.DevKit.Application.Storage.BlobTelemetry.Spans
+  name: Spans
+  href: obj/api/BridgingIT.DevKit.Application.Storage.BlobTelemetry.html#BridgingIT_DevKit_Application_Storage_BlobTelemetry_Spans
+  commentId: P:BridgingIT.DevKit.Application.Storage.BlobTelemetry.Spans
+  fullName: BridgingIT.DevKit.Application.Storage.BlobTelemetry.Spans
+  nameWithType: BlobTelemetry.Spans
+- uid: BridgingIT.DevKit.Application.Storage.BlobTelemetry.Spans*
+  name: Spans
+  href: obj/api/BridgingIT.DevKit.Application.Storage.BlobTelemetry.html#BridgingIT_DevKit_Application_Storage_BlobTelemetry_Spans_
+  commentId: Overload:BridgingIT.DevKit.Application.Storage.BlobTelemetry.Spans
+  fullName: BridgingIT.DevKit.Application.Storage.BlobTelemetry.Spans
+  nameWithType: BlobTelemetry.Spans
 - uid: BridgingIT.DevKit.Application.Storage.BlobTextContent
   name: BlobTextContent
   href: obj/api/BridgingIT.DevKit.Application.Storage.BlobTextContent.html
@@ -149135,6 +149192,15 @@ references:
   fullName.vb: BridgingIT.DevKit.Application.Storage.CacheBlobStoreClientBehavior.New(Microsoft.Extensions.Logging.ILoggerFactory, BridgingIT.DevKit.Application.Storage.IBlobStoreClient, BridgingIT.DevKit.Common.ICacheProvider, BridgingIT.DevKit.Application.Storage.CacheBlobStoreClientBehaviorOptions, String)
   nameWithType: CacheBlobStoreClientBehavior.CacheBlobStoreClientBehavior(ILoggerFactory, IBlobStoreClient, ICacheProvider, CacheBlobStoreClientBehaviorOptions, string)
   nameWithType.vb: CacheBlobStoreClientBehavior.New(ILoggerFactory, IBlobStoreClient, ICacheProvider, CacheBlobStoreClientBehaviorOptions, String)
+- uid: BridgingIT.DevKit.Application.Storage.CacheBlobStoreClientBehavior.#ctor(Microsoft.Extensions.Logging.ILoggerFactory,BridgingIT.DevKit.Application.Storage.IBlobStoreClient,BridgingIT.DevKit.Common.ICacheProvider,BridgingIT.DevKit.Application.Storage.CacheBlobStoreClientBehaviorOptions,System.String,System.TimeProvider)
+  name: CacheBlobStoreClientBehavior(ILoggerFactory, IBlobStoreClient, ICacheProvider, CacheBlobStoreClientBehaviorOptions, string, TimeProvider)
+  href: obj/api/BridgingIT.DevKit.Application.Storage.CacheBlobStoreClientBehavior.html#BridgingIT_DevKit_Application_Storage_CacheBlobStoreClientBehavior__ctor_Microsoft_Extensions_Logging_ILoggerFactory_BridgingIT_DevKit_Application_Storage_IBlobStoreClient_BridgingIT_DevKit_Common_ICacheProvider_BridgingIT_DevKit_Application_Storage_CacheBlobStoreClientBehaviorOptions_System_String_System_TimeProvider_
+  commentId: M:BridgingIT.DevKit.Application.Storage.CacheBlobStoreClientBehavior.#ctor(Microsoft.Extensions.Logging.ILoggerFactory,BridgingIT.DevKit.Application.Storage.IBlobStoreClient,BridgingIT.DevKit.Common.ICacheProvider,BridgingIT.DevKit.Application.Storage.CacheBlobStoreClientBehaviorOptions,System.String,System.TimeProvider)
+  name.vb: New(ILoggerFactory, IBlobStoreClient, ICacheProvider, CacheBlobStoreClientBehaviorOptions, String, TimeProvider)
+  fullName: BridgingIT.DevKit.Application.Storage.CacheBlobStoreClientBehavior.CacheBlobStoreClientBehavior(Microsoft.Extensions.Logging.ILoggerFactory, BridgingIT.DevKit.Application.Storage.IBlobStoreClient, BridgingIT.DevKit.Common.ICacheProvider, BridgingIT.DevKit.Application.Storage.CacheBlobStoreClientBehaviorOptions, string, System.TimeProvider)
+  fullName.vb: BridgingIT.DevKit.Application.Storage.CacheBlobStoreClientBehavior.New(Microsoft.Extensions.Logging.ILoggerFactory, BridgingIT.DevKit.Application.Storage.IBlobStoreClient, BridgingIT.DevKit.Common.ICacheProvider, BridgingIT.DevKit.Application.Storage.CacheBlobStoreClientBehaviorOptions, String, System.TimeProvider)
+  nameWithType: CacheBlobStoreClientBehavior.CacheBlobStoreClientBehavior(ILoggerFactory, IBlobStoreClient, ICacheProvider, CacheBlobStoreClientBehaviorOptions, string, TimeProvider)
+  nameWithType.vb: CacheBlobStoreClientBehavior.New(ILoggerFactory, IBlobStoreClient, ICacheProvider, CacheBlobStoreClientBehaviorOptions, String, TimeProvider)
 - uid: BridgingIT.DevKit.Application.Storage.CacheBlobStoreClientBehavior.#ctor*
   name: CacheBlobStoreClientBehavior
   href: obj/api/BridgingIT.DevKit.Application.Storage.CacheBlobStoreClientBehavior.html#BridgingIT_DevKit_Application_Storage_CacheBlobStoreClientBehavior__ctor_
@@ -167615,6 +167681,15 @@ references:
   fullName.vb: BridgingIT.DevKit.Application.Storage.InMemoryBlobStoreProvider.New(BridgingIT.DevKit.Application.Storage.InMemoryBlobStoreContext, BridgingIT.DevKit.Application.Storage.BlobStoreOptions, BridgingIT.DevKit.Common.IContinuationTokenProtector)
   nameWithType: InMemoryBlobStoreProvider.InMemoryBlobStoreProvider(InMemoryBlobStoreContext, BlobStoreOptions, IContinuationTokenProtector)
   nameWithType.vb: InMemoryBlobStoreProvider.New(InMemoryBlobStoreContext, BlobStoreOptions, IContinuationTokenProtector)
+- uid: BridgingIT.DevKit.Application.Storage.InMemoryBlobStoreProvider.#ctor(BridgingIT.DevKit.Application.Storage.InMemoryBlobStoreContext,BridgingIT.DevKit.Application.Storage.BlobStoreOptions,BridgingIT.DevKit.Common.IContinuationTokenProtector,System.TimeProvider)
+  name: InMemoryBlobStoreProvider(InMemoryBlobStoreContext, BlobStoreOptions, IContinuationTokenProtector, TimeProvider)
+  href: obj/api/BridgingIT.DevKit.Application.Storage.InMemoryBlobStoreProvider.html#BridgingIT_DevKit_Application_Storage_InMemoryBlobStoreProvider__ctor_BridgingIT_DevKit_Application_Storage_InMemoryBlobStoreContext_BridgingIT_DevKit_Application_Storage_BlobStoreOptions_BridgingIT_DevKit_Common_IContinuationTokenProtector_System_TimeProvider_
+  commentId: M:BridgingIT.DevKit.Application.Storage.InMemoryBlobStoreProvider.#ctor(BridgingIT.DevKit.Application.Storage.InMemoryBlobStoreContext,BridgingIT.DevKit.Application.Storage.BlobStoreOptions,BridgingIT.DevKit.Common.IContinuationTokenProtector,System.TimeProvider)
+  name.vb: New(InMemoryBlobStoreContext, BlobStoreOptions, IContinuationTokenProtector, TimeProvider)
+  fullName: BridgingIT.DevKit.Application.Storage.InMemoryBlobStoreProvider.InMemoryBlobStoreProvider(BridgingIT.DevKit.Application.Storage.InMemoryBlobStoreContext, BridgingIT.DevKit.Application.Storage.BlobStoreOptions, BridgingIT.DevKit.Common.IContinuationTokenProtector, System.TimeProvider)
+  fullName.vb: BridgingIT.DevKit.Application.Storage.InMemoryBlobStoreProvider.New(BridgingIT.DevKit.Application.Storage.InMemoryBlobStoreContext, BridgingIT.DevKit.Application.Storage.BlobStoreOptions, BridgingIT.DevKit.Common.IContinuationTokenProtector, System.TimeProvider)
+  nameWithType: InMemoryBlobStoreProvider.InMemoryBlobStoreProvider(InMemoryBlobStoreContext, BlobStoreOptions, IContinuationTokenProtector, TimeProvider)
+  nameWithType.vb: InMemoryBlobStoreProvider.New(InMemoryBlobStoreContext, BlobStoreOptions, IContinuationTokenProtector, TimeProvider)
 - uid: BridgingIT.DevKit.Application.Storage.InMemoryBlobStoreProvider.#ctor*
   name: InMemoryBlobStoreProvider
   href: obj/api/BridgingIT.DevKit.Application.Storage.InMemoryBlobStoreProvider.html#BridgingIT_DevKit_Application_Storage_InMemoryBlobStoreProvider__ctor_
@@ -178082,6 +178157,54 @@ references:
   fullName.vb: BridgingIT.DevKit.Application.Storage.TimeoutDocumentStoreClientBehavior(Of T).UpsertManyAsync
   nameWithType: TimeoutDocumentStoreClientBehavior<T>.UpsertManyAsync
   nameWithType.vb: TimeoutDocumentStoreClientBehavior(Of T).UpsertManyAsync
+- uid: BridgingIT.DevKit.Application.Storage.TracingBlobStoreClientBehavior
+  name: TracingBlobStoreClientBehavior
+  href: obj/api/BridgingIT.DevKit.Application.Storage.TracingBlobStoreClientBehavior.html
+  commentId: T:BridgingIT.DevKit.Application.Storage.TracingBlobStoreClientBehavior
+  fullName: BridgingIT.DevKit.Application.Storage.TracingBlobStoreClientBehavior
+  nameWithType: TracingBlobStoreClientBehavior
+- uid: BridgingIT.DevKit.Application.Storage.TracingBlobStoreClientBehavior.#ctor(BridgingIT.DevKit.Application.Storage.IBlobStoreClient,System.String)
+  name: TracingBlobStoreClientBehavior(IBlobStoreClient, string)
+  href: obj/api/BridgingIT.DevKit.Application.Storage.TracingBlobStoreClientBehavior.html#BridgingIT_DevKit_Application_Storage_TracingBlobStoreClientBehavior__ctor_BridgingIT_DevKit_Application_Storage_IBlobStoreClient_System_String_
+  commentId: M:BridgingIT.DevKit.Application.Storage.TracingBlobStoreClientBehavior.#ctor(BridgingIT.DevKit.Application.Storage.IBlobStoreClient,System.String)
+  name.vb: New(IBlobStoreClient, String)
+  fullName: BridgingIT.DevKit.Application.Storage.TracingBlobStoreClientBehavior.TracingBlobStoreClientBehavior(BridgingIT.DevKit.Application.Storage.IBlobStoreClient, string)
+  fullName.vb: BridgingIT.DevKit.Application.Storage.TracingBlobStoreClientBehavior.New(BridgingIT.DevKit.Application.Storage.IBlobStoreClient, String)
+  nameWithType: TracingBlobStoreClientBehavior.TracingBlobStoreClientBehavior(IBlobStoreClient, string)
+  nameWithType.vb: TracingBlobStoreClientBehavior.New(IBlobStoreClient, String)
+- uid: BridgingIT.DevKit.Application.Storage.TracingBlobStoreClientBehavior.#ctor*
+  name: TracingBlobStoreClientBehavior
+  href: obj/api/BridgingIT.DevKit.Application.Storage.TracingBlobStoreClientBehavior.html#BridgingIT_DevKit_Application_Storage_TracingBlobStoreClientBehavior__ctor_
+  commentId: Overload:BridgingIT.DevKit.Application.Storage.TracingBlobStoreClientBehavior.#ctor
+  name.vb: New
+  fullName: BridgingIT.DevKit.Application.Storage.TracingBlobStoreClientBehavior.TracingBlobStoreClientBehavior
+  fullName.vb: BridgingIT.DevKit.Application.Storage.TracingBlobStoreClientBehavior.New
+  nameWithType: TracingBlobStoreClientBehavior.TracingBlobStoreClientBehavior
+  nameWithType.vb: TracingBlobStoreClientBehavior.New
+- uid: BridgingIT.DevKit.Application.Storage.TracingBlobStoreClientBehavior.ExecuteAsync(System.String,BridgingIT.DevKit.Application.Storage.BlobStoreOperationContext,System.Func{System.Threading.CancellationToken,System.Threading.Tasks.Task{BridgingIT.DevKit.Common.Result}},System.Threading.CancellationToken)
+  name: ExecuteAsync(string, BlobStoreOperationContext, Func<CancellationToken, Task<Result>>, CancellationToken)
+  href: obj/api/BridgingIT.DevKit.Application.Storage.TracingBlobStoreClientBehavior.html#BridgingIT_DevKit_Application_Storage_TracingBlobStoreClientBehavior_ExecuteAsync_System_String_BridgingIT_DevKit_Application_Storage_BlobStoreOperationContext_System_Func_System_Threading_CancellationToken_System_Threading_Tasks_Task_BridgingIT_DevKit_Common_Result___System_Threading_CancellationToken_
+  commentId: M:BridgingIT.DevKit.Application.Storage.TracingBlobStoreClientBehavior.ExecuteAsync(System.String,BridgingIT.DevKit.Application.Storage.BlobStoreOperationContext,System.Func{System.Threading.CancellationToken,System.Threading.Tasks.Task{BridgingIT.DevKit.Common.Result}},System.Threading.CancellationToken)
+  name.vb: ExecuteAsync(String, BlobStoreOperationContext, Func(Of CancellationToken, Task(Of Result)), CancellationToken)
+  fullName: BridgingIT.DevKit.Application.Storage.TracingBlobStoreClientBehavior.ExecuteAsync(string, BridgingIT.DevKit.Application.Storage.BlobStoreOperationContext, System.Func<System.Threading.CancellationToken, System.Threading.Tasks.Task<BridgingIT.DevKit.Common.Result>>, System.Threading.CancellationToken)
+  fullName.vb: BridgingIT.DevKit.Application.Storage.TracingBlobStoreClientBehavior.ExecuteAsync(String, BridgingIT.DevKit.Application.Storage.BlobStoreOperationContext, System.Func(Of System.Threading.CancellationToken, System.Threading.Tasks.Task(Of BridgingIT.DevKit.Common.Result)), System.Threading.CancellationToken)
+  nameWithType: TracingBlobStoreClientBehavior.ExecuteAsync(string, BlobStoreOperationContext, Func<CancellationToken, Task<Result>>, CancellationToken)
+  nameWithType.vb: TracingBlobStoreClientBehavior.ExecuteAsync(String, BlobStoreOperationContext, Func(Of CancellationToken, Task(Of Result)), CancellationToken)
+- uid: BridgingIT.DevKit.Application.Storage.TracingBlobStoreClientBehavior.ExecuteAsync*
+  name: ExecuteAsync
+  href: obj/api/BridgingIT.DevKit.Application.Storage.TracingBlobStoreClientBehavior.html#BridgingIT_DevKit_Application_Storage_TracingBlobStoreClientBehavior_ExecuteAsync_
+  commentId: Overload:BridgingIT.DevKit.Application.Storage.TracingBlobStoreClientBehavior.ExecuteAsync
+  fullName: BridgingIT.DevKit.Application.Storage.TracingBlobStoreClientBehavior.ExecuteAsync
+  nameWithType: TracingBlobStoreClientBehavior.ExecuteAsync
+- uid: BridgingIT.DevKit.Application.Storage.TracingBlobStoreClientBehavior.ExecuteAsync``1(System.String,BridgingIT.DevKit.Application.Storage.BlobStoreOperationContext,System.Func{System.Threading.CancellationToken,System.Threading.Tasks.Task{BridgingIT.DevKit.Common.Result{``0}}},System.Threading.CancellationToken)
+  name: ExecuteAsync<T>(string, BlobStoreOperationContext, Func<CancellationToken, Task<Result<T>>>, CancellationToken)
+  href: obj/api/BridgingIT.DevKit.Application.Storage.TracingBlobStoreClientBehavior.html#BridgingIT_DevKit_Application_Storage_TracingBlobStoreClientBehavior_ExecuteAsync__1_System_String_BridgingIT_DevKit_Application_Storage_BlobStoreOperationContext_System_Func_System_Threading_CancellationToken_System_Threading_Tasks_Task_BridgingIT_DevKit_Common_Result___0____System_Threading_CancellationToken_
+  commentId: M:BridgingIT.DevKit.Application.Storage.TracingBlobStoreClientBehavior.ExecuteAsync``1(System.String,BridgingIT.DevKit.Application.Storage.BlobStoreOperationContext,System.Func{System.Threading.CancellationToken,System.Threading.Tasks.Task{BridgingIT.DevKit.Common.Result{``0}}},System.Threading.CancellationToken)
+  name.vb: ExecuteAsync(Of T)(String, BlobStoreOperationContext, Func(Of CancellationToken, Task(Of Result(Of T))), CancellationToken)
+  fullName: BridgingIT.DevKit.Application.Storage.TracingBlobStoreClientBehavior.ExecuteAsync<T>(string, BridgingIT.DevKit.Application.Storage.BlobStoreOperationContext, System.Func<System.Threading.CancellationToken, System.Threading.Tasks.Task<BridgingIT.DevKit.Common.Result<T>>>, System.Threading.CancellationToken)
+  fullName.vb: BridgingIT.DevKit.Application.Storage.TracingBlobStoreClientBehavior.ExecuteAsync(Of T)(String, BridgingIT.DevKit.Application.Storage.BlobStoreOperationContext, System.Func(Of System.Threading.CancellationToken, System.Threading.Tasks.Task(Of BridgingIT.DevKit.Common.Result(Of T))), System.Threading.CancellationToken)
+  nameWithType: TracingBlobStoreClientBehavior.ExecuteAsync<T>(string, BlobStoreOperationContext, Func<CancellationToken, Task<Result<T>>>, CancellationToken)
+  nameWithType.vb: TracingBlobStoreClientBehavior.ExecuteAsync(Of T)(String, BlobStoreOperationContext, Func(Of CancellationToken, Task(Of Result(Of T))), CancellationToken)
 - uid: BridgingIT.DevKit.Application.Storage.TreeNode
   name: TreeNode
   href: obj/api/BridgingIT.DevKit.Application.Storage.TreeNode.html
@@ -349951,6 +350074,18 @@ references:
   commentId: Overload:BridgingIT.DevKit.Infrastructure.Azure.AzureBlobStoreProvider.IAzureBlobStoreBackend.GetPropertiesAsync
   fullName: BridgingIT.DevKit.Infrastructure.Azure.AzureBlobStoreProvider.IAzureBlobStoreBackend.GetPropertiesAsync
   nameWithType: AzureBlobStoreProvider.IAzureBlobStoreBackend.GetPropertiesAsync
+- uid: BridgingIT.DevKit.Infrastructure.Azure.AzureBlobStoreProvider.IAzureBlobStoreBackend.GetPropertiesForExpirationAsync(BridgingIT.DevKit.Application.Storage.BlobKey,System.Threading.CancellationToken)
+  name: GetPropertiesForExpirationAsync(BlobKey, CancellationToken)
+  href: obj/api/BridgingIT.DevKit.Infrastructure.Azure.AzureBlobStoreProvider.IAzureBlobStoreBackend.html#BridgingIT_DevKit_Infrastructure_Azure_AzureBlobStoreProvider_IAzureBlobStoreBackend_GetPropertiesForExpirationAsync_BridgingIT_DevKit_Application_Storage_BlobKey_System_Threading_CancellationToken_
+  commentId: M:BridgingIT.DevKit.Infrastructure.Azure.AzureBlobStoreProvider.IAzureBlobStoreBackend.GetPropertiesForExpirationAsync(BridgingIT.DevKit.Application.Storage.BlobKey,System.Threading.CancellationToken)
+  fullName: BridgingIT.DevKit.Infrastructure.Azure.AzureBlobStoreProvider.IAzureBlobStoreBackend.GetPropertiesForExpirationAsync(BridgingIT.DevKit.Application.Storage.BlobKey, System.Threading.CancellationToken)
+  nameWithType: AzureBlobStoreProvider.IAzureBlobStoreBackend.GetPropertiesForExpirationAsync(BlobKey, CancellationToken)
+- uid: BridgingIT.DevKit.Infrastructure.Azure.AzureBlobStoreProvider.IAzureBlobStoreBackend.GetPropertiesForExpirationAsync*
+  name: GetPropertiesForExpirationAsync
+  href: obj/api/BridgingIT.DevKit.Infrastructure.Azure.AzureBlobStoreProvider.IAzureBlobStoreBackend.html#BridgingIT_DevKit_Infrastructure_Azure_AzureBlobStoreProvider_IAzureBlobStoreBackend_GetPropertiesForExpirationAsync_
+  commentId: Overload:BridgingIT.DevKit.Infrastructure.Azure.AzureBlobStoreProvider.IAzureBlobStoreBackend.GetPropertiesForExpirationAsync
+  fullName: BridgingIT.DevKit.Infrastructure.Azure.AzureBlobStoreProvider.IAzureBlobStoreBackend.GetPropertiesForExpirationAsync
+  nameWithType: AzureBlobStoreProvider.IAzureBlobStoreBackend.GetPropertiesForExpirationAsync
 - uid: BridgingIT.DevKit.Infrastructure.Azure.AzureBlobStoreProvider.IAzureBlobStoreBackend.ListContainersAsync(System.Threading.CancellationToken)
   name: ListContainersAsync(CancellationToken)
   href: obj/api/BridgingIT.DevKit.Infrastructure.Azure.AzureBlobStoreProvider.IAzureBlobStoreBackend.html#BridgingIT_DevKit_Infrastructure_Azure_AzureBlobStoreProvider_IAzureBlobStoreBackend_ListContainersAsync_System_Threading_CancellationToken_
@@ -349993,6 +350128,15 @@ references:
   commentId: Overload:BridgingIT.DevKit.Infrastructure.Azure.AzureBlobStoreProvider.IAzureBlobStoreBackend.ListPageAsync
   fullName: BridgingIT.DevKit.Infrastructure.Azure.AzureBlobStoreProvider.IAzureBlobStoreBackend.ListPageAsync
   nameWithType: AzureBlobStoreProvider.IAzureBlobStoreBackend.ListPageAsync
+- uid: BridgingIT.DevKit.Infrastructure.Azure.AzureBlobStoreProvider.IAzureBlobStoreBackend.OpenReadAsync(BridgingIT.DevKit.Application.Storage.BlobKey,System.String,System.Threading.CancellationToken)
+  name: OpenReadAsync(BlobKey, string, CancellationToken)
+  href: obj/api/BridgingIT.DevKit.Infrastructure.Azure.AzureBlobStoreProvider.IAzureBlobStoreBackend.html#BridgingIT_DevKit_Infrastructure_Azure_AzureBlobStoreProvider_IAzureBlobStoreBackend_OpenReadAsync_BridgingIT_DevKit_Application_Storage_BlobKey_System_String_System_Threading_CancellationToken_
+  commentId: M:BridgingIT.DevKit.Infrastructure.Azure.AzureBlobStoreProvider.IAzureBlobStoreBackend.OpenReadAsync(BridgingIT.DevKit.Application.Storage.BlobKey,System.String,System.Threading.CancellationToken)
+  name.vb: OpenReadAsync(BlobKey, String, CancellationToken)
+  fullName: BridgingIT.DevKit.Infrastructure.Azure.AzureBlobStoreProvider.IAzureBlobStoreBackend.OpenReadAsync(BridgingIT.DevKit.Application.Storage.BlobKey, string, System.Threading.CancellationToken)
+  fullName.vb: BridgingIT.DevKit.Infrastructure.Azure.AzureBlobStoreProvider.IAzureBlobStoreBackend.OpenReadAsync(BridgingIT.DevKit.Application.Storage.BlobKey, String, System.Threading.CancellationToken)
+  nameWithType: AzureBlobStoreProvider.IAzureBlobStoreBackend.OpenReadAsync(BlobKey, string, CancellationToken)
+  nameWithType.vb: AzureBlobStoreProvider.IAzureBlobStoreBackend.OpenReadAsync(BlobKey, String, CancellationToken)
 - uid: BridgingIT.DevKit.Infrastructure.Azure.AzureBlobStoreProvider.IAzureBlobStoreBackend.OpenReadAsync(BridgingIT.DevKit.Application.Storage.BlobKey,System.Threading.CancellationToken)
   name: OpenReadAsync(BlobKey, CancellationToken)
   href: obj/api/BridgingIT.DevKit.Infrastructure.Azure.AzureBlobStoreProvider.IAzureBlobStoreBackend.html#BridgingIT_DevKit_Infrastructure_Azure_AzureBlobStoreProvider_IAzureBlobStoreBackend_OpenReadAsync_BridgingIT_DevKit_Application_Storage_BlobKey_System_Threading_CancellationToken_
@@ -361416,6 +361560,587 @@ references:
   commentId: Overload:BridgingIT.DevKit.Infrastructure.EntityFramework.Auditing.IAuditingDbContext.AuditStoreState
   fullName: BridgingIT.DevKit.Infrastructure.EntityFramework.Auditing.IAuditingDbContext.AuditStoreState
   nameWithType: IAuditingDbContext.AuditStoreState
+- uid: BridgingIT.DevKit.Infrastructure.EntityFramework.BlobDimensionMutationSession
+  name: BlobDimensionMutationSession
+  href: obj/api/BridgingIT.DevKit.Infrastructure.EntityFramework.BlobDimensionMutationSession.html
+  commentId: T:BridgingIT.DevKit.Infrastructure.EntityFramework.BlobDimensionMutationSession
+  fullName: BridgingIT.DevKit.Infrastructure.EntityFramework.BlobDimensionMutationSession
+  nameWithType: BlobDimensionMutationSession
+- uid: BridgingIT.DevKit.Infrastructure.EntityFramework.BlobDimensionMutationSession.#ctor(BridgingIT.DevKit.Infrastructure.EntityFramework.BlobDimensionNameCache)
+  name: BlobDimensionMutationSession(BlobDimensionNameCache)
+  href: obj/api/BridgingIT.DevKit.Infrastructure.EntityFramework.BlobDimensionMutationSession.html#BridgingIT_DevKit_Infrastructure_EntityFramework_BlobDimensionMutationSession__ctor_BridgingIT_DevKit_Infrastructure_EntityFramework_BlobDimensionNameCache_
+  commentId: M:BridgingIT.DevKit.Infrastructure.EntityFramework.BlobDimensionMutationSession.#ctor(BridgingIT.DevKit.Infrastructure.EntityFramework.BlobDimensionNameCache)
+  name.vb: New(BlobDimensionNameCache)
+  fullName: BridgingIT.DevKit.Infrastructure.EntityFramework.BlobDimensionMutationSession.BlobDimensionMutationSession(BridgingIT.DevKit.Infrastructure.EntityFramework.BlobDimensionNameCache)
+  fullName.vb: BridgingIT.DevKit.Infrastructure.EntityFramework.BlobDimensionMutationSession.New(BridgingIT.DevKit.Infrastructure.EntityFramework.BlobDimensionNameCache)
+  nameWithType: BlobDimensionMutationSession.BlobDimensionMutationSession(BlobDimensionNameCache)
+  nameWithType.vb: BlobDimensionMutationSession.New(BlobDimensionNameCache)
+- uid: BridgingIT.DevKit.Infrastructure.EntityFramework.BlobDimensionMutationSession.#ctor*
+  name: BlobDimensionMutationSession
+  href: obj/api/BridgingIT.DevKit.Infrastructure.EntityFramework.BlobDimensionMutationSession.html#BridgingIT_DevKit_Infrastructure_EntityFramework_BlobDimensionMutationSession__ctor_
+  commentId: Overload:BridgingIT.DevKit.Infrastructure.EntityFramework.BlobDimensionMutationSession.#ctor
+  name.vb: New
+  fullName: BridgingIT.DevKit.Infrastructure.EntityFramework.BlobDimensionMutationSession.BlobDimensionMutationSession
+  fullName.vb: BridgingIT.DevKit.Infrastructure.EntityFramework.BlobDimensionMutationSession.New
+  nameWithType: BlobDimensionMutationSession.BlobDimensionMutationSession
+  nameWithType.vb: BlobDimensionMutationSession.New
+- uid: BridgingIT.DevKit.Infrastructure.EntityFramework.BlobDimensionMutationSession.AdmitAsync(System.Threading.CancellationToken)
+  name: AdmitAsync(CancellationToken)
+  href: obj/api/BridgingIT.DevKit.Infrastructure.EntityFramework.BlobDimensionMutationSession.html#BridgingIT_DevKit_Infrastructure_EntityFramework_BlobDimensionMutationSession_AdmitAsync_System_Threading_CancellationToken_
+  commentId: M:BridgingIT.DevKit.Infrastructure.EntityFramework.BlobDimensionMutationSession.AdmitAsync(System.Threading.CancellationToken)
+  fullName: BridgingIT.DevKit.Infrastructure.EntityFramework.BlobDimensionMutationSession.AdmitAsync(System.Threading.CancellationToken)
+  nameWithType: BlobDimensionMutationSession.AdmitAsync(CancellationToken)
+- uid: BridgingIT.DevKit.Infrastructure.EntityFramework.BlobDimensionMutationSession.AdmitAsync*
+  name: AdmitAsync
+  href: obj/api/BridgingIT.DevKit.Infrastructure.EntityFramework.BlobDimensionMutationSession.html#BridgingIT_DevKit_Infrastructure_EntityFramework_BlobDimensionMutationSession_AdmitAsync_
+  commentId: Overload:BridgingIT.DevKit.Infrastructure.EntityFramework.BlobDimensionMutationSession.AdmitAsync
+  fullName: BridgingIT.DevKit.Infrastructure.EntityFramework.BlobDimensionMutationSession.AdmitAsync
+  nameWithType: BlobDimensionMutationSession.AdmitAsync
+- uid: BridgingIT.DevKit.Infrastructure.EntityFramework.BlobDimensionMutationSession.DisposeAsync
+  name: DisposeAsync()
+  href: obj/api/BridgingIT.DevKit.Infrastructure.EntityFramework.BlobDimensionMutationSession.html#BridgingIT_DevKit_Infrastructure_EntityFramework_BlobDimensionMutationSession_DisposeAsync
+  commentId: M:BridgingIT.DevKit.Infrastructure.EntityFramework.BlobDimensionMutationSession.DisposeAsync
+  fullName: BridgingIT.DevKit.Infrastructure.EntityFramework.BlobDimensionMutationSession.DisposeAsync()
+  nameWithType: BlobDimensionMutationSession.DisposeAsync()
+- uid: BridgingIT.DevKit.Infrastructure.EntityFramework.BlobDimensionMutationSession.DisposeAsync*
+  name: DisposeAsync
+  href: obj/api/BridgingIT.DevKit.Infrastructure.EntityFramework.BlobDimensionMutationSession.html#BridgingIT_DevKit_Infrastructure_EntityFramework_BlobDimensionMutationSession_DisposeAsync_
+  commentId: Overload:BridgingIT.DevKit.Infrastructure.EntityFramework.BlobDimensionMutationSession.DisposeAsync
+  fullName: BridgingIT.DevKit.Infrastructure.EntityFramework.BlobDimensionMutationSession.DisposeAsync
+  nameWithType: BlobDimensionMutationSession.DisposeAsync
+- uid: BridgingIT.DevKit.Infrastructure.EntityFramework.BlobDimensionMutationSession.Generation
+  name: Generation
+  href: obj/api/BridgingIT.DevKit.Infrastructure.EntityFramework.BlobDimensionMutationSession.html#BridgingIT_DevKit_Infrastructure_EntityFramework_BlobDimensionMutationSession_Generation
+  commentId: P:BridgingIT.DevKit.Infrastructure.EntityFramework.BlobDimensionMutationSession.Generation
+  fullName: BridgingIT.DevKit.Infrastructure.EntityFramework.BlobDimensionMutationSession.Generation
+  nameWithType: BlobDimensionMutationSession.Generation
+- uid: BridgingIT.DevKit.Infrastructure.EntityFramework.BlobDimensionMutationSession.Generation*
+  name: Generation
+  href: obj/api/BridgingIT.DevKit.Infrastructure.EntityFramework.BlobDimensionMutationSession.html#BridgingIT_DevKit_Infrastructure_EntityFramework_BlobDimensionMutationSession_Generation_
+  commentId: Overload:BridgingIT.DevKit.Infrastructure.EntityFramework.BlobDimensionMutationSession.Generation
+  fullName: BridgingIT.DevKit.Infrastructure.EntityFramework.BlobDimensionMutationSession.Generation
+  nameWithType: BlobDimensionMutationSession.Generation
+- uid: BridgingIT.DevKit.Infrastructure.EntityFramework.BlobDimensionMutationSession.NewRegistrations
+  name: NewRegistrations
+  href: obj/api/BridgingIT.DevKit.Infrastructure.EntityFramework.BlobDimensionMutationSession.html#BridgingIT_DevKit_Infrastructure_EntityFramework_BlobDimensionMutationSession_NewRegistrations
+  commentId: P:BridgingIT.DevKit.Infrastructure.EntityFramework.BlobDimensionMutationSession.NewRegistrations
+  fullName: BridgingIT.DevKit.Infrastructure.EntityFramework.BlobDimensionMutationSession.NewRegistrations
+  nameWithType: BlobDimensionMutationSession.NewRegistrations
+- uid: BridgingIT.DevKit.Infrastructure.EntityFramework.BlobDimensionMutationSession.NewRegistrations*
+  name: NewRegistrations
+  href: obj/api/BridgingIT.DevKit.Infrastructure.EntityFramework.BlobDimensionMutationSession.html#BridgingIT_DevKit_Infrastructure_EntityFramework_BlobDimensionMutationSession_NewRegistrations_
+  commentId: Overload:BridgingIT.DevKit.Infrastructure.EntityFramework.BlobDimensionMutationSession.NewRegistrations
+  fullName: BridgingIT.DevKit.Infrastructure.EntityFramework.BlobDimensionMutationSession.NewRegistrations
+  nameWithType: BlobDimensionMutationSession.NewRegistrations
+- uid: BridgingIT.DevKit.Infrastructure.EntityFramework.BlobDimensionMutationSession.Pending
+  name: Pending
+  href: obj/api/BridgingIT.DevKit.Infrastructure.EntityFramework.BlobDimensionMutationSession.html#BridgingIT_DevKit_Infrastructure_EntityFramework_BlobDimensionMutationSession_Pending
+  commentId: P:BridgingIT.DevKit.Infrastructure.EntityFramework.BlobDimensionMutationSession.Pending
+  fullName: BridgingIT.DevKit.Infrastructure.EntityFramework.BlobDimensionMutationSession.Pending
+  nameWithType: BlobDimensionMutationSession.Pending
+- uid: BridgingIT.DevKit.Infrastructure.EntityFramework.BlobDimensionMutationSession.Pending*
+  name: Pending
+  href: obj/api/BridgingIT.DevKit.Infrastructure.EntityFramework.BlobDimensionMutationSession.html#BridgingIT_DevKit_Infrastructure_EntityFramework_BlobDimensionMutationSession_Pending_
+  commentId: Overload:BridgingIT.DevKit.Infrastructure.EntityFramework.BlobDimensionMutationSession.Pending
+  fullName: BridgingIT.DevKit.Infrastructure.EntityFramework.BlobDimensionMutationSession.Pending
+  nameWithType: BlobDimensionMutationSession.Pending
+- uid: BridgingIT.DevKit.Infrastructure.EntityFramework.BlobDimensionMutationSession.Published
+  name: Published
+  href: obj/api/BridgingIT.DevKit.Infrastructure.EntityFramework.BlobDimensionMutationSession.html#BridgingIT_DevKit_Infrastructure_EntityFramework_BlobDimensionMutationSession_Published
+  commentId: P:BridgingIT.DevKit.Infrastructure.EntityFramework.BlobDimensionMutationSession.Published
+  fullName: BridgingIT.DevKit.Infrastructure.EntityFramework.BlobDimensionMutationSession.Published
+  nameWithType: BlobDimensionMutationSession.Published
+- uid: BridgingIT.DevKit.Infrastructure.EntityFramework.BlobDimensionMutationSession.Published*
+  name: Published
+  href: obj/api/BridgingIT.DevKit.Infrastructure.EntityFramework.BlobDimensionMutationSession.html#BridgingIT_DevKit_Infrastructure_EntityFramework_BlobDimensionMutationSession_Published_
+  commentId: Overload:BridgingIT.DevKit.Infrastructure.EntityFramework.BlobDimensionMutationSession.Published
+  fullName: BridgingIT.DevKit.Infrastructure.EntityFramework.BlobDimensionMutationSession.Published
+  nameWithType: BlobDimensionMutationSession.Published
+- uid: BridgingIT.DevKit.Infrastructure.EntityFramework.BlobDimensionMutationSession.Resolved
+  name: Resolved
+  href: obj/api/BridgingIT.DevKit.Infrastructure.EntityFramework.BlobDimensionMutationSession.html#BridgingIT_DevKit_Infrastructure_EntityFramework_BlobDimensionMutationSession_Resolved
+  commentId: P:BridgingIT.DevKit.Infrastructure.EntityFramework.BlobDimensionMutationSession.Resolved
+  fullName: BridgingIT.DevKit.Infrastructure.EntityFramework.BlobDimensionMutationSession.Resolved
+  nameWithType: BlobDimensionMutationSession.Resolved
+- uid: BridgingIT.DevKit.Infrastructure.EntityFramework.BlobDimensionMutationSession.Resolved*
+  name: Resolved
+  href: obj/api/BridgingIT.DevKit.Infrastructure.EntityFramework.BlobDimensionMutationSession.html#BridgingIT_DevKit_Infrastructure_EntityFramework_BlobDimensionMutationSession_Resolved_
+  commentId: Overload:BridgingIT.DevKit.Infrastructure.EntityFramework.BlobDimensionMutationSession.Resolved
+  fullName: BridgingIT.DevKit.Infrastructure.EntityFramework.BlobDimensionMutationSession.Resolved
+  nameWithType: BlobDimensionMutationSession.Resolved
+- uid: BridgingIT.DevKit.Infrastructure.EntityFramework.BlobDimensionMutationSession.Rows
+  name: Rows
+  href: obj/api/BridgingIT.DevKit.Infrastructure.EntityFramework.BlobDimensionMutationSession.html#BridgingIT_DevKit_Infrastructure_EntityFramework_BlobDimensionMutationSession_Rows
+  commentId: P:BridgingIT.DevKit.Infrastructure.EntityFramework.BlobDimensionMutationSession.Rows
+  fullName: BridgingIT.DevKit.Infrastructure.EntityFramework.BlobDimensionMutationSession.Rows
+  nameWithType: BlobDimensionMutationSession.Rows
+- uid: BridgingIT.DevKit.Infrastructure.EntityFramework.BlobDimensionMutationSession.Rows*
+  name: Rows
+  href: obj/api/BridgingIT.DevKit.Infrastructure.EntityFramework.BlobDimensionMutationSession.html#BridgingIT_DevKit_Infrastructure_EntityFramework_BlobDimensionMutationSession_Rows_
+  commentId: Overload:BridgingIT.DevKit.Infrastructure.EntityFramework.BlobDimensionMutationSession.Rows
+  fullName: BridgingIT.DevKit.Infrastructure.EntityFramework.BlobDimensionMutationSession.Rows
+  nameWithType: BlobDimensionMutationSession.Rows
+- uid: BridgingIT.DevKit.Infrastructure.EntityFramework.BlobDimensionMutationSession.StoreIdentity
+  name: StoreIdentity
+  href: obj/api/BridgingIT.DevKit.Infrastructure.EntityFramework.BlobDimensionMutationSession.html#BridgingIT_DevKit_Infrastructure_EntityFramework_BlobDimensionMutationSession_StoreIdentity
+  commentId: P:BridgingIT.DevKit.Infrastructure.EntityFramework.BlobDimensionMutationSession.StoreIdentity
+  fullName: BridgingIT.DevKit.Infrastructure.EntityFramework.BlobDimensionMutationSession.StoreIdentity
+  nameWithType: BlobDimensionMutationSession.StoreIdentity
+- uid: BridgingIT.DevKit.Infrastructure.EntityFramework.BlobDimensionMutationSession.StoreIdentity*
+  name: StoreIdentity
+  href: obj/api/BridgingIT.DevKit.Infrastructure.EntityFramework.BlobDimensionMutationSession.html#BridgingIT_DevKit_Infrastructure_EntityFramework_BlobDimensionMutationSession_StoreIdentity_
+  commentId: Overload:BridgingIT.DevKit.Infrastructure.EntityFramework.BlobDimensionMutationSession.StoreIdentity
+  fullName: BridgingIT.DevKit.Infrastructure.EntityFramework.BlobDimensionMutationSession.StoreIdentity
+  nameWithType: BlobDimensionMutationSession.StoreIdentity
+- uid: BridgingIT.DevKit.Infrastructure.EntityFramework.BlobDimensionNameCache
+  name: BlobDimensionNameCache
+  href: obj/api/BridgingIT.DevKit.Infrastructure.EntityFramework.BlobDimensionNameCache.html
+  commentId: T:BridgingIT.DevKit.Infrastructure.EntityFramework.BlobDimensionNameCache
+  fullName: BridgingIT.DevKit.Infrastructure.EntityFramework.BlobDimensionNameCache
+  nameWithType: BlobDimensionNameCache
+- uid: BridgingIT.DevKit.Infrastructure.EntityFramework.BlobDimensionNameCache.#ctor
+  name: BlobDimensionNameCache()
+  href: obj/api/BridgingIT.DevKit.Infrastructure.EntityFramework.BlobDimensionNameCache.html#BridgingIT_DevKit_Infrastructure_EntityFramework_BlobDimensionNameCache__ctor
+  commentId: M:BridgingIT.DevKit.Infrastructure.EntityFramework.BlobDimensionNameCache.#ctor
+  name.vb: New()
+  fullName: BridgingIT.DevKit.Infrastructure.EntityFramework.BlobDimensionNameCache.BlobDimensionNameCache()
+  fullName.vb: BridgingIT.DevKit.Infrastructure.EntityFramework.BlobDimensionNameCache.New()
+  nameWithType: BlobDimensionNameCache.BlobDimensionNameCache()
+  nameWithType.vb: BlobDimensionNameCache.New()
+- uid: BridgingIT.DevKit.Infrastructure.EntityFramework.BlobDimensionNameCache.#ctor*
+  name: BlobDimensionNameCache
+  href: obj/api/BridgingIT.DevKit.Infrastructure.EntityFramework.BlobDimensionNameCache.html#BridgingIT_DevKit_Infrastructure_EntityFramework_BlobDimensionNameCache__ctor_
+  commentId: Overload:BridgingIT.DevKit.Infrastructure.EntityFramework.BlobDimensionNameCache.#ctor
+  name.vb: New
+  fullName: BridgingIT.DevKit.Infrastructure.EntityFramework.BlobDimensionNameCache.BlobDimensionNameCache
+  fullName.vb: BridgingIT.DevKit.Infrastructure.EntityFramework.BlobDimensionNameCache.New
+  nameWithType: BlobDimensionNameCache.BlobDimensionNameCache
+  nameWithType.vb: BlobDimensionNameCache.New
+- uid: BridgingIT.DevKit.Infrastructure.EntityFramework.BlobDimensionNameCache.Clear
+  name: Clear()
+  href: obj/api/BridgingIT.DevKit.Infrastructure.EntityFramework.BlobDimensionNameCache.html#BridgingIT_DevKit_Infrastructure_EntityFramework_BlobDimensionNameCache_Clear
+  commentId: M:BridgingIT.DevKit.Infrastructure.EntityFramework.BlobDimensionNameCache.Clear
+  fullName: BridgingIT.DevKit.Infrastructure.EntityFramework.BlobDimensionNameCache.Clear()
+  nameWithType: BlobDimensionNameCache.Clear()
+- uid: BridgingIT.DevKit.Infrastructure.EntityFramework.BlobDimensionNameCache.Clear*
+  name: Clear
+  href: obj/api/BridgingIT.DevKit.Infrastructure.EntityFramework.BlobDimensionNameCache.html#BridgingIT_DevKit_Infrastructure_EntityFramework_BlobDimensionNameCache_Clear_
+  commentId: Overload:BridgingIT.DevKit.Infrastructure.EntityFramework.BlobDimensionNameCache.Clear
+  fullName: BridgingIT.DevKit.Infrastructure.EntityFramework.BlobDimensionNameCache.Clear
+  nameWithType: BlobDimensionNameCache.Clear
+- uid: BridgingIT.DevKit.Infrastructure.EntityFramework.BlobDimensionNameCache.Count
+  name: Count
+  href: obj/api/BridgingIT.DevKit.Infrastructure.EntityFramework.BlobDimensionNameCache.html#BridgingIT_DevKit_Infrastructure_EntityFramework_BlobDimensionNameCache_Count
+  commentId: P:BridgingIT.DevKit.Infrastructure.EntityFramework.BlobDimensionNameCache.Count
+  fullName: BridgingIT.DevKit.Infrastructure.EntityFramework.BlobDimensionNameCache.Count
+  nameWithType: BlobDimensionNameCache.Count
+- uid: BridgingIT.DevKit.Infrastructure.EntityFramework.BlobDimensionNameCache.Count*
+  name: Count
+  href: obj/api/BridgingIT.DevKit.Infrastructure.EntityFramework.BlobDimensionNameCache.html#BridgingIT_DevKit_Infrastructure_EntityFramework_BlobDimensionNameCache_Count_
+  commentId: Overload:BridgingIT.DevKit.Infrastructure.EntityFramework.BlobDimensionNameCache.Count
+  fullName: BridgingIT.DevKit.Infrastructure.EntityFramework.BlobDimensionNameCache.Count
+  nameWithType: BlobDimensionNameCache.Count
+- uid: BridgingIT.DevKit.Infrastructure.EntityFramework.BlobDimensionNameCache.Generation
+  name: Generation
+  href: obj/api/BridgingIT.DevKit.Infrastructure.EntityFramework.BlobDimensionNameCache.html#BridgingIT_DevKit_Infrastructure_EntityFramework_BlobDimensionNameCache_Generation
+  commentId: P:BridgingIT.DevKit.Infrastructure.EntityFramework.BlobDimensionNameCache.Generation
+  fullName: BridgingIT.DevKit.Infrastructure.EntityFramework.BlobDimensionNameCache.Generation
+  nameWithType: BlobDimensionNameCache.Generation
+- uid: BridgingIT.DevKit.Infrastructure.EntityFramework.BlobDimensionNameCache.Generation*
+  name: Generation
+  href: obj/api/BridgingIT.DevKit.Infrastructure.EntityFramework.BlobDimensionNameCache.html#BridgingIT_DevKit_Infrastructure_EntityFramework_BlobDimensionNameCache_Generation_
+  commentId: Overload:BridgingIT.DevKit.Infrastructure.EntityFramework.BlobDimensionNameCache.Generation
+  fullName: BridgingIT.DevKit.Infrastructure.EntityFramework.BlobDimensionNameCache.Generation
+  nameWithType: BlobDimensionNameCache.Generation
+- uid: BridgingIT.DevKit.Infrastructure.EntityFramework.BlobDimensionNameCache.Publish(BridgingIT.DevKit.Infrastructure.EntityFramework.BlobDimensionMutationSession)
+  name: Publish(BlobDimensionMutationSession)
+  href: obj/api/BridgingIT.DevKit.Infrastructure.EntityFramework.BlobDimensionNameCache.html#BridgingIT_DevKit_Infrastructure_EntityFramework_BlobDimensionNameCache_Publish_BridgingIT_DevKit_Infrastructure_EntityFramework_BlobDimensionMutationSession_
+  commentId: M:BridgingIT.DevKit.Infrastructure.EntityFramework.BlobDimensionNameCache.Publish(BridgingIT.DevKit.Infrastructure.EntityFramework.BlobDimensionMutationSession)
+  fullName: BridgingIT.DevKit.Infrastructure.EntityFramework.BlobDimensionNameCache.Publish(BridgingIT.DevKit.Infrastructure.EntityFramework.BlobDimensionMutationSession)
+  nameWithType: BlobDimensionNameCache.Publish(BlobDimensionMutationSession)
+- uid: BridgingIT.DevKit.Infrastructure.EntityFramework.BlobDimensionNameCache.Publish*
+  name: Publish
+  href: obj/api/BridgingIT.DevKit.Infrastructure.EntityFramework.BlobDimensionNameCache.html#BridgingIT_DevKit_Infrastructure_EntityFramework_BlobDimensionNameCache_Publish_
+  commentId: Overload:BridgingIT.DevKit.Infrastructure.EntityFramework.BlobDimensionNameCache.Publish
+  fullName: BridgingIT.DevKit.Infrastructure.EntityFramework.BlobDimensionNameCache.Publish
+  nameWithType: BlobDimensionNameCache.Publish
+- uid: BridgingIT.DevKit.Infrastructure.EntityFramework.BlobDimensionNameCache.RegistrationAdmission
+  name: RegistrationAdmission
+  href: obj/api/BridgingIT.DevKit.Infrastructure.EntityFramework.BlobDimensionNameCache.html#BridgingIT_DevKit_Infrastructure_EntityFramework_BlobDimensionNameCache_RegistrationAdmission
+  commentId: P:BridgingIT.DevKit.Infrastructure.EntityFramework.BlobDimensionNameCache.RegistrationAdmission
+  fullName: BridgingIT.DevKit.Infrastructure.EntityFramework.BlobDimensionNameCache.RegistrationAdmission
+  nameWithType: BlobDimensionNameCache.RegistrationAdmission
+- uid: BridgingIT.DevKit.Infrastructure.EntityFramework.BlobDimensionNameCache.RegistrationAdmission*
+  name: RegistrationAdmission
+  href: obj/api/BridgingIT.DevKit.Infrastructure.EntityFramework.BlobDimensionNameCache.html#BridgingIT_DevKit_Infrastructure_EntityFramework_BlobDimensionNameCache_RegistrationAdmission_
+  commentId: Overload:BridgingIT.DevKit.Infrastructure.EntityFramework.BlobDimensionNameCache.RegistrationAdmission
+  fullName: BridgingIT.DevKit.Infrastructure.EntityFramework.BlobDimensionNameCache.RegistrationAdmission
+  nameWithType: BlobDimensionNameCache.RegistrationAdmission
+- uid: BridgingIT.DevKit.Infrastructure.EntityFramework.BlobDimensionNameCache.TryGet(BridgingIT.DevKit.Infrastructure.EntityFramework.BlobDimensionNameKey,System.Int64@)
+  name: TryGet(BlobDimensionNameKey, out long)
+  href: obj/api/BridgingIT.DevKit.Infrastructure.EntityFramework.BlobDimensionNameCache.html#BridgingIT_DevKit_Infrastructure_EntityFramework_BlobDimensionNameCache_TryGet_BridgingIT_DevKit_Infrastructure_EntityFramework_BlobDimensionNameKey_System_Int64__
+  commentId: M:BridgingIT.DevKit.Infrastructure.EntityFramework.BlobDimensionNameCache.TryGet(BridgingIT.DevKit.Infrastructure.EntityFramework.BlobDimensionNameKey,System.Int64@)
+  name.vb: TryGet(BlobDimensionNameKey, Long)
+  fullName: BridgingIT.DevKit.Infrastructure.EntityFramework.BlobDimensionNameCache.TryGet(BridgingIT.DevKit.Infrastructure.EntityFramework.BlobDimensionNameKey, out long)
+  fullName.vb: BridgingIT.DevKit.Infrastructure.EntityFramework.BlobDimensionNameCache.TryGet(BridgingIT.DevKit.Infrastructure.EntityFramework.BlobDimensionNameKey, Long)
+  nameWithType: BlobDimensionNameCache.TryGet(BlobDimensionNameKey, out long)
+  nameWithType.vb: BlobDimensionNameCache.TryGet(BlobDimensionNameKey, Long)
+- uid: BridgingIT.DevKit.Infrastructure.EntityFramework.BlobDimensionNameCache.TryGet*
+  name: TryGet
+  href: obj/api/BridgingIT.DevKit.Infrastructure.EntityFramework.BlobDimensionNameCache.html#BridgingIT_DevKit_Infrastructure_EntityFramework_BlobDimensionNameCache_TryGet_
+  commentId: Overload:BridgingIT.DevKit.Infrastructure.EntityFramework.BlobDimensionNameCache.TryGet
+  fullName: BridgingIT.DevKit.Infrastructure.EntityFramework.BlobDimensionNameCache.TryGet
+  nameWithType: BlobDimensionNameCache.TryGet
+- uid: BridgingIT.DevKit.Infrastructure.EntityFramework.BlobDimensionNameKey
+  name: BlobDimensionNameKey
+  href: obj/api/BridgingIT.DevKit.Infrastructure.EntityFramework.BlobDimensionNameKey.html
+  commentId: T:BridgingIT.DevKit.Infrastructure.EntityFramework.BlobDimensionNameKey
+  fullName: BridgingIT.DevKit.Infrastructure.EntityFramework.BlobDimensionNameKey
+  nameWithType: BlobDimensionNameKey
+- uid: BridgingIT.DevKit.Infrastructure.EntityFramework.BlobDimensionNameKey.#ctor(System.String,System.String,System.String)
+  name: BlobDimensionNameKey(string, string, string)
+  href: obj/api/BridgingIT.DevKit.Infrastructure.EntityFramework.BlobDimensionNameKey.html#BridgingIT_DevKit_Infrastructure_EntityFramework_BlobDimensionNameKey__ctor_System_String_System_String_System_String_
+  commentId: M:BridgingIT.DevKit.Infrastructure.EntityFramework.BlobDimensionNameKey.#ctor(System.String,System.String,System.String)
+  name.vb: New(String, String, String)
+  fullName: BridgingIT.DevKit.Infrastructure.EntityFramework.BlobDimensionNameKey.BlobDimensionNameKey(string, string, string)
+  fullName.vb: BridgingIT.DevKit.Infrastructure.EntityFramework.BlobDimensionNameKey.New(String, String, String)
+  nameWithType: BlobDimensionNameKey.BlobDimensionNameKey(string, string, string)
+  nameWithType.vb: BlobDimensionNameKey.New(String, String, String)
+- uid: BridgingIT.DevKit.Infrastructure.EntityFramework.BlobDimensionNameKey.#ctor*
+  name: BlobDimensionNameKey
+  href: obj/api/BridgingIT.DevKit.Infrastructure.EntityFramework.BlobDimensionNameKey.html#BridgingIT_DevKit_Infrastructure_EntityFramework_BlobDimensionNameKey__ctor_
+  commentId: Overload:BridgingIT.DevKit.Infrastructure.EntityFramework.BlobDimensionNameKey.#ctor
+  name.vb: New
+  fullName: BridgingIT.DevKit.Infrastructure.EntityFramework.BlobDimensionNameKey.BlobDimensionNameKey
+  fullName.vb: BridgingIT.DevKit.Infrastructure.EntityFramework.BlobDimensionNameKey.New
+  nameWithType: BlobDimensionNameKey.BlobDimensionNameKey
+  nameWithType.vb: BlobDimensionNameKey.New
+- uid: BridgingIT.DevKit.Infrastructure.EntityFramework.BlobDimensionNameKey.Deconstruct(System.String@,System.String@,System.String@)
+  name: Deconstruct(out string, out string, out string)
+  href: obj/api/BridgingIT.DevKit.Infrastructure.EntityFramework.BlobDimensionNameKey.html#BridgingIT_DevKit_Infrastructure_EntityFramework_BlobDimensionNameKey_Deconstruct_System_String__System_String__System_String__
+  commentId: M:BridgingIT.DevKit.Infrastructure.EntityFramework.BlobDimensionNameKey.Deconstruct(System.String@,System.String@,System.String@)
+  name.vb: Deconstruct(String, String, String)
+  fullName: BridgingIT.DevKit.Infrastructure.EntityFramework.BlobDimensionNameKey.Deconstruct(out string, out string, out string)
+  fullName.vb: BridgingIT.DevKit.Infrastructure.EntityFramework.BlobDimensionNameKey.Deconstruct(String, String, String)
+  nameWithType: BlobDimensionNameKey.Deconstruct(out string, out string, out string)
+  nameWithType.vb: BlobDimensionNameKey.Deconstruct(String, String, String)
+- uid: BridgingIT.DevKit.Infrastructure.EntityFramework.BlobDimensionNameKey.Deconstruct*
+  name: Deconstruct
+  href: obj/api/BridgingIT.DevKit.Infrastructure.EntityFramework.BlobDimensionNameKey.html#BridgingIT_DevKit_Infrastructure_EntityFramework_BlobDimensionNameKey_Deconstruct_
+  commentId: Overload:BridgingIT.DevKit.Infrastructure.EntityFramework.BlobDimensionNameKey.Deconstruct
+  fullName: BridgingIT.DevKit.Infrastructure.EntityFramework.BlobDimensionNameKey.Deconstruct
+  nameWithType: BlobDimensionNameKey.Deconstruct
+- uid: BridgingIT.DevKit.Infrastructure.EntityFramework.BlobDimensionNameKey.Equals(BridgingIT.DevKit.Infrastructure.EntityFramework.BlobDimensionNameKey)
+  name: Equals(BlobDimensionNameKey)
+  href: obj/api/BridgingIT.DevKit.Infrastructure.EntityFramework.BlobDimensionNameKey.html#BridgingIT_DevKit_Infrastructure_EntityFramework_BlobDimensionNameKey_Equals_BridgingIT_DevKit_Infrastructure_EntityFramework_BlobDimensionNameKey_
+  commentId: M:BridgingIT.DevKit.Infrastructure.EntityFramework.BlobDimensionNameKey.Equals(BridgingIT.DevKit.Infrastructure.EntityFramework.BlobDimensionNameKey)
+  fullName: BridgingIT.DevKit.Infrastructure.EntityFramework.BlobDimensionNameKey.Equals(BridgingIT.DevKit.Infrastructure.EntityFramework.BlobDimensionNameKey)
+  nameWithType: BlobDimensionNameKey.Equals(BlobDimensionNameKey)
+- uid: BridgingIT.DevKit.Infrastructure.EntityFramework.BlobDimensionNameKey.Equals(System.Object)
+  name: Equals(object)
+  href: obj/api/BridgingIT.DevKit.Infrastructure.EntityFramework.BlobDimensionNameKey.html#BridgingIT_DevKit_Infrastructure_EntityFramework_BlobDimensionNameKey_Equals_System_Object_
+  commentId: M:BridgingIT.DevKit.Infrastructure.EntityFramework.BlobDimensionNameKey.Equals(System.Object)
+  name.vb: Equals(Object)
+  fullName: BridgingIT.DevKit.Infrastructure.EntityFramework.BlobDimensionNameKey.Equals(object)
+  fullName.vb: BridgingIT.DevKit.Infrastructure.EntityFramework.BlobDimensionNameKey.Equals(Object)
+  nameWithType: BlobDimensionNameKey.Equals(object)
+  nameWithType.vb: BlobDimensionNameKey.Equals(Object)
+- uid: BridgingIT.DevKit.Infrastructure.EntityFramework.BlobDimensionNameKey.Equals*
+  name: Equals
+  href: obj/api/BridgingIT.DevKit.Infrastructure.EntityFramework.BlobDimensionNameKey.html#BridgingIT_DevKit_Infrastructure_EntityFramework_BlobDimensionNameKey_Equals_
+  commentId: Overload:BridgingIT.DevKit.Infrastructure.EntityFramework.BlobDimensionNameKey.Equals
+  fullName: BridgingIT.DevKit.Infrastructure.EntityFramework.BlobDimensionNameKey.Equals
+  nameWithType: BlobDimensionNameKey.Equals
+- uid: BridgingIT.DevKit.Infrastructure.EntityFramework.BlobDimensionNameKey.GetHashCode
+  name: GetHashCode()
+  href: obj/api/BridgingIT.DevKit.Infrastructure.EntityFramework.BlobDimensionNameKey.html#BridgingIT_DevKit_Infrastructure_EntityFramework_BlobDimensionNameKey_GetHashCode
+  commentId: M:BridgingIT.DevKit.Infrastructure.EntityFramework.BlobDimensionNameKey.GetHashCode
+  fullName: BridgingIT.DevKit.Infrastructure.EntityFramework.BlobDimensionNameKey.GetHashCode()
+  nameWithType: BlobDimensionNameKey.GetHashCode()
+- uid: BridgingIT.DevKit.Infrastructure.EntityFramework.BlobDimensionNameKey.GetHashCode*
+  name: GetHashCode
+  href: obj/api/BridgingIT.DevKit.Infrastructure.EntityFramework.BlobDimensionNameKey.html#BridgingIT_DevKit_Infrastructure_EntityFramework_BlobDimensionNameKey_GetHashCode_
+  commentId: Overload:BridgingIT.DevKit.Infrastructure.EntityFramework.BlobDimensionNameKey.GetHashCode
+  fullName: BridgingIT.DevKit.Infrastructure.EntityFramework.BlobDimensionNameKey.GetHashCode
+  nameWithType: BlobDimensionNameKey.GetHashCode
+- uid: BridgingIT.DevKit.Infrastructure.EntityFramework.BlobDimensionNameKey.Name
+  name: Name
+  href: obj/api/BridgingIT.DevKit.Infrastructure.EntityFramework.BlobDimensionNameKey.html#BridgingIT_DevKit_Infrastructure_EntityFramework_BlobDimensionNameKey_Name
+  commentId: P:BridgingIT.DevKit.Infrastructure.EntityFramework.BlobDimensionNameKey.Name
+  fullName: BridgingIT.DevKit.Infrastructure.EntityFramework.BlobDimensionNameKey.Name
+  nameWithType: BlobDimensionNameKey.Name
+- uid: BridgingIT.DevKit.Infrastructure.EntityFramework.BlobDimensionNameKey.Name*
+  name: Name
+  href: obj/api/BridgingIT.DevKit.Infrastructure.EntityFramework.BlobDimensionNameKey.html#BridgingIT_DevKit_Infrastructure_EntityFramework_BlobDimensionNameKey_Name_
+  commentId: Overload:BridgingIT.DevKit.Infrastructure.EntityFramework.BlobDimensionNameKey.Name
+  fullName: BridgingIT.DevKit.Infrastructure.EntityFramework.BlobDimensionNameKey.Name
+  nameWithType: BlobDimensionNameKey.Name
+- uid: BridgingIT.DevKit.Infrastructure.EntityFramework.BlobDimensionNameKey.Scope
+  name: Scope
+  href: obj/api/BridgingIT.DevKit.Infrastructure.EntityFramework.BlobDimensionNameKey.html#BridgingIT_DevKit_Infrastructure_EntityFramework_BlobDimensionNameKey_Scope
+  commentId: P:BridgingIT.DevKit.Infrastructure.EntityFramework.BlobDimensionNameKey.Scope
+  fullName: BridgingIT.DevKit.Infrastructure.EntityFramework.BlobDimensionNameKey.Scope
+  nameWithType: BlobDimensionNameKey.Scope
+- uid: BridgingIT.DevKit.Infrastructure.EntityFramework.BlobDimensionNameKey.Scope*
+  name: Scope
+  href: obj/api/BridgingIT.DevKit.Infrastructure.EntityFramework.BlobDimensionNameKey.html#BridgingIT_DevKit_Infrastructure_EntityFramework_BlobDimensionNameKey_Scope_
+  commentId: Overload:BridgingIT.DevKit.Infrastructure.EntityFramework.BlobDimensionNameKey.Scope
+  fullName: BridgingIT.DevKit.Infrastructure.EntityFramework.BlobDimensionNameKey.Scope
+  nameWithType: BlobDimensionNameKey.Scope
+- uid: BridgingIT.DevKit.Infrastructure.EntityFramework.BlobDimensionNameKey.Store
+  name: Store
+  href: obj/api/BridgingIT.DevKit.Infrastructure.EntityFramework.BlobDimensionNameKey.html#BridgingIT_DevKit_Infrastructure_EntityFramework_BlobDimensionNameKey_Store
+  commentId: P:BridgingIT.DevKit.Infrastructure.EntityFramework.BlobDimensionNameKey.Store
+  fullName: BridgingIT.DevKit.Infrastructure.EntityFramework.BlobDimensionNameKey.Store
+  nameWithType: BlobDimensionNameKey.Store
+- uid: BridgingIT.DevKit.Infrastructure.EntityFramework.BlobDimensionNameKey.Store*
+  name: Store
+  href: obj/api/BridgingIT.DevKit.Infrastructure.EntityFramework.BlobDimensionNameKey.html#BridgingIT_DevKit_Infrastructure_EntityFramework_BlobDimensionNameKey_Store_
+  commentId: Overload:BridgingIT.DevKit.Infrastructure.EntityFramework.BlobDimensionNameKey.Store
+  fullName: BridgingIT.DevKit.Infrastructure.EntityFramework.BlobDimensionNameKey.Store
+  nameWithType: BlobDimensionNameKey.Store
+- uid: BridgingIT.DevKit.Infrastructure.EntityFramework.BlobDimensionNameKey.ToString
+  name: ToString()
+  href: obj/api/BridgingIT.DevKit.Infrastructure.EntityFramework.BlobDimensionNameKey.html#BridgingIT_DevKit_Infrastructure_EntityFramework_BlobDimensionNameKey_ToString
+  commentId: M:BridgingIT.DevKit.Infrastructure.EntityFramework.BlobDimensionNameKey.ToString
+  fullName: BridgingIT.DevKit.Infrastructure.EntityFramework.BlobDimensionNameKey.ToString()
+  nameWithType: BlobDimensionNameKey.ToString()
+- uid: BridgingIT.DevKit.Infrastructure.EntityFramework.BlobDimensionNameKey.ToString*
+  name: ToString
+  href: obj/api/BridgingIT.DevKit.Infrastructure.EntityFramework.BlobDimensionNameKey.html#BridgingIT_DevKit_Infrastructure_EntityFramework_BlobDimensionNameKey_ToString_
+  commentId: Overload:BridgingIT.DevKit.Infrastructure.EntityFramework.BlobDimensionNameKey.ToString
+  fullName: BridgingIT.DevKit.Infrastructure.EntityFramework.BlobDimensionNameKey.ToString
+  nameWithType: BlobDimensionNameKey.ToString
+- uid: BridgingIT.DevKit.Infrastructure.EntityFramework.BlobDimensionNameKey.op_Equality(BridgingIT.DevKit.Infrastructure.EntityFramework.BlobDimensionNameKey,BridgingIT.DevKit.Infrastructure.EntityFramework.BlobDimensionNameKey)
+  name: operator ==(BlobDimensionNameKey, BlobDimensionNameKey)
+  href: obj/api/BridgingIT.DevKit.Infrastructure.EntityFramework.BlobDimensionNameKey.html#BridgingIT_DevKit_Infrastructure_EntityFramework_BlobDimensionNameKey_op_Equality_BridgingIT_DevKit_Infrastructure_EntityFramework_BlobDimensionNameKey_BridgingIT_DevKit_Infrastructure_EntityFramework_BlobDimensionNameKey_
+  commentId: M:BridgingIT.DevKit.Infrastructure.EntityFramework.BlobDimensionNameKey.op_Equality(BridgingIT.DevKit.Infrastructure.EntityFramework.BlobDimensionNameKey,BridgingIT.DevKit.Infrastructure.EntityFramework.BlobDimensionNameKey)
+  name.vb: =(BlobDimensionNameKey, BlobDimensionNameKey)
+  fullName: BridgingIT.DevKit.Infrastructure.EntityFramework.BlobDimensionNameKey.operator ==(BridgingIT.DevKit.Infrastructure.EntityFramework.BlobDimensionNameKey, BridgingIT.DevKit.Infrastructure.EntityFramework.BlobDimensionNameKey)
+  fullName.vb: BridgingIT.DevKit.Infrastructure.EntityFramework.BlobDimensionNameKey.=(BridgingIT.DevKit.Infrastructure.EntityFramework.BlobDimensionNameKey, BridgingIT.DevKit.Infrastructure.EntityFramework.BlobDimensionNameKey)
+  nameWithType: BlobDimensionNameKey.operator ==(BlobDimensionNameKey, BlobDimensionNameKey)
+  nameWithType.vb: BlobDimensionNameKey.=(BlobDimensionNameKey, BlobDimensionNameKey)
+- uid: BridgingIT.DevKit.Infrastructure.EntityFramework.BlobDimensionNameKey.op_Equality*
+  name: operator ==
+  href: obj/api/BridgingIT.DevKit.Infrastructure.EntityFramework.BlobDimensionNameKey.html#BridgingIT_DevKit_Infrastructure_EntityFramework_BlobDimensionNameKey_op_Equality_
+  commentId: Overload:BridgingIT.DevKit.Infrastructure.EntityFramework.BlobDimensionNameKey.op_Equality
+  name.vb: =
+  fullName: BridgingIT.DevKit.Infrastructure.EntityFramework.BlobDimensionNameKey.operator ==
+  fullName.vb: BridgingIT.DevKit.Infrastructure.EntityFramework.BlobDimensionNameKey.=
+  nameWithType: BlobDimensionNameKey.operator ==
+  nameWithType.vb: BlobDimensionNameKey.=
+- uid: BridgingIT.DevKit.Infrastructure.EntityFramework.BlobDimensionNameKey.op_Inequality(BridgingIT.DevKit.Infrastructure.EntityFramework.BlobDimensionNameKey,BridgingIT.DevKit.Infrastructure.EntityFramework.BlobDimensionNameKey)
+  name: operator !=(BlobDimensionNameKey, BlobDimensionNameKey)
+  href: obj/api/BridgingIT.DevKit.Infrastructure.EntityFramework.BlobDimensionNameKey.html#BridgingIT_DevKit_Infrastructure_EntityFramework_BlobDimensionNameKey_op_Inequality_BridgingIT_DevKit_Infrastructure_EntityFramework_BlobDimensionNameKey_BridgingIT_DevKit_Infrastructure_EntityFramework_BlobDimensionNameKey_
+  commentId: M:BridgingIT.DevKit.Infrastructure.EntityFramework.BlobDimensionNameKey.op_Inequality(BridgingIT.DevKit.Infrastructure.EntityFramework.BlobDimensionNameKey,BridgingIT.DevKit.Infrastructure.EntityFramework.BlobDimensionNameKey)
+  name.vb: <>(BlobDimensionNameKey, BlobDimensionNameKey)
+  fullName: BridgingIT.DevKit.Infrastructure.EntityFramework.BlobDimensionNameKey.operator !=(BridgingIT.DevKit.Infrastructure.EntityFramework.BlobDimensionNameKey, BridgingIT.DevKit.Infrastructure.EntityFramework.BlobDimensionNameKey)
+  fullName.vb: BridgingIT.DevKit.Infrastructure.EntityFramework.BlobDimensionNameKey.<>(BridgingIT.DevKit.Infrastructure.EntityFramework.BlobDimensionNameKey, BridgingIT.DevKit.Infrastructure.EntityFramework.BlobDimensionNameKey)
+  nameWithType: BlobDimensionNameKey.operator !=(BlobDimensionNameKey, BlobDimensionNameKey)
+  nameWithType.vb: BlobDimensionNameKey.<>(BlobDimensionNameKey, BlobDimensionNameKey)
+- uid: BridgingIT.DevKit.Infrastructure.EntityFramework.BlobDimensionNameKey.op_Inequality*
+  name: operator !=
+  href: obj/api/BridgingIT.DevKit.Infrastructure.EntityFramework.BlobDimensionNameKey.html#BridgingIT_DevKit_Infrastructure_EntityFramework_BlobDimensionNameKey_op_Inequality_
+  commentId: Overload:BridgingIT.DevKit.Infrastructure.EntityFramework.BlobDimensionNameKey.op_Inequality
+  name.vb: <>
+  fullName: BridgingIT.DevKit.Infrastructure.EntityFramework.BlobDimensionNameKey.operator !=
+  fullName.vb: BridgingIT.DevKit.Infrastructure.EntityFramework.BlobDimensionNameKey.<>
+  nameWithType: BlobDimensionNameKey.operator !=
+  nameWithType.vb: BlobDimensionNameKey.<>
+- uid: BridgingIT.DevKit.Infrastructure.EntityFramework.BlobDimensionNameResolver`1
+  name: BlobDimensionNameResolver<TContext>
+  href: obj/api/BridgingIT.DevKit.Infrastructure.EntityFramework.BlobDimensionNameResolver-1.html
+  commentId: T:BridgingIT.DevKit.Infrastructure.EntityFramework.BlobDimensionNameResolver`1
+  name.vb: BlobDimensionNameResolver(Of TContext)
+  fullName: BridgingIT.DevKit.Infrastructure.EntityFramework.BlobDimensionNameResolver<TContext>
+  fullName.vb: BridgingIT.DevKit.Infrastructure.EntityFramework.BlobDimensionNameResolver(Of TContext)
+  nameWithType: BlobDimensionNameResolver<TContext>
+  nameWithType.vb: BlobDimensionNameResolver(Of TContext)
+- uid: BridgingIT.DevKit.Infrastructure.EntityFramework.BlobDimensionNameResolver`1.#ctor(Microsoft.Extensions.DependencyInjection.IServiceScopeFactory)
+  name: BlobDimensionNameResolver(IServiceScopeFactory)
+  href: obj/api/BridgingIT.DevKit.Infrastructure.EntityFramework.BlobDimensionNameResolver-1.html#BridgingIT_DevKit_Infrastructure_EntityFramework_BlobDimensionNameResolver_1__ctor_Microsoft_Extensions_DependencyInjection_IServiceScopeFactory_
+  commentId: M:BridgingIT.DevKit.Infrastructure.EntityFramework.BlobDimensionNameResolver`1.#ctor(Microsoft.Extensions.DependencyInjection.IServiceScopeFactory)
+  name.vb: New(IServiceScopeFactory)
+  fullName: BridgingIT.DevKit.Infrastructure.EntityFramework.BlobDimensionNameResolver<TContext>.BlobDimensionNameResolver(Microsoft.Extensions.DependencyInjection.IServiceScopeFactory)
+  fullName.vb: BridgingIT.DevKit.Infrastructure.EntityFramework.BlobDimensionNameResolver(Of TContext).New(Microsoft.Extensions.DependencyInjection.IServiceScopeFactory)
+  nameWithType: BlobDimensionNameResolver<TContext>.BlobDimensionNameResolver(IServiceScopeFactory)
+  nameWithType.vb: BlobDimensionNameResolver(Of TContext).New(IServiceScopeFactory)
+- uid: BridgingIT.DevKit.Infrastructure.EntityFramework.BlobDimensionNameResolver`1.#ctor*
+  name: BlobDimensionNameResolver
+  href: obj/api/BridgingIT.DevKit.Infrastructure.EntityFramework.BlobDimensionNameResolver-1.html#BridgingIT_DevKit_Infrastructure_EntityFramework_BlobDimensionNameResolver_1__ctor_
+  commentId: Overload:BridgingIT.DevKit.Infrastructure.EntityFramework.BlobDimensionNameResolver`1.#ctor
+  name.vb: New
+  fullName: BridgingIT.DevKit.Infrastructure.EntityFramework.BlobDimensionNameResolver<TContext>.BlobDimensionNameResolver
+  fullName.vb: BridgingIT.DevKit.Infrastructure.EntityFramework.BlobDimensionNameResolver(Of TContext).New
+  nameWithType: BlobDimensionNameResolver<TContext>.BlobDimensionNameResolver
+  nameWithType.vb: BlobDimensionNameResolver(Of TContext).New
+- uid: BridgingIT.DevKit.Infrastructure.EntityFramework.BlobDimensionNameResolver`1.BeginSession
+  name: BeginSession()
+  href: obj/api/BridgingIT.DevKit.Infrastructure.EntityFramework.BlobDimensionNameResolver-1.html#BridgingIT_DevKit_Infrastructure_EntityFramework_BlobDimensionNameResolver_1_BeginSession
+  commentId: M:BridgingIT.DevKit.Infrastructure.EntityFramework.BlobDimensionNameResolver`1.BeginSession
+  fullName: BridgingIT.DevKit.Infrastructure.EntityFramework.BlobDimensionNameResolver<TContext>.BeginSession()
+  fullName.vb: BridgingIT.DevKit.Infrastructure.EntityFramework.BlobDimensionNameResolver(Of TContext).BeginSession()
+  nameWithType: BlobDimensionNameResolver<TContext>.BeginSession()
+  nameWithType.vb: BlobDimensionNameResolver(Of TContext).BeginSession()
+- uid: BridgingIT.DevKit.Infrastructure.EntityFramework.BlobDimensionNameResolver`1.BeginSession*
+  name: BeginSession
+  href: obj/api/BridgingIT.DevKit.Infrastructure.EntityFramework.BlobDimensionNameResolver-1.html#BridgingIT_DevKit_Infrastructure_EntityFramework_BlobDimensionNameResolver_1_BeginSession_
+  commentId: Overload:BridgingIT.DevKit.Infrastructure.EntityFramework.BlobDimensionNameResolver`1.BeginSession
+  fullName: BridgingIT.DevKit.Infrastructure.EntityFramework.BlobDimensionNameResolver<TContext>.BeginSession
+  fullName.vb: BridgingIT.DevKit.Infrastructure.EntityFramework.BlobDimensionNameResolver(Of TContext).BeginSession
+  nameWithType: BlobDimensionNameResolver<TContext>.BeginSession
+  nameWithType.vb: BlobDimensionNameResolver(Of TContext).BeginSession
+- uid: BridgingIT.DevKit.Infrastructure.EntityFramework.BlobDimensionNameResolver`1.CachedNames
+  name: CachedNames
+  href: obj/api/BridgingIT.DevKit.Infrastructure.EntityFramework.BlobDimensionNameResolver-1.html#BridgingIT_DevKit_Infrastructure_EntityFramework_BlobDimensionNameResolver_1_CachedNames
+  commentId: P:BridgingIT.DevKit.Infrastructure.EntityFramework.BlobDimensionNameResolver`1.CachedNames
+  fullName: BridgingIT.DevKit.Infrastructure.EntityFramework.BlobDimensionNameResolver<TContext>.CachedNames
+  fullName.vb: BridgingIT.DevKit.Infrastructure.EntityFramework.BlobDimensionNameResolver(Of TContext).CachedNames
+  nameWithType: BlobDimensionNameResolver<TContext>.CachedNames
+  nameWithType.vb: BlobDimensionNameResolver(Of TContext).CachedNames
+- uid: BridgingIT.DevKit.Infrastructure.EntityFramework.BlobDimensionNameResolver`1.CachedNames*
+  name: CachedNames
+  href: obj/api/BridgingIT.DevKit.Infrastructure.EntityFramework.BlobDimensionNameResolver-1.html#BridgingIT_DevKit_Infrastructure_EntityFramework_BlobDimensionNameResolver_1_CachedNames_
+  commentId: Overload:BridgingIT.DevKit.Infrastructure.EntityFramework.BlobDimensionNameResolver`1.CachedNames
+  fullName: BridgingIT.DevKit.Infrastructure.EntityFramework.BlobDimensionNameResolver<TContext>.CachedNames
+  fullName.vb: BridgingIT.DevKit.Infrastructure.EntityFramework.BlobDimensionNameResolver(Of TContext).CachedNames
+  nameWithType: BlobDimensionNameResolver<TContext>.CachedNames
+  nameWithType.vb: BlobDimensionNameResolver(Of TContext).CachedNames
+- uid: BridgingIT.DevKit.Infrastructure.EntityFramework.BlobDimensionNameResolver`1.Capture
+  name: Capture()
+  href: obj/api/BridgingIT.DevKit.Infrastructure.EntityFramework.BlobDimensionNameResolver-1.html#BridgingIT_DevKit_Infrastructure_EntityFramework_BlobDimensionNameResolver_1_Capture
+  commentId: M:BridgingIT.DevKit.Infrastructure.EntityFramework.BlobDimensionNameResolver`1.Capture
+  fullName: BridgingIT.DevKit.Infrastructure.EntityFramework.BlobDimensionNameResolver<TContext>.Capture()
+  fullName.vb: BridgingIT.DevKit.Infrastructure.EntityFramework.BlobDimensionNameResolver(Of TContext).Capture()
+  nameWithType: BlobDimensionNameResolver<TContext>.Capture()
+  nameWithType.vb: BlobDimensionNameResolver(Of TContext).Capture()
+- uid: BridgingIT.DevKit.Infrastructure.EntityFramework.BlobDimensionNameResolver`1.Capture*
+  name: Capture
+  href: obj/api/BridgingIT.DevKit.Infrastructure.EntityFramework.BlobDimensionNameResolver-1.html#BridgingIT_DevKit_Infrastructure_EntityFramework_BlobDimensionNameResolver_1_Capture_
+  commentId: Overload:BridgingIT.DevKit.Infrastructure.EntityFramework.BlobDimensionNameResolver`1.Capture
+  fullName: BridgingIT.DevKit.Infrastructure.EntityFramework.BlobDimensionNameResolver<TContext>.Capture
+  fullName.vb: BridgingIT.DevKit.Infrastructure.EntityFramework.BlobDimensionNameResolver(Of TContext).Capture
+  nameWithType: BlobDimensionNameResolver<TContext>.Capture
+  nameWithType.vb: BlobDimensionNameResolver(Of TContext).Capture
+- uid: BridgingIT.DevKit.Infrastructure.EntityFramework.BlobDimensionNameResolver`1.Clear
+  name: Clear()
+  href: obj/api/BridgingIT.DevKit.Infrastructure.EntityFramework.BlobDimensionNameResolver-1.html#BridgingIT_DevKit_Infrastructure_EntityFramework_BlobDimensionNameResolver_1_Clear
+  commentId: M:BridgingIT.DevKit.Infrastructure.EntityFramework.BlobDimensionNameResolver`1.Clear
+  fullName: BridgingIT.DevKit.Infrastructure.EntityFramework.BlobDimensionNameResolver<TContext>.Clear()
+  fullName.vb: BridgingIT.DevKit.Infrastructure.EntityFramework.BlobDimensionNameResolver(Of TContext).Clear()
+  nameWithType: BlobDimensionNameResolver<TContext>.Clear()
+  nameWithType.vb: BlobDimensionNameResolver(Of TContext).Clear()
+- uid: BridgingIT.DevKit.Infrastructure.EntityFramework.BlobDimensionNameResolver`1.Clear*
+  name: Clear
+  href: obj/api/BridgingIT.DevKit.Infrastructure.EntityFramework.BlobDimensionNameResolver-1.html#BridgingIT_DevKit_Infrastructure_EntityFramework_BlobDimensionNameResolver_1_Clear_
+  commentId: Overload:BridgingIT.DevKit.Infrastructure.EntityFramework.BlobDimensionNameResolver`1.Clear
+  fullName: BridgingIT.DevKit.Infrastructure.EntityFramework.BlobDimensionNameResolver<TContext>.Clear
+  fullName.vb: BridgingIT.DevKit.Infrastructure.EntityFramework.BlobDimensionNameResolver(Of TContext).Clear
+  nameWithType: BlobDimensionNameResolver<TContext>.Clear
+  nameWithType.vb: BlobDimensionNameResolver(Of TContext).Clear
+- uid: BridgingIT.DevKit.Infrastructure.EntityFramework.BlobDimensionNameResolver`1.PublishCommitted(BridgingIT.DevKit.Infrastructure.EntityFramework.BlobDimensionMutationSession)
+  name: PublishCommitted(BlobDimensionMutationSession)
+  href: obj/api/BridgingIT.DevKit.Infrastructure.EntityFramework.BlobDimensionNameResolver-1.html#BridgingIT_DevKit_Infrastructure_EntityFramework_BlobDimensionNameResolver_1_PublishCommitted_BridgingIT_DevKit_Infrastructure_EntityFramework_BlobDimensionMutationSession_
+  commentId: M:BridgingIT.DevKit.Infrastructure.EntityFramework.BlobDimensionNameResolver`1.PublishCommitted(BridgingIT.DevKit.Infrastructure.EntityFramework.BlobDimensionMutationSession)
+  fullName: BridgingIT.DevKit.Infrastructure.EntityFramework.BlobDimensionNameResolver<TContext>.PublishCommitted(BridgingIT.DevKit.Infrastructure.EntityFramework.BlobDimensionMutationSession)
+  fullName.vb: BridgingIT.DevKit.Infrastructure.EntityFramework.BlobDimensionNameResolver(Of TContext).PublishCommitted(BridgingIT.DevKit.Infrastructure.EntityFramework.BlobDimensionMutationSession)
+  nameWithType: BlobDimensionNameResolver<TContext>.PublishCommitted(BlobDimensionMutationSession)
+  nameWithType.vb: BlobDimensionNameResolver(Of TContext).PublishCommitted(BlobDimensionMutationSession)
+- uid: BridgingIT.DevKit.Infrastructure.EntityFramework.BlobDimensionNameResolver`1.PublishCommitted*
+  name: PublishCommitted
+  href: obj/api/BridgingIT.DevKit.Infrastructure.EntityFramework.BlobDimensionNameResolver-1.html#BridgingIT_DevKit_Infrastructure_EntityFramework_BlobDimensionNameResolver_1_PublishCommitted_
+  commentId: Overload:BridgingIT.DevKit.Infrastructure.EntityFramework.BlobDimensionNameResolver`1.PublishCommitted
+  fullName: BridgingIT.DevKit.Infrastructure.EntityFramework.BlobDimensionNameResolver<TContext>.PublishCommitted
+  fullName.vb: BridgingIT.DevKit.Infrastructure.EntityFramework.BlobDimensionNameResolver(Of TContext).PublishCommitted
+  nameWithType: BlobDimensionNameResolver<TContext>.PublishCommitted
+  nameWithType.vb: BlobDimensionNameResolver(Of TContext).PublishCommitted
+- uid: BridgingIT.DevKit.Infrastructure.EntityFramework.BlobDimensionNameResolver`1.ResolveExistingAsync(`0,System.String,System.Collections.Generic.IEnumerable{System.String},BridgingIT.DevKit.Infrastructure.EntityFramework.BlobDimensionMutationSession,System.Threading.CancellationToken)
+  name: ResolveExistingAsync(TContext, string, IEnumerable<string>, BlobDimensionMutationSession, CancellationToken)
+  href: obj/api/BridgingIT.DevKit.Infrastructure.EntityFramework.BlobDimensionNameResolver-1.html#BridgingIT_DevKit_Infrastructure_EntityFramework_BlobDimensionNameResolver_1_ResolveExistingAsync__0_System_String_System_Collections_Generic_IEnumerable_System_String__BridgingIT_DevKit_Infrastructure_EntityFramework_BlobDimensionMutationSession_System_Threading_CancellationToken_
+  commentId: M:BridgingIT.DevKit.Infrastructure.EntityFramework.BlobDimensionNameResolver`1.ResolveExistingAsync(`0,System.String,System.Collections.Generic.IEnumerable{System.String},BridgingIT.DevKit.Infrastructure.EntityFramework.BlobDimensionMutationSession,System.Threading.CancellationToken)
+  name.vb: ResolveExistingAsync(TContext, String, IEnumerable(Of String), BlobDimensionMutationSession, CancellationToken)
+  fullName: BridgingIT.DevKit.Infrastructure.EntityFramework.BlobDimensionNameResolver<TContext>.ResolveExistingAsync(TContext, string, System.Collections.Generic.IEnumerable<string>, BridgingIT.DevKit.Infrastructure.EntityFramework.BlobDimensionMutationSession, System.Threading.CancellationToken)
+  fullName.vb: BridgingIT.DevKit.Infrastructure.EntityFramework.BlobDimensionNameResolver(Of TContext).ResolveExistingAsync(TContext, String, System.Collections.Generic.IEnumerable(Of String), BridgingIT.DevKit.Infrastructure.EntityFramework.BlobDimensionMutationSession, System.Threading.CancellationToken)
+  nameWithType: BlobDimensionNameResolver<TContext>.ResolveExistingAsync(TContext, string, IEnumerable<string>, BlobDimensionMutationSession, CancellationToken)
+  nameWithType.vb: BlobDimensionNameResolver(Of TContext).ResolveExistingAsync(TContext, String, IEnumerable(Of String), BlobDimensionMutationSession, CancellationToken)
+- uid: BridgingIT.DevKit.Infrastructure.EntityFramework.BlobDimensionNameResolver`1.ResolveExistingAsync*
+  name: ResolveExistingAsync
+  href: obj/api/BridgingIT.DevKit.Infrastructure.EntityFramework.BlobDimensionNameResolver-1.html#BridgingIT_DevKit_Infrastructure_EntityFramework_BlobDimensionNameResolver_1_ResolveExistingAsync_
+  commentId: Overload:BridgingIT.DevKit.Infrastructure.EntityFramework.BlobDimensionNameResolver`1.ResolveExistingAsync
+  fullName: BridgingIT.DevKit.Infrastructure.EntityFramework.BlobDimensionNameResolver<TContext>.ResolveExistingAsync
+  fullName.vb: BridgingIT.DevKit.Infrastructure.EntityFramework.BlobDimensionNameResolver(Of TContext).ResolveExistingAsync
+  nameWithType: BlobDimensionNameResolver<TContext>.ResolveExistingAsync
+  nameWithType.vb: BlobDimensionNameResolver(Of TContext).ResolveExistingAsync
+- uid: BridgingIT.DevKit.Infrastructure.EntityFramework.BlobDimensionNameResolver`1.ResolveForReadAsync(`0,System.String,System.Collections.Generic.IEnumerable{System.String},System.Threading.CancellationToken)
+  name: ResolveForReadAsync(TContext, string, IEnumerable<string>, CancellationToken)
+  href: obj/api/BridgingIT.DevKit.Infrastructure.EntityFramework.BlobDimensionNameResolver-1.html#BridgingIT_DevKit_Infrastructure_EntityFramework_BlobDimensionNameResolver_1_ResolveForReadAsync__0_System_String_System_Collections_Generic_IEnumerable_System_String__System_Threading_CancellationToken_
+  commentId: M:BridgingIT.DevKit.Infrastructure.EntityFramework.BlobDimensionNameResolver`1.ResolveForReadAsync(`0,System.String,System.Collections.Generic.IEnumerable{System.String},System.Threading.CancellationToken)
+  name.vb: ResolveForReadAsync(TContext, String, IEnumerable(Of String), CancellationToken)
+  fullName: BridgingIT.DevKit.Infrastructure.EntityFramework.BlobDimensionNameResolver<TContext>.ResolveForReadAsync(TContext, string, System.Collections.Generic.IEnumerable<string>, System.Threading.CancellationToken)
+  fullName.vb: BridgingIT.DevKit.Infrastructure.EntityFramework.BlobDimensionNameResolver(Of TContext).ResolveForReadAsync(TContext, String, System.Collections.Generic.IEnumerable(Of String), System.Threading.CancellationToken)
+  nameWithType: BlobDimensionNameResolver<TContext>.ResolveForReadAsync(TContext, string, IEnumerable<string>, CancellationToken)
+  nameWithType.vb: BlobDimensionNameResolver(Of TContext).ResolveForReadAsync(TContext, String, IEnumerable(Of String), CancellationToken)
+- uid: BridgingIT.DevKit.Infrastructure.EntityFramework.BlobDimensionNameResolver`1.ResolveForReadAsync*
+  name: ResolveForReadAsync
+  href: obj/api/BridgingIT.DevKit.Infrastructure.EntityFramework.BlobDimensionNameResolver-1.html#BridgingIT_DevKit_Infrastructure_EntityFramework_BlobDimensionNameResolver_1_ResolveForReadAsync_
+  commentId: Overload:BridgingIT.DevKit.Infrastructure.EntityFramework.BlobDimensionNameResolver`1.ResolveForReadAsync
+  fullName: BridgingIT.DevKit.Infrastructure.EntityFramework.BlobDimensionNameResolver<TContext>.ResolveForReadAsync
+  fullName.vb: BridgingIT.DevKit.Infrastructure.EntityFramework.BlobDimensionNameResolver(Of TContext).ResolveForReadAsync
+  nameWithType: BlobDimensionNameResolver<TContext>.ResolveForReadAsync
+  nameWithType.vb: BlobDimensionNameResolver(Of TContext).ResolveForReadAsync
+- uid: BridgingIT.DevKit.Infrastructure.EntityFramework.BlobDimensionNameResolver`1.ResolveForWriteAsync(`0,System.String,System.Collections.Generic.IEnumerable{System.String},BridgingIT.DevKit.Infrastructure.EntityFramework.BlobDimensionMutationSession,System.Threading.CancellationToken)
+  name: ResolveForWriteAsync(TContext, string, IEnumerable<string>, BlobDimensionMutationSession, CancellationToken)
+  href: obj/api/BridgingIT.DevKit.Infrastructure.EntityFramework.BlobDimensionNameResolver-1.html#BridgingIT_DevKit_Infrastructure_EntityFramework_BlobDimensionNameResolver_1_ResolveForWriteAsync__0_System_String_System_Collections_Generic_IEnumerable_System_String__BridgingIT_DevKit_Infrastructure_EntityFramework_BlobDimensionMutationSession_System_Threading_CancellationToken_
+  commentId: M:BridgingIT.DevKit.Infrastructure.EntityFramework.BlobDimensionNameResolver`1.ResolveForWriteAsync(`0,System.String,System.Collections.Generic.IEnumerable{System.String},BridgingIT.DevKit.Infrastructure.EntityFramework.BlobDimensionMutationSession,System.Threading.CancellationToken)
+  name.vb: ResolveForWriteAsync(TContext, String, IEnumerable(Of String), BlobDimensionMutationSession, CancellationToken)
+  fullName: BridgingIT.DevKit.Infrastructure.EntityFramework.BlobDimensionNameResolver<TContext>.ResolveForWriteAsync(TContext, string, System.Collections.Generic.IEnumerable<string>, BridgingIT.DevKit.Infrastructure.EntityFramework.BlobDimensionMutationSession, System.Threading.CancellationToken)
+  fullName.vb: BridgingIT.DevKit.Infrastructure.EntityFramework.BlobDimensionNameResolver(Of TContext).ResolveForWriteAsync(TContext, String, System.Collections.Generic.IEnumerable(Of String), BridgingIT.DevKit.Infrastructure.EntityFramework.BlobDimensionMutationSession, System.Threading.CancellationToken)
+  nameWithType: BlobDimensionNameResolver<TContext>.ResolveForWriteAsync(TContext, string, IEnumerable<string>, BlobDimensionMutationSession, CancellationToken)
+  nameWithType.vb: BlobDimensionNameResolver(Of TContext).ResolveForWriteAsync(TContext, String, IEnumerable(Of String), BlobDimensionMutationSession, CancellationToken)
+- uid: BridgingIT.DevKit.Infrastructure.EntityFramework.BlobDimensionNameResolver`1.ResolveForWriteAsync*
+  name: ResolveForWriteAsync
+  href: obj/api/BridgingIT.DevKit.Infrastructure.EntityFramework.BlobDimensionNameResolver-1.html#BridgingIT_DevKit_Infrastructure_EntityFramework_BlobDimensionNameResolver_1_ResolveForWriteAsync_
+  commentId: Overload:BridgingIT.DevKit.Infrastructure.EntityFramework.BlobDimensionNameResolver`1.ResolveForWriteAsync
+  fullName: BridgingIT.DevKit.Infrastructure.EntityFramework.BlobDimensionNameResolver<TContext>.ResolveForWriteAsync
+  fullName.vb: BridgingIT.DevKit.Infrastructure.EntityFramework.BlobDimensionNameResolver(Of TContext).ResolveForWriteAsync
+  nameWithType: BlobDimensionNameResolver<TContext>.ResolveForWriteAsync
+  nameWithType.vb: BlobDimensionNameResolver(Of TContext).ResolveForWriteAsync
+- uid: BridgingIT.DevKit.Infrastructure.EntityFramework.BlobDimensionQueryTranslator
+  name: BlobDimensionQueryTranslator
+  href: obj/api/BridgingIT.DevKit.Infrastructure.EntityFramework.BlobDimensionQueryTranslator.html
+  commentId: T:BridgingIT.DevKit.Infrastructure.EntityFramework.BlobDimensionQueryTranslator
+  fullName: BridgingIT.DevKit.Infrastructure.EntityFramework.BlobDimensionQueryTranslator
+  nameWithType: BlobDimensionQueryTranslator
+- uid: BridgingIT.DevKit.Infrastructure.EntityFramework.BlobDimensionQueryTranslator.ApplyAsync*
+  name: ApplyAsync
+  href: obj/api/BridgingIT.DevKit.Infrastructure.EntityFramework.BlobDimensionQueryTranslator.html#BridgingIT_DevKit_Infrastructure_EntityFramework_BlobDimensionQueryTranslator_ApplyAsync_
+  commentId: Overload:BridgingIT.DevKit.Infrastructure.EntityFramework.BlobDimensionQueryTranslator.ApplyAsync
+  fullName: BridgingIT.DevKit.Infrastructure.EntityFramework.BlobDimensionQueryTranslator.ApplyAsync
+  nameWithType: BlobDimensionQueryTranslator.ApplyAsync
+- uid: BridgingIT.DevKit.Infrastructure.EntityFramework.BlobDimensionQueryTranslator.ApplyAsync``1(``0,System.Linq.IQueryable{BridgingIT.DevKit.Infrastructure.EntityFramework.StorageBlob},System.String,BridgingIT.DevKit.Application.Storage.BlobDimensionFilter,BridgingIT.DevKit.Application.Storage.BlobDimensionCapabilities,BridgingIT.DevKit.Infrastructure.EntityFramework.BlobDimensionNameResolver{``0},System.Threading.CancellationToken)
+  name: ApplyAsync<TContext>(TContext, IQueryable<StorageBlob>, string, BlobDimensionFilter, BlobDimensionCapabilities, BlobDimensionNameResolver<TContext>, CancellationToken)
+  href: obj/api/BridgingIT.DevKit.Infrastructure.EntityFramework.BlobDimensionQueryTranslator.html#BridgingIT_DevKit_Infrastructure_EntityFramework_BlobDimensionQueryTranslator_ApplyAsync__1___0_System_Linq_IQueryable_BridgingIT_DevKit_Infrastructure_EntityFramework_StorageBlob__System_String_BridgingIT_DevKit_Application_Storage_BlobDimensionFilter_BridgingIT_DevKit_Application_Storage_BlobDimensionCapabilities_BridgingIT_DevKit_Infrastructure_EntityFramework_BlobDimensionNameResolver___0__System_Threading_CancellationToken_
+  commentId: M:BridgingIT.DevKit.Infrastructure.EntityFramework.BlobDimensionQueryTranslator.ApplyAsync``1(``0,System.Linq.IQueryable{BridgingIT.DevKit.Infrastructure.EntityFramework.StorageBlob},System.String,BridgingIT.DevKit.Application.Storage.BlobDimensionFilter,BridgingIT.DevKit.Application.Storage.BlobDimensionCapabilities,BridgingIT.DevKit.Infrastructure.EntityFramework.BlobDimensionNameResolver{``0},System.Threading.CancellationToken)
+  name.vb: ApplyAsync(Of TContext)(TContext, IQueryable(Of StorageBlob), String, BlobDimensionFilter, BlobDimensionCapabilities, BlobDimensionNameResolver(Of TContext), CancellationToken)
+  fullName: BridgingIT.DevKit.Infrastructure.EntityFramework.BlobDimensionQueryTranslator.ApplyAsync<TContext>(TContext, System.Linq.IQueryable<BridgingIT.DevKit.Infrastructure.EntityFramework.StorageBlob>, string, BridgingIT.DevKit.Application.Storage.BlobDimensionFilter, BridgingIT.DevKit.Application.Storage.BlobDimensionCapabilities, BridgingIT.DevKit.Infrastructure.EntityFramework.BlobDimensionNameResolver<TContext>, System.Threading.CancellationToken)
+  fullName.vb: BridgingIT.DevKit.Infrastructure.EntityFramework.BlobDimensionQueryTranslator.ApplyAsync(Of TContext)(TContext, System.Linq.IQueryable(Of BridgingIT.DevKit.Infrastructure.EntityFramework.StorageBlob), String, BridgingIT.DevKit.Application.Storage.BlobDimensionFilter, BridgingIT.DevKit.Application.Storage.BlobDimensionCapabilities, BridgingIT.DevKit.Infrastructure.EntityFramework.BlobDimensionNameResolver(Of TContext), System.Threading.CancellationToken)
+  nameWithType: BlobDimensionQueryTranslator.ApplyAsync<TContext>(TContext, IQueryable<StorageBlob>, string, BlobDimensionFilter, BlobDimensionCapabilities, BlobDimensionNameResolver<TContext>, CancellationToken)
+  nameWithType.vb: BlobDimensionQueryTranslator.ApplyAsync(Of TContext)(TContext, IQueryable(Of StorageBlob), String, BlobDimensionFilter, BlobDimensionCapabilities, BlobDimensionNameResolver(Of TContext), CancellationToken)
+- uid: BridgingIT.DevKit.Infrastructure.EntityFramework.BlobDimensionQueryTranslator.BuildCandidates(Microsoft.EntityFrameworkCore.DbContext,System.Linq.IQueryable{System.Guid},BridgingIT.DevKit.Application.Storage.BlobDimensionFilter,System.Collections.Generic.IReadOnlyDictionary{System.String,System.Int64})
+  name: BuildCandidates(DbContext, IQueryable<Guid>, BlobDimensionFilter, IReadOnlyDictionary<string, long>)
+  href: obj/api/BridgingIT.DevKit.Infrastructure.EntityFramework.BlobDimensionQueryTranslator.html#BridgingIT_DevKit_Infrastructure_EntityFramework_BlobDimensionQueryTranslator_BuildCandidates_Microsoft_EntityFrameworkCore_DbContext_System_Linq_IQueryable_System_Guid__BridgingIT_DevKit_Application_Storage_BlobDimensionFilter_System_Collections_Generic_IReadOnlyDictionary_System_String_System_Int64__
+  commentId: M:BridgingIT.DevKit.Infrastructure.EntityFramework.BlobDimensionQueryTranslator.BuildCandidates(Microsoft.EntityFrameworkCore.DbContext,System.Linq.IQueryable{System.Guid},BridgingIT.DevKit.Application.Storage.BlobDimensionFilter,System.Collections.Generic.IReadOnlyDictionary{System.String,System.Int64})
+  name.vb: BuildCandidates(DbContext, IQueryable(Of Guid), BlobDimensionFilter, IReadOnlyDictionary(Of String, Long))
+  fullName: BridgingIT.DevKit.Infrastructure.EntityFramework.BlobDimensionQueryTranslator.BuildCandidates(Microsoft.EntityFrameworkCore.DbContext, System.Linq.IQueryable<System.Guid>, BridgingIT.DevKit.Application.Storage.BlobDimensionFilter, System.Collections.Generic.IReadOnlyDictionary<string, long>)
+  fullName.vb: BridgingIT.DevKit.Infrastructure.EntityFramework.BlobDimensionQueryTranslator.BuildCandidates(Microsoft.EntityFrameworkCore.DbContext, System.Linq.IQueryable(Of System.Guid), BridgingIT.DevKit.Application.Storage.BlobDimensionFilter, System.Collections.Generic.IReadOnlyDictionary(Of String, Long))
+  nameWithType: BlobDimensionQueryTranslator.BuildCandidates(DbContext, IQueryable<Guid>, BlobDimensionFilter, IReadOnlyDictionary<string, long>)
+  nameWithType.vb: BlobDimensionQueryTranslator.BuildCandidates(DbContext, IQueryable(Of Guid), BlobDimensionFilter, IReadOnlyDictionary(Of String, Long))
+- uid: BridgingIT.DevKit.Infrastructure.EntityFramework.BlobDimensionQueryTranslator.BuildCandidates*
+  name: BuildCandidates
+  href: obj/api/BridgingIT.DevKit.Infrastructure.EntityFramework.BlobDimensionQueryTranslator.html#BridgingIT_DevKit_Infrastructure_EntityFramework_BlobDimensionQueryTranslator_BuildCandidates_
+  commentId: Overload:BridgingIT.DevKit.Infrastructure.EntityFramework.BlobDimensionQueryTranslator.BuildCandidates
+  fullName: BridgingIT.DevKit.Infrastructure.EntityFramework.BlobDimensionQueryTranslator.BuildCandidates
+  nameWithType: BlobDimensionQueryTranslator.BuildCandidates
 - uid: BridgingIT.DevKit.Infrastructure.EntityFramework.BlobDimensionValueEncoding
   name: BlobDimensionValueEncoding
   href: obj/api/BridgingIT.DevKit.Infrastructure.EntityFramework.BlobDimensionValueEncoding.html
@@ -361446,6 +362171,150 @@ references:
   commentId: Overload:BridgingIT.DevKit.Infrastructure.EntityFramework.BlobDimensionValueEncoding.Encode
   fullName: BridgingIT.DevKit.Infrastructure.EntityFramework.BlobDimensionValueEncoding.Encode
   nameWithType: BlobDimensionValueEncoding.Encode
+- uid: BridgingIT.DevKit.Infrastructure.EntityFramework.BlobRowIdConfiguration
+  name: BlobRowIdConfiguration
+  href: obj/api/BridgingIT.DevKit.Infrastructure.EntityFramework.BlobRowIdConfiguration.html
+  commentId: T:BridgingIT.DevKit.Infrastructure.EntityFramework.BlobRowIdConfiguration
+  fullName: BridgingIT.DevKit.Infrastructure.EntityFramework.BlobRowIdConfiguration
+  nameWithType: BlobRowIdConfiguration
+- uid: BridgingIT.DevKit.Infrastructure.EntityFramework.BlobRowIdConfiguration.Chunk
+  name: BlobRowIdConfiguration.Chunk
+  href: obj/api/BridgingIT.DevKit.Infrastructure.EntityFramework.BlobRowIdConfiguration.Chunk.html
+  commentId: T:BridgingIT.DevKit.Infrastructure.EntityFramework.BlobRowIdConfiguration.Chunk
+  fullName: BridgingIT.DevKit.Infrastructure.EntityFramework.BlobRowIdConfiguration.Chunk
+  nameWithType: BlobRowIdConfiguration.Chunk
+- uid: BridgingIT.DevKit.Infrastructure.EntityFramework.BlobRowIdConfiguration.Chunk.#ctor
+  name: Chunk()
+  href: obj/api/BridgingIT.DevKit.Infrastructure.EntityFramework.BlobRowIdConfiguration.Chunk.html#BridgingIT_DevKit_Infrastructure_EntityFramework_BlobRowIdConfiguration_Chunk__ctor
+  commentId: M:BridgingIT.DevKit.Infrastructure.EntityFramework.BlobRowIdConfiguration.Chunk.#ctor
+  name.vb: New()
+  fullName: BridgingIT.DevKit.Infrastructure.EntityFramework.BlobRowIdConfiguration.Chunk.Chunk()
+  fullName.vb: BridgingIT.DevKit.Infrastructure.EntityFramework.BlobRowIdConfiguration.Chunk.New()
+  nameWithType: BlobRowIdConfiguration.Chunk.Chunk()
+  nameWithType.vb: BlobRowIdConfiguration.Chunk.New()
+- uid: BridgingIT.DevKit.Infrastructure.EntityFramework.BlobRowIdConfiguration.Chunk.#ctor*
+  name: Chunk
+  href: obj/api/BridgingIT.DevKit.Infrastructure.EntityFramework.BlobRowIdConfiguration.Chunk.html#BridgingIT_DevKit_Infrastructure_EntityFramework_BlobRowIdConfiguration_Chunk__ctor_
+  commentId: Overload:BridgingIT.DevKit.Infrastructure.EntityFramework.BlobRowIdConfiguration.Chunk.#ctor
+  name.vb: New
+  fullName: BridgingIT.DevKit.Infrastructure.EntityFramework.BlobRowIdConfiguration.Chunk.Chunk
+  fullName.vb: BridgingIT.DevKit.Infrastructure.EntityFramework.BlobRowIdConfiguration.Chunk.New
+  nameWithType: BlobRowIdConfiguration.Chunk.Chunk
+  nameWithType.vb: BlobRowIdConfiguration.Chunk.New
+- uid: BridgingIT.DevKit.Infrastructure.EntityFramework.BlobRowIdConfiguration.Chunk.Configure(Microsoft.EntityFrameworkCore.Metadata.Builders.EntityTypeBuilder{BridgingIT.DevKit.Infrastructure.EntityFramework.StorageBlobChunk})
+  name: Configure(EntityTypeBuilder<StorageBlobChunk>)
+  href: obj/api/BridgingIT.DevKit.Infrastructure.EntityFramework.BlobRowIdConfiguration.Chunk.html#BridgingIT_DevKit_Infrastructure_EntityFramework_BlobRowIdConfiguration_Chunk_Configure_Microsoft_EntityFrameworkCore_Metadata_Builders_EntityTypeBuilder_BridgingIT_DevKit_Infrastructure_EntityFramework_StorageBlobChunk__
+  commentId: M:BridgingIT.DevKit.Infrastructure.EntityFramework.BlobRowIdConfiguration.Chunk.Configure(Microsoft.EntityFrameworkCore.Metadata.Builders.EntityTypeBuilder{BridgingIT.DevKit.Infrastructure.EntityFramework.StorageBlobChunk})
+  name.vb: Configure(EntityTypeBuilder(Of StorageBlobChunk))
+  fullName: BridgingIT.DevKit.Infrastructure.EntityFramework.BlobRowIdConfiguration.Chunk.Configure(Microsoft.EntityFrameworkCore.Metadata.Builders.EntityTypeBuilder<BridgingIT.DevKit.Infrastructure.EntityFramework.StorageBlobChunk>)
+  fullName.vb: BridgingIT.DevKit.Infrastructure.EntityFramework.BlobRowIdConfiguration.Chunk.Configure(Microsoft.EntityFrameworkCore.Metadata.Builders.EntityTypeBuilder(Of BridgingIT.DevKit.Infrastructure.EntityFramework.StorageBlobChunk))
+  nameWithType: BlobRowIdConfiguration.Chunk.Configure(EntityTypeBuilder<StorageBlobChunk>)
+  nameWithType.vb: BlobRowIdConfiguration.Chunk.Configure(EntityTypeBuilder(Of StorageBlobChunk))
+- uid: BridgingIT.DevKit.Infrastructure.EntityFramework.BlobRowIdConfiguration.Chunk.Configure*
+  name: Configure
+  href: obj/api/BridgingIT.DevKit.Infrastructure.EntityFramework.BlobRowIdConfiguration.Chunk.html#BridgingIT_DevKit_Infrastructure_EntityFramework_BlobRowIdConfiguration_Chunk_Configure_
+  commentId: Overload:BridgingIT.DevKit.Infrastructure.EntityFramework.BlobRowIdConfiguration.Chunk.Configure
+  fullName: BridgingIT.DevKit.Infrastructure.EntityFramework.BlobRowIdConfiguration.Chunk.Configure
+  nameWithType: BlobRowIdConfiguration.Chunk.Configure
+- uid: BridgingIT.DevKit.Infrastructure.EntityFramework.BlobRowIdConfiguration.Dimension
+  name: BlobRowIdConfiguration.Dimension
+  href: obj/api/BridgingIT.DevKit.Infrastructure.EntityFramework.BlobRowIdConfiguration.Dimension.html
+  commentId: T:BridgingIT.DevKit.Infrastructure.EntityFramework.BlobRowIdConfiguration.Dimension
+  fullName: BridgingIT.DevKit.Infrastructure.EntityFramework.BlobRowIdConfiguration.Dimension
+  nameWithType: BlobRowIdConfiguration.Dimension
+- uid: BridgingIT.DevKit.Infrastructure.EntityFramework.BlobRowIdConfiguration.Dimension.#ctor
+  name: Dimension()
+  href: obj/api/BridgingIT.DevKit.Infrastructure.EntityFramework.BlobRowIdConfiguration.Dimension.html#BridgingIT_DevKit_Infrastructure_EntityFramework_BlobRowIdConfiguration_Dimension__ctor
+  commentId: M:BridgingIT.DevKit.Infrastructure.EntityFramework.BlobRowIdConfiguration.Dimension.#ctor
+  name.vb: New()
+  fullName: BridgingIT.DevKit.Infrastructure.EntityFramework.BlobRowIdConfiguration.Dimension.Dimension()
+  fullName.vb: BridgingIT.DevKit.Infrastructure.EntityFramework.BlobRowIdConfiguration.Dimension.New()
+  nameWithType: BlobRowIdConfiguration.Dimension.Dimension()
+  nameWithType.vb: BlobRowIdConfiguration.Dimension.New()
+- uid: BridgingIT.DevKit.Infrastructure.EntityFramework.BlobRowIdConfiguration.Dimension.#ctor*
+  name: Dimension
+  href: obj/api/BridgingIT.DevKit.Infrastructure.EntityFramework.BlobRowIdConfiguration.Dimension.html#BridgingIT_DevKit_Infrastructure_EntityFramework_BlobRowIdConfiguration_Dimension__ctor_
+  commentId: Overload:BridgingIT.DevKit.Infrastructure.EntityFramework.BlobRowIdConfiguration.Dimension.#ctor
+  name.vb: New
+  fullName: BridgingIT.DevKit.Infrastructure.EntityFramework.BlobRowIdConfiguration.Dimension.Dimension
+  fullName.vb: BridgingIT.DevKit.Infrastructure.EntityFramework.BlobRowIdConfiguration.Dimension.New
+  nameWithType: BlobRowIdConfiguration.Dimension.Dimension
+  nameWithType.vb: BlobRowIdConfiguration.Dimension.New
+- uid: BridgingIT.DevKit.Infrastructure.EntityFramework.BlobRowIdConfiguration.Dimension.Configure(Microsoft.EntityFrameworkCore.Metadata.Builders.EntityTypeBuilder{BridgingIT.DevKit.Infrastructure.EntityFramework.StorageBlobDimension})
+  name: Configure(EntityTypeBuilder<StorageBlobDimension>)
+  href: obj/api/BridgingIT.DevKit.Infrastructure.EntityFramework.BlobRowIdConfiguration.Dimension.html#BridgingIT_DevKit_Infrastructure_EntityFramework_BlobRowIdConfiguration_Dimension_Configure_Microsoft_EntityFrameworkCore_Metadata_Builders_EntityTypeBuilder_BridgingIT_DevKit_Infrastructure_EntityFramework_StorageBlobDimension__
+  commentId: M:BridgingIT.DevKit.Infrastructure.EntityFramework.BlobRowIdConfiguration.Dimension.Configure(Microsoft.EntityFrameworkCore.Metadata.Builders.EntityTypeBuilder{BridgingIT.DevKit.Infrastructure.EntityFramework.StorageBlobDimension})
+  name.vb: Configure(EntityTypeBuilder(Of StorageBlobDimension))
+  fullName: BridgingIT.DevKit.Infrastructure.EntityFramework.BlobRowIdConfiguration.Dimension.Configure(Microsoft.EntityFrameworkCore.Metadata.Builders.EntityTypeBuilder<BridgingIT.DevKit.Infrastructure.EntityFramework.StorageBlobDimension>)
+  fullName.vb: BridgingIT.DevKit.Infrastructure.EntityFramework.BlobRowIdConfiguration.Dimension.Configure(Microsoft.EntityFrameworkCore.Metadata.Builders.EntityTypeBuilder(Of BridgingIT.DevKit.Infrastructure.EntityFramework.StorageBlobDimension))
+  nameWithType: BlobRowIdConfiguration.Dimension.Configure(EntityTypeBuilder<StorageBlobDimension>)
+  nameWithType.vb: BlobRowIdConfiguration.Dimension.Configure(EntityTypeBuilder(Of StorageBlobDimension))
+- uid: BridgingIT.DevKit.Infrastructure.EntityFramework.BlobRowIdConfiguration.Dimension.Configure*
+  name: Configure
+  href: obj/api/BridgingIT.DevKit.Infrastructure.EntityFramework.BlobRowIdConfiguration.Dimension.html#BridgingIT_DevKit_Infrastructure_EntityFramework_BlobRowIdConfiguration_Dimension_Configure_
+  commentId: Overload:BridgingIT.DevKit.Infrastructure.EntityFramework.BlobRowIdConfiguration.Dimension.Configure
+  fullName: BridgingIT.DevKit.Infrastructure.EntityFramework.BlobRowIdConfiguration.Dimension.Configure
+  nameWithType: BlobRowIdConfiguration.Dimension.Configure
+- uid: BridgingIT.DevKit.Infrastructure.EntityFramework.BlobRowIdConfiguration.Owner
+  name: BlobRowIdConfiguration.Owner
+  href: obj/api/BridgingIT.DevKit.Infrastructure.EntityFramework.BlobRowIdConfiguration.Owner.html
+  commentId: T:BridgingIT.DevKit.Infrastructure.EntityFramework.BlobRowIdConfiguration.Owner
+  fullName: BridgingIT.DevKit.Infrastructure.EntityFramework.BlobRowIdConfiguration.Owner
+  nameWithType: BlobRowIdConfiguration.Owner
+- uid: BridgingIT.DevKit.Infrastructure.EntityFramework.BlobRowIdConfiguration.Owner.#ctor
+  name: Owner()
+  href: obj/api/BridgingIT.DevKit.Infrastructure.EntityFramework.BlobRowIdConfiguration.Owner.html#BridgingIT_DevKit_Infrastructure_EntityFramework_BlobRowIdConfiguration_Owner__ctor
+  commentId: M:BridgingIT.DevKit.Infrastructure.EntityFramework.BlobRowIdConfiguration.Owner.#ctor
+  name.vb: New()
+  fullName: BridgingIT.DevKit.Infrastructure.EntityFramework.BlobRowIdConfiguration.Owner.Owner()
+  fullName.vb: BridgingIT.DevKit.Infrastructure.EntityFramework.BlobRowIdConfiguration.Owner.New()
+  nameWithType: BlobRowIdConfiguration.Owner.Owner()
+  nameWithType.vb: BlobRowIdConfiguration.Owner.New()
+- uid: BridgingIT.DevKit.Infrastructure.EntityFramework.BlobRowIdConfiguration.Owner.#ctor*
+  name: Owner
+  href: obj/api/BridgingIT.DevKit.Infrastructure.EntityFramework.BlobRowIdConfiguration.Owner.html#BridgingIT_DevKit_Infrastructure_EntityFramework_BlobRowIdConfiguration_Owner__ctor_
+  commentId: Overload:BridgingIT.DevKit.Infrastructure.EntityFramework.BlobRowIdConfiguration.Owner.#ctor
+  name.vb: New
+  fullName: BridgingIT.DevKit.Infrastructure.EntityFramework.BlobRowIdConfiguration.Owner.Owner
+  fullName.vb: BridgingIT.DevKit.Infrastructure.EntityFramework.BlobRowIdConfiguration.Owner.New
+  nameWithType: BlobRowIdConfiguration.Owner.Owner
+  nameWithType.vb: BlobRowIdConfiguration.Owner.New
+- uid: BridgingIT.DevKit.Infrastructure.EntityFramework.BlobRowIdConfiguration.Owner.Configure(Microsoft.EntityFrameworkCore.Metadata.Builders.EntityTypeBuilder{BridgingIT.DevKit.Infrastructure.EntityFramework.StorageBlob})
+  name: Configure(EntityTypeBuilder<StorageBlob>)
+  href: obj/api/BridgingIT.DevKit.Infrastructure.EntityFramework.BlobRowIdConfiguration.Owner.html#BridgingIT_DevKit_Infrastructure_EntityFramework_BlobRowIdConfiguration_Owner_Configure_Microsoft_EntityFrameworkCore_Metadata_Builders_EntityTypeBuilder_BridgingIT_DevKit_Infrastructure_EntityFramework_StorageBlob__
+  commentId: M:BridgingIT.DevKit.Infrastructure.EntityFramework.BlobRowIdConfiguration.Owner.Configure(Microsoft.EntityFrameworkCore.Metadata.Builders.EntityTypeBuilder{BridgingIT.DevKit.Infrastructure.EntityFramework.StorageBlob})
+  name.vb: Configure(EntityTypeBuilder(Of StorageBlob))
+  fullName: BridgingIT.DevKit.Infrastructure.EntityFramework.BlobRowIdConfiguration.Owner.Configure(Microsoft.EntityFrameworkCore.Metadata.Builders.EntityTypeBuilder<BridgingIT.DevKit.Infrastructure.EntityFramework.StorageBlob>)
+  fullName.vb: BridgingIT.DevKit.Infrastructure.EntityFramework.BlobRowIdConfiguration.Owner.Configure(Microsoft.EntityFrameworkCore.Metadata.Builders.EntityTypeBuilder(Of BridgingIT.DevKit.Infrastructure.EntityFramework.StorageBlob))
+  nameWithType: BlobRowIdConfiguration.Owner.Configure(EntityTypeBuilder<StorageBlob>)
+  nameWithType.vb: BlobRowIdConfiguration.Owner.Configure(EntityTypeBuilder(Of StorageBlob))
+- uid: BridgingIT.DevKit.Infrastructure.EntityFramework.BlobRowIdConfiguration.Owner.Configure*
+  name: Configure
+  href: obj/api/BridgingIT.DevKit.Infrastructure.EntityFramework.BlobRowIdConfiguration.Owner.html#BridgingIT_DevKit_Infrastructure_EntityFramework_BlobRowIdConfiguration_Owner_Configure_
+  commentId: Overload:BridgingIT.DevKit.Infrastructure.EntityFramework.BlobRowIdConfiguration.Owner.Configure
+  fullName: BridgingIT.DevKit.Infrastructure.EntityFramework.BlobRowIdConfiguration.Owner.Configure
+  nameWithType: BlobRowIdConfiguration.Owner.Configure
+- uid: BridgingIT.DevKit.Infrastructure.EntityFramework.BlobRowIdModelBuilderExtensions
+  name: BlobRowIdModelBuilderExtensions
+  href: obj/api/BridgingIT.DevKit.Infrastructure.EntityFramework.BlobRowIdModelBuilderExtensions.html
+  commentId: T:BridgingIT.DevKit.Infrastructure.EntityFramework.BlobRowIdModelBuilderExtensions
+  fullName: BridgingIT.DevKit.Infrastructure.EntityFramework.BlobRowIdModelBuilderExtensions
+  nameWithType: BlobRowIdModelBuilderExtensions
+- uid: BridgingIT.DevKit.Infrastructure.EntityFramework.BlobRowIdModelBuilderExtensions.UseBlobRowIdCollation(Microsoft.EntityFrameworkCore.ModelBuilder,System.String)
+  name: UseBlobRowIdCollation(ModelBuilder, string)
+  href: obj/api/BridgingIT.DevKit.Infrastructure.EntityFramework.BlobRowIdModelBuilderExtensions.html#BridgingIT_DevKit_Infrastructure_EntityFramework_BlobRowIdModelBuilderExtensions_UseBlobRowIdCollation_Microsoft_EntityFrameworkCore_ModelBuilder_System_String_
+  commentId: M:BridgingIT.DevKit.Infrastructure.EntityFramework.BlobRowIdModelBuilderExtensions.UseBlobRowIdCollation(Microsoft.EntityFrameworkCore.ModelBuilder,System.String)
+  name.vb: UseBlobRowIdCollation(ModelBuilder, String)
+  fullName: BridgingIT.DevKit.Infrastructure.EntityFramework.BlobRowIdModelBuilderExtensions.UseBlobRowIdCollation(Microsoft.EntityFrameworkCore.ModelBuilder, string)
+  fullName.vb: BridgingIT.DevKit.Infrastructure.EntityFramework.BlobRowIdModelBuilderExtensions.UseBlobRowIdCollation(Microsoft.EntityFrameworkCore.ModelBuilder, String)
+  nameWithType: BlobRowIdModelBuilderExtensions.UseBlobRowIdCollation(ModelBuilder, string)
+  nameWithType.vb: BlobRowIdModelBuilderExtensions.UseBlobRowIdCollation(ModelBuilder, String)
+- uid: BridgingIT.DevKit.Infrastructure.EntityFramework.BlobRowIdModelBuilderExtensions.UseBlobRowIdCollation*
+  name: UseBlobRowIdCollation
+  href: obj/api/BridgingIT.DevKit.Infrastructure.EntityFramework.BlobRowIdModelBuilderExtensions.html#BridgingIT_DevKit_Infrastructure_EntityFramework_BlobRowIdModelBuilderExtensions_UseBlobRowIdCollation_
+  commentId: Overload:BridgingIT.DevKit.Infrastructure.EntityFramework.BlobRowIdModelBuilderExtensions.UseBlobRowIdCollation
+  fullName: BridgingIT.DevKit.Infrastructure.EntityFramework.BlobRowIdModelBuilderExtensions.UseBlobRowIdCollation
+  nameWithType: BlobRowIdModelBuilderExtensions.UseBlobRowIdCollation
 - uid: BridgingIT.DevKit.Infrastructure.EntityFramework.Broadcasting
   name: BridgingIT.DevKit.Infrastructure.EntityFramework.Broadcasting
   href: obj/api/BridgingIT.DevKit.Infrastructure.EntityFramework.Broadcasting.html
@@ -370048,6 +370917,90 @@ references:
   commentId: Overload:BridgingIT.DevKit.Infrastructure.EntityFramework.DocumentDimensionValueEncoding.Encode
   fullName: BridgingIT.DevKit.Infrastructure.EntityFramework.DocumentDimensionValueEncoding.Encode
   nameWithType: DocumentDimensionValueEncoding.Encode
+- uid: BridgingIT.DevKit.Infrastructure.EntityFramework.DocumentRowIdConfiguration
+  name: DocumentRowIdConfiguration
+  href: obj/api/BridgingIT.DevKit.Infrastructure.EntityFramework.DocumentRowIdConfiguration.html
+  commentId: T:BridgingIT.DevKit.Infrastructure.EntityFramework.DocumentRowIdConfiguration
+  fullName: BridgingIT.DevKit.Infrastructure.EntityFramework.DocumentRowIdConfiguration
+  nameWithType: DocumentRowIdConfiguration
+- uid: BridgingIT.DevKit.Infrastructure.EntityFramework.DocumentRowIdConfiguration.Dimension
+  name: DocumentRowIdConfiguration.Dimension
+  href: obj/api/BridgingIT.DevKit.Infrastructure.EntityFramework.DocumentRowIdConfiguration.Dimension.html
+  commentId: T:BridgingIT.DevKit.Infrastructure.EntityFramework.DocumentRowIdConfiguration.Dimension
+  fullName: BridgingIT.DevKit.Infrastructure.EntityFramework.DocumentRowIdConfiguration.Dimension
+  nameWithType: DocumentRowIdConfiguration.Dimension
+- uid: BridgingIT.DevKit.Infrastructure.EntityFramework.DocumentRowIdConfiguration.Dimension.#ctor
+  name: Dimension()
+  href: obj/api/BridgingIT.DevKit.Infrastructure.EntityFramework.DocumentRowIdConfiguration.Dimension.html#BridgingIT_DevKit_Infrastructure_EntityFramework_DocumentRowIdConfiguration_Dimension__ctor
+  commentId: M:BridgingIT.DevKit.Infrastructure.EntityFramework.DocumentRowIdConfiguration.Dimension.#ctor
+  name.vb: New()
+  fullName: BridgingIT.DevKit.Infrastructure.EntityFramework.DocumentRowIdConfiguration.Dimension.Dimension()
+  fullName.vb: BridgingIT.DevKit.Infrastructure.EntityFramework.DocumentRowIdConfiguration.Dimension.New()
+  nameWithType: DocumentRowIdConfiguration.Dimension.Dimension()
+  nameWithType.vb: DocumentRowIdConfiguration.Dimension.New()
+- uid: BridgingIT.DevKit.Infrastructure.EntityFramework.DocumentRowIdConfiguration.Dimension.#ctor*
+  name: Dimension
+  href: obj/api/BridgingIT.DevKit.Infrastructure.EntityFramework.DocumentRowIdConfiguration.Dimension.html#BridgingIT_DevKit_Infrastructure_EntityFramework_DocumentRowIdConfiguration_Dimension__ctor_
+  commentId: Overload:BridgingIT.DevKit.Infrastructure.EntityFramework.DocumentRowIdConfiguration.Dimension.#ctor
+  name.vb: New
+  fullName: BridgingIT.DevKit.Infrastructure.EntityFramework.DocumentRowIdConfiguration.Dimension.Dimension
+  fullName.vb: BridgingIT.DevKit.Infrastructure.EntityFramework.DocumentRowIdConfiguration.Dimension.New
+  nameWithType: DocumentRowIdConfiguration.Dimension.Dimension
+  nameWithType.vb: DocumentRowIdConfiguration.Dimension.New
+- uid: BridgingIT.DevKit.Infrastructure.EntityFramework.DocumentRowIdConfiguration.Dimension.Configure(Microsoft.EntityFrameworkCore.Metadata.Builders.EntityTypeBuilder{BridgingIT.DevKit.Infrastructure.EntityFramework.StorageDocumentDimension})
+  name: Configure(EntityTypeBuilder<StorageDocumentDimension>)
+  href: obj/api/BridgingIT.DevKit.Infrastructure.EntityFramework.DocumentRowIdConfiguration.Dimension.html#BridgingIT_DevKit_Infrastructure_EntityFramework_DocumentRowIdConfiguration_Dimension_Configure_Microsoft_EntityFrameworkCore_Metadata_Builders_EntityTypeBuilder_BridgingIT_DevKit_Infrastructure_EntityFramework_StorageDocumentDimension__
+  commentId: M:BridgingIT.DevKit.Infrastructure.EntityFramework.DocumentRowIdConfiguration.Dimension.Configure(Microsoft.EntityFrameworkCore.Metadata.Builders.EntityTypeBuilder{BridgingIT.DevKit.Infrastructure.EntityFramework.StorageDocumentDimension})
+  name.vb: Configure(EntityTypeBuilder(Of StorageDocumentDimension))
+  fullName: BridgingIT.DevKit.Infrastructure.EntityFramework.DocumentRowIdConfiguration.Dimension.Configure(Microsoft.EntityFrameworkCore.Metadata.Builders.EntityTypeBuilder<BridgingIT.DevKit.Infrastructure.EntityFramework.StorageDocumentDimension>)
+  fullName.vb: BridgingIT.DevKit.Infrastructure.EntityFramework.DocumentRowIdConfiguration.Dimension.Configure(Microsoft.EntityFrameworkCore.Metadata.Builders.EntityTypeBuilder(Of BridgingIT.DevKit.Infrastructure.EntityFramework.StorageDocumentDimension))
+  nameWithType: DocumentRowIdConfiguration.Dimension.Configure(EntityTypeBuilder<StorageDocumentDimension>)
+  nameWithType.vb: DocumentRowIdConfiguration.Dimension.Configure(EntityTypeBuilder(Of StorageDocumentDimension))
+- uid: BridgingIT.DevKit.Infrastructure.EntityFramework.DocumentRowIdConfiguration.Dimension.Configure*
+  name: Configure
+  href: obj/api/BridgingIT.DevKit.Infrastructure.EntityFramework.DocumentRowIdConfiguration.Dimension.html#BridgingIT_DevKit_Infrastructure_EntityFramework_DocumentRowIdConfiguration_Dimension_Configure_
+  commentId: Overload:BridgingIT.DevKit.Infrastructure.EntityFramework.DocumentRowIdConfiguration.Dimension.Configure
+  fullName: BridgingIT.DevKit.Infrastructure.EntityFramework.DocumentRowIdConfiguration.Dimension.Configure
+  nameWithType: DocumentRowIdConfiguration.Dimension.Configure
+- uid: BridgingIT.DevKit.Infrastructure.EntityFramework.DocumentRowIdConfiguration.Owner
+  name: DocumentRowIdConfiguration.Owner
+  href: obj/api/BridgingIT.DevKit.Infrastructure.EntityFramework.DocumentRowIdConfiguration.Owner.html
+  commentId: T:BridgingIT.DevKit.Infrastructure.EntityFramework.DocumentRowIdConfiguration.Owner
+  fullName: BridgingIT.DevKit.Infrastructure.EntityFramework.DocumentRowIdConfiguration.Owner
+  nameWithType: DocumentRowIdConfiguration.Owner
+- uid: BridgingIT.DevKit.Infrastructure.EntityFramework.DocumentRowIdConfiguration.Owner.#ctor
+  name: Owner()
+  href: obj/api/BridgingIT.DevKit.Infrastructure.EntityFramework.DocumentRowIdConfiguration.Owner.html#BridgingIT_DevKit_Infrastructure_EntityFramework_DocumentRowIdConfiguration_Owner__ctor
+  commentId: M:BridgingIT.DevKit.Infrastructure.EntityFramework.DocumentRowIdConfiguration.Owner.#ctor
+  name.vb: New()
+  fullName: BridgingIT.DevKit.Infrastructure.EntityFramework.DocumentRowIdConfiguration.Owner.Owner()
+  fullName.vb: BridgingIT.DevKit.Infrastructure.EntityFramework.DocumentRowIdConfiguration.Owner.New()
+  nameWithType: DocumentRowIdConfiguration.Owner.Owner()
+  nameWithType.vb: DocumentRowIdConfiguration.Owner.New()
+- uid: BridgingIT.DevKit.Infrastructure.EntityFramework.DocumentRowIdConfiguration.Owner.#ctor*
+  name: Owner
+  href: obj/api/BridgingIT.DevKit.Infrastructure.EntityFramework.DocumentRowIdConfiguration.Owner.html#BridgingIT_DevKit_Infrastructure_EntityFramework_DocumentRowIdConfiguration_Owner__ctor_
+  commentId: Overload:BridgingIT.DevKit.Infrastructure.EntityFramework.DocumentRowIdConfiguration.Owner.#ctor
+  name.vb: New
+  fullName: BridgingIT.DevKit.Infrastructure.EntityFramework.DocumentRowIdConfiguration.Owner.Owner
+  fullName.vb: BridgingIT.DevKit.Infrastructure.EntityFramework.DocumentRowIdConfiguration.Owner.New
+  nameWithType: DocumentRowIdConfiguration.Owner.Owner
+  nameWithType.vb: DocumentRowIdConfiguration.Owner.New
+- uid: BridgingIT.DevKit.Infrastructure.EntityFramework.DocumentRowIdConfiguration.Owner.Configure(Microsoft.EntityFrameworkCore.Metadata.Builders.EntityTypeBuilder{BridgingIT.DevKit.Infrastructure.EntityFramework.StorageDocument})
+  name: Configure(EntityTypeBuilder<StorageDocument>)
+  href: obj/api/BridgingIT.DevKit.Infrastructure.EntityFramework.DocumentRowIdConfiguration.Owner.html#BridgingIT_DevKit_Infrastructure_EntityFramework_DocumentRowIdConfiguration_Owner_Configure_Microsoft_EntityFrameworkCore_Metadata_Builders_EntityTypeBuilder_BridgingIT_DevKit_Infrastructure_EntityFramework_StorageDocument__
+  commentId: M:BridgingIT.DevKit.Infrastructure.EntityFramework.DocumentRowIdConfiguration.Owner.Configure(Microsoft.EntityFrameworkCore.Metadata.Builders.EntityTypeBuilder{BridgingIT.DevKit.Infrastructure.EntityFramework.StorageDocument})
+  name.vb: Configure(EntityTypeBuilder(Of StorageDocument))
+  fullName: BridgingIT.DevKit.Infrastructure.EntityFramework.DocumentRowIdConfiguration.Owner.Configure(Microsoft.EntityFrameworkCore.Metadata.Builders.EntityTypeBuilder<BridgingIT.DevKit.Infrastructure.EntityFramework.StorageDocument>)
+  fullName.vb: BridgingIT.DevKit.Infrastructure.EntityFramework.DocumentRowIdConfiguration.Owner.Configure(Microsoft.EntityFrameworkCore.Metadata.Builders.EntityTypeBuilder(Of BridgingIT.DevKit.Infrastructure.EntityFramework.StorageDocument))
+  nameWithType: DocumentRowIdConfiguration.Owner.Configure(EntityTypeBuilder<StorageDocument>)
+  nameWithType.vb: DocumentRowIdConfiguration.Owner.Configure(EntityTypeBuilder(Of StorageDocument))
+- uid: BridgingIT.DevKit.Infrastructure.EntityFramework.DocumentRowIdConfiguration.Owner.Configure*
+  name: Configure
+  href: obj/api/BridgingIT.DevKit.Infrastructure.EntityFramework.DocumentRowIdConfiguration.Owner.html#BridgingIT_DevKit_Infrastructure_EntityFramework_DocumentRowIdConfiguration_Owner_Configure_
+  commentId: Overload:BridgingIT.DevKit.Infrastructure.EntityFramework.DocumentRowIdConfiguration.Owner.Configure
+  fullName: BridgingIT.DevKit.Infrastructure.EntityFramework.DocumentRowIdConfiguration.Owner.Configure
+  nameWithType: DocumentRowIdConfiguration.Owner.Configure
 - uid: BridgingIT.DevKit.Infrastructure.EntityFramework.DocumentStoreModelBuilderExtensions
   name: DocumentStoreModelBuilderExtensions
   href: obj/api/BridgingIT.DevKit.Infrastructure.EntityFramework.DocumentStoreModelBuilderExtensions.html
@@ -370078,6 +371031,21 @@ references:
   commentId: Overload:BridgingIT.DevKit.Infrastructure.EntityFramework.DocumentStoreModelBuilderExtensions.ExcludeDocumentDimensions
   fullName: BridgingIT.DevKit.Infrastructure.EntityFramework.DocumentStoreModelBuilderExtensions.ExcludeDocumentDimensions
   nameWithType: DocumentStoreModelBuilderExtensions.ExcludeDocumentDimensions
+- uid: BridgingIT.DevKit.Infrastructure.EntityFramework.DocumentStoreModelBuilderExtensions.UseDocumentRowIdCollation(Microsoft.EntityFrameworkCore.ModelBuilder,System.String)
+  name: UseDocumentRowIdCollation(ModelBuilder, string)
+  href: obj/api/BridgingIT.DevKit.Infrastructure.EntityFramework.DocumentStoreModelBuilderExtensions.html#BridgingIT_DevKit_Infrastructure_EntityFramework_DocumentStoreModelBuilderExtensions_UseDocumentRowIdCollation_Microsoft_EntityFrameworkCore_ModelBuilder_System_String_
+  commentId: M:BridgingIT.DevKit.Infrastructure.EntityFramework.DocumentStoreModelBuilderExtensions.UseDocumentRowIdCollation(Microsoft.EntityFrameworkCore.ModelBuilder,System.String)
+  name.vb: UseDocumentRowIdCollation(ModelBuilder, String)
+  fullName: BridgingIT.DevKit.Infrastructure.EntityFramework.DocumentStoreModelBuilderExtensions.UseDocumentRowIdCollation(Microsoft.EntityFrameworkCore.ModelBuilder, string)
+  fullName.vb: BridgingIT.DevKit.Infrastructure.EntityFramework.DocumentStoreModelBuilderExtensions.UseDocumentRowIdCollation(Microsoft.EntityFrameworkCore.ModelBuilder, String)
+  nameWithType: DocumentStoreModelBuilderExtensions.UseDocumentRowIdCollation(ModelBuilder, string)
+  nameWithType.vb: DocumentStoreModelBuilderExtensions.UseDocumentRowIdCollation(ModelBuilder, String)
+- uid: BridgingIT.DevKit.Infrastructure.EntityFramework.DocumentStoreModelBuilderExtensions.UseDocumentRowIdCollation*
+  name: UseDocumentRowIdCollation
+  href: obj/api/BridgingIT.DevKit.Infrastructure.EntityFramework.DocumentStoreModelBuilderExtensions.html#BridgingIT_DevKit_Infrastructure_EntityFramework_DocumentStoreModelBuilderExtensions_UseDocumentRowIdCollation_
+  commentId: Overload:BridgingIT.DevKit.Infrastructure.EntityFramework.DocumentStoreModelBuilderExtensions.UseDocumentRowIdCollation
+  fullName: BridgingIT.DevKit.Infrastructure.EntityFramework.DocumentStoreModelBuilderExtensions.UseDocumentRowIdCollation
+  nameWithType: DocumentStoreModelBuilderExtensions.UseDocumentRowIdCollation
 - uid: BridgingIT.DevKit.Infrastructure.EntityFramework.EntityFrameworkActiveEntityProviderOptionsBuilder`2
   name: EntityFrameworkActiveEntityProviderOptionsBuilder<TContext, TEntity>
   href: obj/api/BridgingIT.DevKit.Infrastructure.EntityFramework.EntityFrameworkActiveEntityProviderOptionsBuilder-2.html
@@ -397215,6 +398183,15 @@ references:
   fullName.vb: BridgingIT.DevKit.Infrastructure.EntityFramework.Storage.EntityFrameworkBlobStoreProvider(Of TContext).New(Microsoft.Extensions.DependencyInjection.IServiceScopeFactory, BridgingIT.DevKit.Application.Storage.BlobStoreOptions, BridgingIT.DevKit.Common.IContinuationTokenProtector, BridgingIT.DevKit.Common.IMetricsService, Microsoft.Extensions.Logging.ILoggerFactory, String)
   nameWithType: EntityFrameworkBlobStoreProvider<TContext>.EntityFrameworkBlobStoreProvider(IServiceScopeFactory, BlobStoreOptions, IContinuationTokenProtector, IMetricsService, ILoggerFactory, string)
   nameWithType.vb: EntityFrameworkBlobStoreProvider(Of TContext).New(IServiceScopeFactory, BlobStoreOptions, IContinuationTokenProtector, IMetricsService, ILoggerFactory, String)
+- uid: BridgingIT.DevKit.Infrastructure.EntityFramework.Storage.EntityFrameworkBlobStoreProvider`1.#ctor(Microsoft.Extensions.DependencyInjection.IServiceScopeFactory,BridgingIT.DevKit.Application.Storage.BlobStoreOptions,BridgingIT.DevKit.Common.IContinuationTokenProtector,BridgingIT.DevKit.Common.IMetricsService,Microsoft.Extensions.Logging.ILoggerFactory,System.String,System.TimeProvider)
+  name: EntityFrameworkBlobStoreProvider(IServiceScopeFactory, BlobStoreOptions, IContinuationTokenProtector, IMetricsService, ILoggerFactory, string, TimeProvider)
+  href: obj/api/BridgingIT.DevKit.Infrastructure.EntityFramework.Storage.EntityFrameworkBlobStoreProvider-1.html#BridgingIT_DevKit_Infrastructure_EntityFramework_Storage_EntityFrameworkBlobStoreProvider_1__ctor_Microsoft_Extensions_DependencyInjection_IServiceScopeFactory_BridgingIT_DevKit_Application_Storage_BlobStoreOptions_BridgingIT_DevKit_Common_IContinuationTokenProtector_BridgingIT_DevKit_Common_IMetricsService_Microsoft_Extensions_Logging_ILoggerFactory_System_String_System_TimeProvider_
+  commentId: M:BridgingIT.DevKit.Infrastructure.EntityFramework.Storage.EntityFrameworkBlobStoreProvider`1.#ctor(Microsoft.Extensions.DependencyInjection.IServiceScopeFactory,BridgingIT.DevKit.Application.Storage.BlobStoreOptions,BridgingIT.DevKit.Common.IContinuationTokenProtector,BridgingIT.DevKit.Common.IMetricsService,Microsoft.Extensions.Logging.ILoggerFactory,System.String,System.TimeProvider)
+  name.vb: New(IServiceScopeFactory, BlobStoreOptions, IContinuationTokenProtector, IMetricsService, ILoggerFactory, String, TimeProvider)
+  fullName: BridgingIT.DevKit.Infrastructure.EntityFramework.Storage.EntityFrameworkBlobStoreProvider<TContext>.EntityFrameworkBlobStoreProvider(Microsoft.Extensions.DependencyInjection.IServiceScopeFactory, BridgingIT.DevKit.Application.Storage.BlobStoreOptions, BridgingIT.DevKit.Common.IContinuationTokenProtector, BridgingIT.DevKit.Common.IMetricsService, Microsoft.Extensions.Logging.ILoggerFactory, string, System.TimeProvider)
+  fullName.vb: BridgingIT.DevKit.Infrastructure.EntityFramework.Storage.EntityFrameworkBlobStoreProvider(Of TContext).New(Microsoft.Extensions.DependencyInjection.IServiceScopeFactory, BridgingIT.DevKit.Application.Storage.BlobStoreOptions, BridgingIT.DevKit.Common.IContinuationTokenProtector, BridgingIT.DevKit.Common.IMetricsService, Microsoft.Extensions.Logging.ILoggerFactory, String, System.TimeProvider)
+  nameWithType: EntityFrameworkBlobStoreProvider<TContext>.EntityFrameworkBlobStoreProvider(IServiceScopeFactory, BlobStoreOptions, IContinuationTokenProtector, IMetricsService, ILoggerFactory, string, TimeProvider)
+  nameWithType.vb: EntityFrameworkBlobStoreProvider(Of TContext).New(IServiceScopeFactory, BlobStoreOptions, IContinuationTokenProtector, IMetricsService, ILoggerFactory, String, TimeProvider)
 - uid: BridgingIT.DevKit.Infrastructure.EntityFramework.Storage.EntityFrameworkBlobStoreProvider`1.#ctor*
   name: EntityFrameworkBlobStoreProvider
   href: obj/api/BridgingIT.DevKit.Infrastructure.EntityFramework.Storage.EntityFrameworkBlobStoreProvider-1.html#BridgingIT_DevKit_Infrastructure_EntityFramework_Storage_EntityFrameworkBlobStoreProvider_1__ctor_
@@ -398190,6 +399167,36 @@ references:
   commentId: Overload:BridgingIT.DevKit.Infrastructure.EntityFramework.Storage.IStoragePermalinkRegistryContext.StoragePermalinks
   fullName: BridgingIT.DevKit.Infrastructure.EntityFramework.Storage.IStoragePermalinkRegistryContext.StoragePermalinks
   nameWithType: IStoragePermalinkRegistryContext.StoragePermalinks
+- uid: BridgingIT.DevKit.Infrastructure.EntityFramework.Storage.SqlServerBlobErrors
+  name: SqlServerBlobErrors
+  href: obj/api/BridgingIT.DevKit.Infrastructure.EntityFramework.Storage.SqlServerBlobErrors.html
+  commentId: T:BridgingIT.DevKit.Infrastructure.EntityFramework.Storage.SqlServerBlobErrors
+  fullName: BridgingIT.DevKit.Infrastructure.EntityFramework.Storage.SqlServerBlobErrors
+  nameWithType: SqlServerBlobErrors
+- uid: BridgingIT.DevKit.Infrastructure.EntityFramework.Storage.SqlServerBlobErrors.IsTransient(System.Exception)
+  name: IsTransient(Exception)
+  href: obj/api/BridgingIT.DevKit.Infrastructure.EntityFramework.Storage.SqlServerBlobErrors.html#BridgingIT_DevKit_Infrastructure_EntityFramework_Storage_SqlServerBlobErrors_IsTransient_System_Exception_
+  commentId: M:BridgingIT.DevKit.Infrastructure.EntityFramework.Storage.SqlServerBlobErrors.IsTransient(System.Exception)
+  fullName: BridgingIT.DevKit.Infrastructure.EntityFramework.Storage.SqlServerBlobErrors.IsTransient(System.Exception)
+  nameWithType: SqlServerBlobErrors.IsTransient(Exception)
+- uid: BridgingIT.DevKit.Infrastructure.EntityFramework.Storage.SqlServerBlobErrors.IsTransient*
+  name: IsTransient
+  href: obj/api/BridgingIT.DevKit.Infrastructure.EntityFramework.Storage.SqlServerBlobErrors.html#BridgingIT_DevKit_Infrastructure_EntityFramework_Storage_SqlServerBlobErrors_IsTransient_
+  commentId: Overload:BridgingIT.DevKit.Infrastructure.EntityFramework.Storage.SqlServerBlobErrors.IsTransient
+  fullName: BridgingIT.DevKit.Infrastructure.EntityFramework.Storage.SqlServerBlobErrors.IsTransient
+  nameWithType: SqlServerBlobErrors.IsTransient
+- uid: BridgingIT.DevKit.Infrastructure.EntityFramework.Storage.SqlServerBlobErrors.ProviderError(System.Exception)
+  name: ProviderError(Exception)
+  href: obj/api/BridgingIT.DevKit.Infrastructure.EntityFramework.Storage.SqlServerBlobErrors.html#BridgingIT_DevKit_Infrastructure_EntityFramework_Storage_SqlServerBlobErrors_ProviderError_System_Exception_
+  commentId: M:BridgingIT.DevKit.Infrastructure.EntityFramework.Storage.SqlServerBlobErrors.ProviderError(System.Exception)
+  fullName: BridgingIT.DevKit.Infrastructure.EntityFramework.Storage.SqlServerBlobErrors.ProviderError(System.Exception)
+  nameWithType: SqlServerBlobErrors.ProviderError(Exception)
+- uid: BridgingIT.DevKit.Infrastructure.EntityFramework.Storage.SqlServerBlobErrors.ProviderError*
+  name: ProviderError
+  href: obj/api/BridgingIT.DevKit.Infrastructure.EntityFramework.Storage.SqlServerBlobErrors.html#BridgingIT_DevKit_Infrastructure_EntityFramework_Storage_SqlServerBlobErrors_ProviderError_
+  commentId: Overload:BridgingIT.DevKit.Infrastructure.EntityFramework.Storage.SqlServerBlobErrors.ProviderError
+  fullName: BridgingIT.DevKit.Infrastructure.EntityFramework.Storage.SqlServerBlobErrors.ProviderError
+  nameWithType: SqlServerBlobErrors.ProviderError
 - uid: BridgingIT.DevKit.Infrastructure.EntityFramework.StorageBlob
   name: StorageBlob
   href: obj/api/BridgingIT.DevKit.Infrastructure.EntityFramework.StorageBlob.html
@@ -398904,6 +399911,18 @@ references:
   commentId: Overload:BridgingIT.DevKit.Infrastructure.EntityFramework.StorageDocument.ContentHash
   fullName: BridgingIT.DevKit.Infrastructure.EntityFramework.StorageDocument.ContentHash
   nameWithType: StorageDocument.ContentHash
+- uid: BridgingIT.DevKit.Infrastructure.EntityFramework.StorageDocument.CreateId
+  name: CreateId()
+  href: obj/api/BridgingIT.DevKit.Infrastructure.EntityFramework.StorageDocument.html#BridgingIT_DevKit_Infrastructure_EntityFramework_StorageDocument_CreateId
+  commentId: M:BridgingIT.DevKit.Infrastructure.EntityFramework.StorageDocument.CreateId
+  fullName: BridgingIT.DevKit.Infrastructure.EntityFramework.StorageDocument.CreateId()
+  nameWithType: StorageDocument.CreateId()
+- uid: BridgingIT.DevKit.Infrastructure.EntityFramework.StorageDocument.CreateId*
+  name: CreateId
+  href: obj/api/BridgingIT.DevKit.Infrastructure.EntityFramework.StorageDocument.html#BridgingIT_DevKit_Infrastructure_EntityFramework_StorageDocument_CreateId_
+  commentId: Overload:BridgingIT.DevKit.Infrastructure.EntityFramework.StorageDocument.CreateId
+  fullName: BridgingIT.DevKit.Infrastructure.EntityFramework.StorageDocument.CreateId
+  nameWithType: StorageDocument.CreateId
 - uid: BridgingIT.DevKit.Infrastructure.EntityFramework.StorageDocument.CreatedDate
   name: CreatedDate
   href: obj/api/BridgingIT.DevKit.Infrastructure.EntityFramework.StorageDocument.html#BridgingIT_DevKit_Infrastructure_EntityFramework_StorageDocument_CreatedDate
@@ -399558,6 +400577,27 @@ references:
   commentId: Overload:BridgingIT.DevKit.Infrastructure.EntityFramework.StoragePermalink.UpdatedAt
   fullName: BridgingIT.DevKit.Infrastructure.EntityFramework.StoragePermalink.UpdatedAt
   nameWithType: StoragePermalink.UpdatedAt
+- uid: BridgingIT.DevKit.Infrastructure.EntityFramework.StorageRowIdConfiguration
+  name: StorageRowIdConfiguration
+  href: obj/api/BridgingIT.DevKit.Infrastructure.EntityFramework.StorageRowIdConfiguration.html
+  commentId: T:BridgingIT.DevKit.Infrastructure.EntityFramework.StorageRowIdConfiguration
+  fullName: BridgingIT.DevKit.Infrastructure.EntityFramework.StorageRowIdConfiguration
+  nameWithType: StorageRowIdConfiguration
+- uid: BridgingIT.DevKit.Infrastructure.EntityFramework.StorageRowIdConfiguration.Configure(Microsoft.EntityFrameworkCore.Metadata.Builders.PropertyBuilder{System.Guid})
+  name: Configure(PropertyBuilder<Guid>)
+  href: obj/api/BridgingIT.DevKit.Infrastructure.EntityFramework.StorageRowIdConfiguration.html#BridgingIT_DevKit_Infrastructure_EntityFramework_StorageRowIdConfiguration_Configure_Microsoft_EntityFrameworkCore_Metadata_Builders_PropertyBuilder_System_Guid__
+  commentId: M:BridgingIT.DevKit.Infrastructure.EntityFramework.StorageRowIdConfiguration.Configure(Microsoft.EntityFrameworkCore.Metadata.Builders.PropertyBuilder{System.Guid})
+  name.vb: Configure(PropertyBuilder(Of Guid))
+  fullName: BridgingIT.DevKit.Infrastructure.EntityFramework.StorageRowIdConfiguration.Configure(Microsoft.EntityFrameworkCore.Metadata.Builders.PropertyBuilder<System.Guid>)
+  fullName.vb: BridgingIT.DevKit.Infrastructure.EntityFramework.StorageRowIdConfiguration.Configure(Microsoft.EntityFrameworkCore.Metadata.Builders.PropertyBuilder(Of System.Guid))
+  nameWithType: StorageRowIdConfiguration.Configure(PropertyBuilder<Guid>)
+  nameWithType.vb: StorageRowIdConfiguration.Configure(PropertyBuilder(Of Guid))
+- uid: BridgingIT.DevKit.Infrastructure.EntityFramework.StorageRowIdConfiguration.Configure*
+  name: Configure
+  href: obj/api/BridgingIT.DevKit.Infrastructure.EntityFramework.StorageRowIdConfiguration.html#BridgingIT_DevKit_Infrastructure_EntityFramework_StorageRowIdConfiguration_Configure_
+  commentId: Overload:BridgingIT.DevKit.Infrastructure.EntityFramework.StorageRowIdConfiguration.Configure
+  fullName: BridgingIT.DevKit.Infrastructure.EntityFramework.StorageRowIdConfiguration.Configure
+  nameWithType: StorageRowIdConfiguration.Configure
 - uid: BridgingIT.DevKit.Infrastructure.EntityFramework.StringsArraySemicolonConverter
   name: StringsArraySemicolonConverter
   href: obj/api/BridgingIT.DevKit.Infrastructure.EntityFramework.StringsArraySemicolonConverter.html

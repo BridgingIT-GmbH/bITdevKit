@@ -8248,6 +8248,8 @@ comprehensive examples and best practices for common scenarios.</p>
 <span class="p">}</span>
 </code></pre></div>
 <p><code>field</code>, <code>fields</code>, ordering fields, and include paths are CLR property paths. Their segments are case-sensitive because the builders resolve them with expression-tree property access. For example, use <code>Department.Name</code>, not the JSON-style name <code>department.name</code>.</p>
+<p>When <code>System.Text.Json</code> reads a <code>FilterModel</code>, it skips orderings with blank fields and blank include paths.
+An ordering with a field uses ascending order if <code>direction</code> is omitted or <code>null</code>.</p>
 <h2 id="api-implementation">API implementation<a class="headerlink" href="#api-implementation" title="Permanent link">&para;</a></h2>
 <h3 id="aspnet-controller-example">ASP.NET controller example<a class="headerlink" href="#aspnet-controller-example" title="Permanent link">&para;</a></h3>
 <div class="highlight"><pre><span></span><code><span class="na">[ApiController]</span>

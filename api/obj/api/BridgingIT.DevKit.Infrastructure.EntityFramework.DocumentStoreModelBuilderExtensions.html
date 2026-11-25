@@ -185,7 +185,7 @@ the retention sweep scans only expiring rows.</p>
   
   </h3>
 
-  <div class="markdown level1 summary"><p>Excludes relational Dimensions members from a Cosmos document model.</p>
+  <div class="markdown level1 summary"><p>Excludes relational Dimensions and restores the provider's GUID mapping in a Cosmos document model.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -219,6 +219,52 @@ the retention sweep scans only expiring rows.</p>
   <h4 class="section" id="BridgingIT_DevKit_Infrastructure_EntityFramework_DocumentStoreModelBuilderExtensions_ExcludeDocumentDimensions_Microsoft_EntityFrameworkCore_ModelBuilder__remarks">Remarks</h4>
   <div class="markdown level1 remarks"><p>Call only for Cosmos. SQL providers discover Dimensions through annotations.</p>
 </div>
+
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_EntityFramework_DocumentStoreModelBuilderExtensions_UseDocumentRowIdCollation_" data-uid="BridgingIT.DevKit.Infrastructure.EntityFramework.DocumentStoreModelBuilderExtensions.UseDocumentRowIdCollation*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_EntityFramework_DocumentStoreModelBuilderExtensions_UseDocumentRowIdCollation_Microsoft_EntityFrameworkCore_ModelBuilder_System_String_" data-uid="BridgingIT.DevKit.Infrastructure.EntityFramework.DocumentStoreModelBuilderExtensions.UseDocumentRowIdCollation(Microsoft.EntityFrameworkCore.ModelBuilder,System.String)">
+  UseDocumentRowIdCollation(ModelBuilder, string)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Applies matching bytewise collations to the document owner and Dimension keys. Use this on a fresh relational
+schema to sort UUIDv7 keys by timestamp across distinct milliseconds regardless of the database's default collation.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static ModelBuilder UseDocumentRowIdCollation(this ModelBuilder modelBuilder, string providerName)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>modelBuilder</code> <span class="xref">ModelBuilder</span></dt>
+    <dd><p>The document store context model builder.</p>
+</dd>
+    <dt><code>providerName</code> <span class="xref">string</span></dt>
+    <dd><p>The provider name from <span class="xref">Microsoft.EntityFrameworkCore.Infrastructure.DatabaseFacade.ProviderName</span>.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">ModelBuilder</span></dt>
+    <dd><p>The same model builder. Other providers retain their default configuration.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Infrastructure_EntityFramework_DocumentStoreModelBuilderExtensions_UseDocumentRowIdCollation_Microsoft_EntityFrameworkCore_ModelBuilder_System_String__examples">Examples</h4>
+  <pre><code class="lang-csharp">modelBuilder.UseDocumentRowIdCollation(this.Database.ProviderName);</code></pre>
+
+
 
 
 

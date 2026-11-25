@@ -2587,10 +2587,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#source-and-decisions" class="md-nav__link">
+  <a href="#source-locations" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Source and decisions
+        Source locations
       
     </span>
   </a>
@@ -5537,10 +5537,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#source-and-decisions" class="md-nav__link">
+  <a href="#source-locations" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Source and decisions
+        Source locations
       
     </span>
   </a>
@@ -5704,7 +5704,7 @@
 <li><a href="#test-owned-evidence-helpers">Test-owned evidence helpers</a></li>
 </ul>
 </li>
-<li><a href="#source-and-decisions">Source and decisions</a></li>
+<li><a href="#source-locations">Source locations</a></li>
 </ul>
 </li>
 </ul>
@@ -5785,7 +5785,7 @@
 <li><code>__Auditing_EntityChanges</code></li>
 <li><code>__Auditing_StoreState</code></li>
 </ul>
-<p>The control row retains store identity, epoch, publication progress, lifecycle and retention boundaries even in an empty store. It is not an audit execution. Business actors/resources and causal links are non-owning references, so deleting a live resource does not cascade into retained evidence. See <a href="https://github.com/bridgingIT/bITdevKit/blob/main/docs/adr/0031-audit-store-publication-and-control-state.md">ADR-0031</a>.</p>
+<p>The control row retains store identity, epoch, publication progress, lifecycle, and retention boundaries even in an empty store. Business actors, resources, and causal links are non-owning references. Retained evidence survives deletion of the live resource.</p>
 <h2 id="use-cases">Use cases<a class="headerlink" href="#use-cases" title="Permanent link">&para;</a></h2>
 <p>Use Auditing for customer maintenance trails, actual worker attempts, operational evidence, and bounded auditor review. Preserve meaningful business labels and resource identities at the code that knows them.</p>
 <p>Keep logging for diagnostic messages and tracing for performance/call relationships. Use <span class="bdk-feature-name" data-feature-name="change-history"><span class="bdk-feature-icon" style="--bdk-feature-icon-size:18px" data-feature-icon="change-history" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32" fill="none" aria-hidden="true" focusable="false"><g stroke="var(--dashboard-analysis-text, #b295e8)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6h18v23H9V6Z M14 11h8M14 17h8M14 23h5" /></g><g stroke="var(--dashboard-primary-text, #7da4f7)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M5 3v23M2 6h6M2 16h6" /></g></svg></span>ChangeHistory</span> for source-owned property changes. Auditing can incorporate that evidence but does not manufacture a diff from method names. <span class="bdk-feature-name" data-feature-name="event-sourcing"><span class="bdk-feature-icon" style="--bdk-feature-icon-size:18px" data-feature-icon="event-sourcing" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32" fill="none" aria-hidden="true" focusable="false"><g stroke="var(--dashboard-analysis-text, #b295e8)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7h26M3 16h26M3 25h26" /></g><g stroke="var(--dashboard-primary-text, #7da4f7)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="7" r="3" /><circle cx="16" cy="16" r="3" /><circle cx="23" cy="25" r="3" /></g></svg></span>Event</span> sourcing, digital signatures, deletion detection, immutable external storage, legal retention policy, and SIEM delivery remain separate concerns.</p>
@@ -6138,7 +6138,7 @@
 <p>A compatible host restart preserves EF store identity/epoch and can resume protected progress when host Data Protection keys/application identity are retained. Memory restart invalidates old store progress. After restoring a database in a way that changes position meaning, explicitly rotate its epoch before reopening producers/extraction:</p>
 <div class="highlight"><pre><span></span><code><span class="kt">var</span><span class="w"> </span><span class="n">rotated</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="n">provider</span><span class="p">.</span><span class="n">RotateStoreEpochAsync</span><span class="p">(</span><span class="n">expectedOldEpoch</span><span class="p">,</span><span class="w"> </span><span class="n">cancellationToken</span><span class="p">);</span>
 </code></pre></div>
-<p>Here <code>provider</code> is the configured <code>EntityFrameworkAuditStorageProvider&lt;TContext&gt;</code>. Rotation is operator-controlled and rejects an unexpected epoch. Native backup/restore procedures, database permissions, key/backup custody, host clocks and legal retention policy remain deployment responsibilities. See <a href="https://github.com/bridgingIT/bITdevKit/blob/main/docs/adr/0031-audit-store-publication-and-control-state.md">ADR-0031</a>.</p>
+<p>Here <code>provider</code> is the configured <code>EntityFrameworkAuditStorageProvider&lt;TContext&gt;</code>. Rotation is operator-controlled and rejects an unexpected epoch. The host owns database permissions, backup and restore procedures, key and backup custody, clock configuration, and legal retention policy.</p>
 <h2 id="export-contracts">Export contracts<a class="headerlink" href="#export-contracts" title="Permanent link">&para;</a></h2>
 <p>The application export API is <code>IAuditExportService.OpenAsync(AuditExportRequest)</code>. It owns authorization binding, source verification, fixed-window extraction, whole-record admission, exact byte accounting and final source checks. <code>IAuditExportFormatter</code> owns only a pinned projection/framing profile. Custom formatters receive a permitted graph and finite budgets; they cannot select rows, advance cursors, resolve source keys or assert client delivery.</p>
 <div class="highlight"><pre><span></span><code><span class="kt">var</span><span class="w"> </span><span class="n">exportFilter</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">FilterModel</span>
@@ -6300,16 +6300,12 @@ auditing diagnostics
 <span class="w">    </span><span class="k">throw</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="nf">InvalidOperationException</span><span class="p">(</span><span class="s">"Audit evidence did not meet the test expectations."</span><span class="p">);</span>
 </code></pre></div>
 <p>The host/test supplies <code>customerService</code> and collects <code>capturedAuditIds</code> from actual instrumentation or the HTTP correlation header. The helper creates no hidden root and does not make missing instrumentation appear covered. Supply an <code>IAuditIntegrityVerifier</code> to verify protected original evidence. Absence assertions fail when flush/evidence is unconfirmed. Original-evidence access belongs to isolated tests and must never become a public payload route.</p>
-<h2 id="source-and-decisions">Source and decisions<a class="headerlink" href="#source-and-decisions" title="Permanent link">&para;</a></h2>
+<h2 id="source-locations">Source locations<a class="headerlink" href="#source-locations" title="Permanent link">&para;</a></h2>
 <ul>
-<li><a href="https://github.com/bridgingIT/bITdevKit/blob/main/src/Application.Auditing/ServiceCollectionExtensions.cs">Core contracts and registration</a></li>
-<li><a href="https://github.com/bridgingIT/bITdevKit/blob/main/src/Application.Auditing/Query/IAuditQueryService.cs">Query contract</a></li>
-<li><a href="https://github.com/bridgingIT/bITdevKit/blob/main/src/Application.Auditing/Export/IAuditExportService.cs">Export contract</a></li>
-<li><a href="https://github.com/bridgingIT/bITdevKit/blob/main/src/Application.Auditing/Export/IAuditExportFormatter.cs">Formatter contract</a></li>
-<li><a href="https://github.com/bridgingIT/bITdevKit/blob/main/src/Infrastructure.EntityFramework/Auditing/Entities/AuditRecordEntity.cs">EF entity mappings</a></li>
-<li><a href="https://github.com/bridgingIT/bITdevKit/blob/main/docs/specs/spec-application-auditing.md">Auditing specification</a></li>
-<li><a href="https://github.com/bridgingIT/bITdevKit/blob/main/docs/adr/0031-audit-store-publication-and-control-state.md">ADR-0031: publication/control state</a></li>
-<li><a href="https://github.com/bridgingIT/bITdevKit/blob/main/docs/adr/0032-business-execution-auditing.md">ADR-0032: business execution auditing</a></li>
+<li>Core registration in <code>src/Application.Auditing/ServiceCollectionExtensions.cs</code></li>
+<li>Query contract in <code>IAuditQueryService</code></li>
+<li>Export and formatting contracts in <code>IAuditExportService</code> and <code>IAuditExportFormatter</code></li>
+<li>EF entity mappings in <code>AuditRecordEntity</code></li>
 </ul>
 
 

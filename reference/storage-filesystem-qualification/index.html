@@ -3624,17 +3624,6 @@
   
 </li>
       
-        <li class="md-nav__item">
-  <a href="#related-documents" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Related documents
-      
-    </span>
-  </a>
-  
-</li>
-      
     </ul>
   
 </nav>
@@ -4836,17 +4825,6 @@
   
 </li>
       
-        <li class="md-nav__item">
-  <a href="#related-documents" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Related documents
-      
-    </span>
-  </a>
-  
-</li>
-      
     </ul>
   
 </nav>
@@ -4992,20 +4970,13 @@
 </tr>
 </tbody>
 </table>
-<p>These checks retain the acceptance targets from the requirements and implementation plan. Record unavailable prerequisites explicitly. Do not change an unavailable result into a pass or declare a share Local to bypass protocol requirements. Windows NFS remains unsupported.</p>
+<p>Record unavailable prerequisites explicitly. Count a profile as passed only after running its checks against the declared share protocol. Windows NFS remains unsupported.</p>
 <h2 id="available-verification">Available verification<a class="headerlink" href="#available-verification" title="Permanent link">&para;</a></h2>
 <p>Windows and Linux local filesystem suites, local process/fault/recovery probes, repeated local load measurements and package checks were exercised during implementation. Their results cover their recorded environments and source revisions. They do not replace the pending profiles above.</p>
 <p>The subsequent EF blob and dashboard verification passed 85 unit/model/read tests, 123 SQL Server/PostgreSQL/SQLite EF blob contract tests and 27 load-runner tests. Live EF blob dashboard reads at 16 workers completed 15 measured runs with zero errors and complete temporary-item cleanup. Those are application-environment EF measurements, not filesystem-share or bulk-read qualification.</p>
 <h2 id="run-the-follow-up-checks">Run the follow-up checks<a class="headerlink" href="#run-the-follow-up-checks" title="Permanent link">&para;</a></h2>
 <p>Use the existing qualification configuration and probe commands in the <a href="../storage-filesystem-providers/">filesystem provider guide</a>. Local tests use owned directories under the host OS temporary folder. Share tests remain disabled by default and skip host-inapplicable cases. Enable share/fault profiles only when their disposable roots and required peer hosts exist.</p>
 <p>For each executed profile, retain the source revision, OS/client/server/mount configuration, run identifiers, command, exit status, case counts and artifacts. Keep execution evidence outside the documentation tree. Close a qualification item only after its required cases pass; preserve failed and unavailable results.</p>
-<h2 id="related-documents">Related documents<a class="headerlink" href="#related-documents" title="Permanent link">&para;</a></h2>
-<ul>
-<li><a href="https://github.com/bridgingIT/bITdevKit/blob/main/docs/prd/storage/prd-0000-STORAGE-filesystem-blob-and-document-providers.md">Provider requirements</a></li>
-<li><a href="https://github.com/bridgingIT/bITdevKit/blob/main/plan/pln-feature-filesystem-storage-providers-1.md">Implementation plan</a></li>
-<li><a href="https://github.com/bridgingIT/bITdevKit/blob/main/docs/adr/0037-filesystem-storage-provider-composition.md">ADR-0037</a></li>
-<li><a href="https://github.com/bridgingIT/bITdevKit/blob/main/docs/adr/0038-shared-filesystem-infrastructure-for-file-storage.md">ADR-0038</a></li>
-</ul>
 
 
 

@@ -131,8 +131,53 @@ Classes
 </dd>
     </dl>
     <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Infrastructure.EntityFramework.BlobDimensionMutationSession.html">BlobDimensionMutationSession</a></dt>
+      <dd><p>Tracks dimension names, registrations, and value rows for a single blob mutation or batch.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Infrastructure.EntityFramework.BlobDimensionNameCache.html">BlobDimensionNameCache</a></dt>
+      <dd><p>Caches committed blob dimension name IDs and limits concurrent name registrations.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Infrastructure.EntityFramework.BlobDimensionNameResolver-1.html">BlobDimensionNameResolver&lt;TContext&gt;</a></dt>
+      <dd><p>Resolves blob dimension names to database IDs and registers missing names within the blob transaction.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Infrastructure.EntityFramework.BlobDimensionQueryTranslator.html">BlobDimensionQueryTranslator</a></dt>
+      <dd><p>Translates blob dimension filters into composable EF queries over indexed dimension rows.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
       <dt><a class="xref" href="BridgingIT.DevKit.Infrastructure.EntityFramework.BlobDimensionValueEncoding.html">BlobDimensionValueEncoding</a></dt>
       <dd><p>Maps validated blob scalars to the three indexed search slots.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Infrastructure.EntityFramework.BlobRowIdConfiguration.html">BlobRowIdConfiguration</a></dt>
+      <dd><p>Provides the EF mappings for blob owner, chunk, and dimension row IDs.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Infrastructure.EntityFramework.BlobRowIdConfiguration.Chunk.html">BlobRowIdConfiguration.Chunk</a></dt>
+      <dd><p>Maps the chunk's blob foreign key to the same fixed-width UUID text as the owner key.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Infrastructure.EntityFramework.BlobRowIdConfiguration.Dimension.html">BlobRowIdConfiguration.Dimension</a></dt>
+      <dd><p>Maps the dimension's blob foreign key to the same fixed-width UUID text as the owner key.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Infrastructure.EntityFramework.BlobRowIdConfiguration.Owner.html">BlobRowIdConfiguration.Owner</a></dt>
+      <dd><p>Maps the blob primary key to fixed-width UUID text and preserves application-generated IDs.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Infrastructure.EntityFramework.BlobRowIdModelBuilderExtensions.html">BlobRowIdModelBuilderExtensions</a></dt>
+      <dd><p>Configures bytewise ordering for the Entity Framework blob row keys.</p>
 </dd>
     </dl>
     <dl class="jumplist">
@@ -361,6 +406,21 @@ An explicit call makes the adapter run before the automatically found ones.</p>
     <dl class="jumplist">
       <dt><a class="xref" href="BridgingIT.DevKit.Infrastructure.EntityFramework.DocumentDimensionValueEncoding.html">DocumentDimensionValueEncoding</a></dt>
       <dd><p>Maps validated document scalars to the three indexed search slots.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Infrastructure.EntityFramework.DocumentRowIdConfiguration.html">DocumentRowIdConfiguration</a></dt>
+      <dd><p>Maps the document primary key and the matching Dimension foreign key.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Infrastructure.EntityFramework.DocumentRowIdConfiguration.Dimension.html">DocumentRowIdConfiguration.Dimension</a></dt>
+      <dd><p>Maps the Dimension foreign key to the same representation as the owner key.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Infrastructure.EntityFramework.DocumentRowIdConfiguration.Owner.html">DocumentRowIdConfiguration.Owner</a></dt>
+      <dd><p>Maps the application-assigned document ID to fixed-width UUID text.</p>
 </dd>
     </dl>
     <dl class="jumplist">
@@ -890,6 +950,11 @@ in SQLite, so schema parameters are ignored but kept for interface consistency.<
 </dd>
     </dl>
     <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Infrastructure.EntityFramework.StorageRowIdConfiguration.html">StorageRowIdConfiguration</a></dt>
+      <dd><p>Defines the shared relational representation of blob and document row IDs.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
       <dt><a class="xref" href="BridgingIT.DevKit.Infrastructure.EntityFramework.StringsArraySemicolonConverter.html">StringsArraySemicolonConverter</a></dt>
       <dd><p>Represents strings array semicolon converter.</p>
 </dd>
@@ -914,6 +979,11 @@ as <span class="xref">System.TimeSpan</span> to ensure broad database provider c
     <h3 id="structs">
 Structs
 </h3>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Infrastructure.EntityFramework.BlobDimensionNameKey.html">BlobDimensionNameKey</a></dt>
+      <dd><p>Identifies one dimension name in a store and container.</p>
+</dd>
+    </dl>
     <dl class="jumplist">
       <dt><a class="xref" href="BridgingIT.DevKit.Infrastructure.EntityFramework.Constants.html">Constants</a></dt>
       <dd><p>Represents constants.</p>

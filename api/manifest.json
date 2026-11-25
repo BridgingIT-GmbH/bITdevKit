@@ -19615,6 +19615,20 @@
     },
     {
       "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Application.Storage.BlobTelemetry.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Application.Storage.BlobTelemetry.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Application.Storage.BlobTelemetry",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Application.Storage.BlobTelemetry.yml\" sourcestartlinenumber=\"1\">Identifies the activity source for named blob store clients.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
       "source_relative_path": "obj/api/BridgingIT.DevKit.Application.Storage.BlobTextContent.yml",
       "output": {
         ".html": {
@@ -23546,6 +23560,20 @@
       "IsMRef": true,
       "Title": "BridgingIT.DevKit.Application.Storage.TimeoutDocumentStoreClientBehaviorOptions",
       "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Application.Storage.TimeoutDocumentStoreClientBehaviorOptions.yml\" sourcestartlinenumber=\"1\">Configures timeout behavior for <xref href=\"BridgingIT.DevKit.Application.Storage.TimeoutDocumentStoreClientBehavior%601\" data-throw-if-not-resolved=\"false\"></xref>.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Application.Storage.TracingBlobStoreClientBehavior.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Application.Storage.TracingBlobStoreClientBehavior.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Application.Storage.TracingBlobStoreClientBehavior",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Application.Storage.TracingBlobStoreClientBehavior.yml\" sourcestartlinenumber=\"1\">Traces blob store client operations using low-cardinality tags.</p>\n"
     },
     {
       "type": "ManagedReference",
@@ -49799,6 +49827,76 @@
     },
     {
       "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Infrastructure.EntityFramework.BlobDimensionMutationSession.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Infrastructure.EntityFramework.BlobDimensionMutationSession.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Infrastructure.EntityFramework.BlobDimensionMutationSession",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Infrastructure.EntityFramework.BlobDimensionMutationSession.yml\" sourcestartlinenumber=\"1\">Tracks dimension names, registrations, and value rows for a single blob mutation or batch.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Infrastructure.EntityFramework.BlobDimensionNameCache.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Infrastructure.EntityFramework.BlobDimensionNameCache.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Infrastructure.EntityFramework.BlobDimensionNameCache",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Infrastructure.EntityFramework.BlobDimensionNameCache.yml\" sourcestartlinenumber=\"1\">Caches committed blob dimension name IDs and limits concurrent name registrations.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Infrastructure.EntityFramework.BlobDimensionNameKey.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Infrastructure.EntityFramework.BlobDimensionNameKey.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Infrastructure.EntityFramework.BlobDimensionNameKey",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Infrastructure.EntityFramework.BlobDimensionNameKey.yml\" sourcestartlinenumber=\"1\">Identifies one dimension name in a store and container.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Infrastructure.EntityFramework.BlobDimensionNameResolver-1.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Infrastructure.EntityFramework.BlobDimensionNameResolver-1.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Infrastructure.EntityFramework.BlobDimensionNameResolver<TContext>",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Infrastructure.EntityFramework.BlobDimensionNameResolver-1.yml\" sourcestartlinenumber=\"1\">Resolves blob dimension names to database IDs and registers missing names within the blob transaction.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Infrastructure.EntityFramework.BlobDimensionQueryTranslator.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Infrastructure.EntityFramework.BlobDimensionQueryTranslator.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Infrastructure.EntityFramework.BlobDimensionQueryTranslator",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Infrastructure.EntityFramework.BlobDimensionQueryTranslator.yml\" sourcestartlinenumber=\"1\">Translates blob dimension filters into composable EF queries over indexed dimension rows.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
       "source_relative_path": "obj/api/BridgingIT.DevKit.Infrastructure.EntityFramework.BlobDimensionValueEncoding.yml",
       "output": {
         ".html": {
@@ -49810,6 +49908,76 @@
       "IsMRef": true,
       "Title": "BridgingIT.DevKit.Infrastructure.EntityFramework.BlobDimensionValueEncoding",
       "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Infrastructure.EntityFramework.BlobDimensionValueEncoding.yml\" sourcestartlinenumber=\"1\">Maps validated blob scalars to the three indexed search slots.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Infrastructure.EntityFramework.BlobRowIdConfiguration.Chunk.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Infrastructure.EntityFramework.BlobRowIdConfiguration.Chunk.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Infrastructure.EntityFramework.BlobRowIdConfiguration.Chunk",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Infrastructure.EntityFramework.BlobRowIdConfiguration.Chunk.yml\" sourcestartlinenumber=\"1\">Maps the chunk's blob foreign key to the same fixed-width UUID text as the owner key.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Infrastructure.EntityFramework.BlobRowIdConfiguration.Dimension.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Infrastructure.EntityFramework.BlobRowIdConfiguration.Dimension.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Infrastructure.EntityFramework.BlobRowIdConfiguration.Dimension",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Infrastructure.EntityFramework.BlobRowIdConfiguration.Dimension.yml\" sourcestartlinenumber=\"1\">Maps the dimension's blob foreign key to the same fixed-width UUID text as the owner key.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Infrastructure.EntityFramework.BlobRowIdConfiguration.Owner.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Infrastructure.EntityFramework.BlobRowIdConfiguration.Owner.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Infrastructure.EntityFramework.BlobRowIdConfiguration.Owner",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Infrastructure.EntityFramework.BlobRowIdConfiguration.Owner.yml\" sourcestartlinenumber=\"1\">Maps the blob primary key to fixed-width UUID text and preserves application-generated IDs.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Infrastructure.EntityFramework.BlobRowIdConfiguration.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Infrastructure.EntityFramework.BlobRowIdConfiguration.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Infrastructure.EntityFramework.BlobRowIdConfiguration",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Infrastructure.EntityFramework.BlobRowIdConfiguration.yml\" sourcestartlinenumber=\"1\">Provides the EF mappings for blob owner, chunk, and dimension row IDs.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Infrastructure.EntityFramework.BlobRowIdModelBuilderExtensions.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Infrastructure.EntityFramework.BlobRowIdModelBuilderExtensions.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Infrastructure.EntityFramework.BlobRowIdModelBuilderExtensions",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Infrastructure.EntityFramework.BlobRowIdModelBuilderExtensions.yml\" sourcestartlinenumber=\"1\">Configures bytewise ordering for the Entity Framework blob row keys.</p>\n"
     },
     {
       "type": "ManagedReference",
@@ -51070,6 +51238,48 @@
       "IsMRef": true,
       "Title": "BridgingIT.DevKit.Infrastructure.EntityFramework.DocumentDimensionValueEncoding",
       "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Infrastructure.EntityFramework.DocumentDimensionValueEncoding.yml\" sourcestartlinenumber=\"1\">Maps validated document scalars to the three indexed search slots.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Infrastructure.EntityFramework.DocumentRowIdConfiguration.Dimension.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Infrastructure.EntityFramework.DocumentRowIdConfiguration.Dimension.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Infrastructure.EntityFramework.DocumentRowIdConfiguration.Dimension",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Infrastructure.EntityFramework.DocumentRowIdConfiguration.Dimension.yml\" sourcestartlinenumber=\"1\">Maps the Dimension foreign key to the same representation as the owner key.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Infrastructure.EntityFramework.DocumentRowIdConfiguration.Owner.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Infrastructure.EntityFramework.DocumentRowIdConfiguration.Owner.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Infrastructure.EntityFramework.DocumentRowIdConfiguration.Owner",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Infrastructure.EntityFramework.DocumentRowIdConfiguration.Owner.yml\" sourcestartlinenumber=\"1\">Maps the application-assigned document ID to fixed-width UUID text.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Infrastructure.EntityFramework.DocumentRowIdConfiguration.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Infrastructure.EntityFramework.DocumentRowIdConfiguration.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Infrastructure.EntityFramework.DocumentRowIdConfiguration",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Infrastructure.EntityFramework.DocumentRowIdConfiguration.yml\" sourcestartlinenumber=\"1\">Maps the document primary key and the matching Dimension foreign key.</p>\n"
     },
     {
       "type": "ManagedReference",
@@ -54671,6 +54881,20 @@
     },
     {
       "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Infrastructure.EntityFramework.Storage.SqlServerBlobErrors.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Infrastructure.EntityFramework.Storage.SqlServerBlobErrors.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Infrastructure.EntityFramework.Storage.SqlServerBlobErrors",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Infrastructure.EntityFramework.Storage.SqlServerBlobErrors.yml\" sourcestartlinenumber=\"1\">Classifies blob storage timeouts and transient SQL Server failures.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
       "source_relative_path": "obj/api/BridgingIT.DevKit.Infrastructure.EntityFramework.Storage.yml",
       "output": {
         ".html": {
@@ -54794,6 +55018,20 @@
       "IsMRef": true,
       "Title": "BridgingIT.DevKit.Infrastructure.EntityFramework.StoragePermalink",
       "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Infrastructure.EntityFramework.StoragePermalink.yml\" sourcestartlinenumber=\"1\">Represents one persisted Storage Permalink Registry entry.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Infrastructure.EntityFramework.StorageRowIdConfiguration.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Infrastructure.EntityFramework.StorageRowIdConfiguration.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Infrastructure.EntityFramework.StorageRowIdConfiguration",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Infrastructure.EntityFramework.StorageRowIdConfiguration.yml\" sourcestartlinenumber=\"1\">Defines the shared relational representation of blob and document row IDs.</p>\n"
     },
     {
       "type": "ManagedReference",

@@ -789,15 +789,13 @@ public string ETag { get; set; }</code></pre>
   
   </h3>
 
-  <div class="markdown level1 summary"><p>Gets or sets the internal blob row identifier.</p>
+  <div class="markdown level1 summary"><p>Gets or sets the internal blob row identifier, stored as 32 lowercase hexadecimal characters.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
     <pre><code class="lang-csharp hljs">[Key]
-[Required]
-[MaxLength(64)]
-public string Id { get; set; }</code></pre>
+public Guid Id { get; set; }</code></pre>
   </div>
 
 
@@ -806,14 +804,14 @@ public string Id { get; set; }</code></pre>
 
   <h4 class="section">Property Value</h4>
   <dl class="parameters">
-    <dt><span class="xref">string</span></dt>
+    <dt><span class="xref">Guid</span></dt>
     <dd></dd>
   </dl>
 
 
 
   <h4 class="section" id="BridgingIT_DevKit_Infrastructure_EntityFramework_StorageBlob_Id_examples">Examples</h4>
-  <pre><code class="lang-csharp">var id = blob.Id;</code></pre>
+  <pre><code class="lang-csharp">Guid id = blob.Id;</code></pre>
 
 
 
@@ -1228,20 +1226,18 @@ public string TransformMetadataJson { get; set; }</code></pre>
   
   </h3>
 
-  <div class="markdown level1 summary"><p>Creates a new blob row identifier. The identifier is a time ordered (version 7) GUID in the 32 character
-<code>N</code> format, so new rows are appended to the end of the clustered primary key and of the chunk table
-instead of splitting random pages. Identifiers created before this change stay random and remain valid.</p>
+  <div class="markdown level1 summary"><p>Creates a version 7 GUID for a new blob row.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public static string CreateId()</code></pre>
+    <pre><code class="lang-csharp hljs">public static Guid CreateId()</code></pre>
   </div>
 
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
-    <dt><span class="xref">string</span></dt>
+    <dt><span class="xref">Guid</span></dt>
     <dd><p>The new identifier.</p>
 </dd>
   </dl>

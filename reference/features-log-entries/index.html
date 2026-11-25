@@ -5743,7 +5743,6 @@
 <li>the host must register <code>ILogEntryService</code> plus the maintenance queue and hosted service</li>
 <li>the web host can optionally expose <code>LogEntryEndpoints</code></li>
 </ol>
-<p>The DoFiesta example wires those pieces together in <a href="https://github.com/bridgingIT/bITdevKit/blob/main/examples/DoFiesta/DoFiesta.Presentation.Web.Server/Program.cs">Program.cs</a> and <a href="https://github.com/bridgingIT/bITdevKit/blob/main/examples/DoFiesta/DoFiesta.Infrastructure/Modules/Core/EntityFramework/CoreDbContext.cs">CoreDbContext.cs</a>.</p>
 <h3 id="1-persist-logs">1. Persist logs<a class="headerlink" href="#1-persist-logs" title="Permanent link">&para;</a></h3>
 <p>The query feature only works if your logging pipeline writes log events into a durable store. Serilog needs to be configured with the <a href="https://github.com/serilog-mssql/serilog-sinks-mssqlserver">MSSQL</a> sink in appsettings.json.</p>
 <div class="highlight"><pre><span></span><code><span class="nt">"Serilog"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>

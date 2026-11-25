@@ -7725,7 +7725,7 @@
 </tr>
 </tbody>
 </table>
-<p>The paired names are equivalent. The spec-shaped aliases exist for readability and migration clarity; the scheduler runtime and stored job definitions are the same either way.</p>
+<p>The paired route names use the same scheduler runtime and stored job definitions.</p>
 <p><span class="bdk-feature-name" data-feature-name="notifier"><span class="bdk-feature-icon" style="--bdk-feature-icon-size:18px" data-feature-icon="notifier" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32" fill="none" aria-hidden="true" focusable="false"><g stroke="var(--dashboard-primary-text, #7da4f7)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M9 16h19m-4-4 4 4-4 4" /><path d="M8.2 13.8 24 6m-4-1 4 1-1 4M8.2 18.2 24 26m-4 1 4-1-1-4" /></g><g stroke="var(--dashboard-info-text, #62adb8)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="6" cy="16" r="3" /></g></svg></span>Notifier</span> jobs look like this:</p>
 <div class="highlight"><pre><span></span><code><span class="n">builder</span><span class="p">.</span><span class="n">Services</span><span class="p">.</span><span class="n">AddNotifier</span><span class="p">()</span>
 <span class="w">    </span><span class="p">.</span><span class="n">AddHandler</span><span class="o">&lt;</span><span class="n">CustomerExportCompletedNotification</span><span class="p">,</span><span class="w"> </span><span class="n">CustomerExportCompletedHandler</span><span class="o">&gt;</span><span class="p">();</span>
@@ -7835,7 +7835,7 @@
 <tr>
 <td><code>GET</code></td>
 <td><code>/_bdk/api/jobs/recurring</code></td>
-<td>Spec-shaped alias for recurring triggers.</td>
+<td>Alias for listing recurring triggers.</td>
 </tr>
 <tr>
 <td><code>GET</code></td>
@@ -7850,7 +7850,7 @@
 <tr>
 <td><code>GET</code></td>
 <td><code>/_bdk/api/jobs/{jobName}/triggers/{triggerName}</code></td>
-<td>Get one trigger using the spec-shaped route.</td>
+<td>Get one trigger for the named job.</td>
 </tr>
 <tr>
 <td><code>GET</code></td>
@@ -7985,7 +7985,7 @@
 <tr>
 <td><code>POST</code></td>
 <td><code>/_bdk/api/jobs/{jobName}/dispatch</code></td>
-<td>Dispatch a registered job using the spec-shaped route.</td>
+<td>Dispatch a registered job.</td>
 </tr>
 <tr>
 <td><code>POST</code></td>

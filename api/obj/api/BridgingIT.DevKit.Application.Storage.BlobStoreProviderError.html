@@ -98,7 +98,7 @@ Class BlobStoreProviderError
   <div class="markdown conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public sealed class BlobStoreProviderError : ResultErrorBase, IResultError</code></pre>
+    <pre><code class="lang-csharp hljs">public sealed class BlobStoreProviderError : ResultErrorBase, ITransientStorageError, IResultError</code></pre>
   </div>
 
 
@@ -116,6 +116,7 @@ Class BlobStoreProviderError
   <dl class="typelist implements">
     <dt>Implements</dt>
     <dd>
+      <div><a class="xref" href="BridgingIT.DevKit.Common.ITransientStorageError.html">ITransientStorageError</a></div>
       <div><a class="xref" href="BridgingIT.DevKit.Common.IResultError.html">IResultError</a></div>
     </dd>
   </dl>
@@ -275,7 +276,7 @@ Class BlobStoreProviderError
   
   </h3>
 
-  <div class="markdown level1 summary"><p>Represents a provider-specific blob storage failure.</p>
+  <div class="markdown level1 summary"><p>Creates a provider failure that is permanent by default.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -297,7 +298,85 @@ Class BlobStoreProviderError
 
 
   <h4 class="section" id="BridgingIT_DevKit_Application_Storage_BlobStoreProviderError__ctor_System_String__examples">Examples</h4>
-  <pre><code class="lang-csharp">var error = new BlobStoreProviderError("Provider request failed.");</code></pre>
+  <pre><code class="lang-csharp">var error = new BlobStoreProviderError("The table is missing.");</code></pre>
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Application_Storage_BlobStoreProviderError__ctor_" data-uid="BridgingIT.DevKit.Application.Storage.BlobStoreProviderError.#ctor*"></a>
+
+  <h3 id="BridgingIT_DevKit_Application_Storage_BlobStoreProviderError__ctor_System_String_System_Boolean_" data-uid="BridgingIT.DevKit.Application.Storage.BlobStoreProviderError.#ctor(System.String,System.Boolean)">
+  BlobStoreProviderError(string, bool)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Creates a provider failure with an explicit retry classification.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public BlobStoreProviderError(string message, bool isTransient = false)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>message</code> <span class="xref">string</span></dt>
+    <dd><p>The provider failure message.</p>
+</dd>
+    <dt><code>isTransient</code> <span class="xref">bool</span></dt>
+    <dd><p>Whether retrying may succeed.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Application_Storage_BlobStoreProviderError__ctor_System_String_System_Boolean__examples">Examples</h4>
+  <pre><code class="lang-csharp">var error = new BlobStoreProviderError("Database deadlock.", isTransient: true);</code></pre>
+
+
+
+
+
+
+  <h2 class="section" id="properties">Properties
+</h2>
+
+
+  <a id="BridgingIT_DevKit_Application_Storage_BlobStoreProviderError_IsTransient_" data-uid="BridgingIT.DevKit.Application.Storage.BlobStoreProviderError.IsTransient*"></a>
+
+  <h3 id="BridgingIT_DevKit_Application_Storage_BlobStoreProviderError_IsTransient" data-uid="BridgingIT.DevKit.Application.Storage.BlobStoreProviderError.IsTransient">
+  IsTransient
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets whether the provider identified the failure as transient.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public bool IsTransient { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><span class="xref">bool</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Application_Storage_BlobStoreProviderError_IsTransient_examples">Examples</h4>
+  <pre><code class="lang-csharp">var retry = error.IsTransient;</code></pre>
 
 
 

@@ -98,7 +98,7 @@ Class BlobStoreTimeoutError
   <div class="markdown conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public sealed class BlobStoreTimeoutError : ResultErrorBase, IResultError</code></pre>
+    <pre><code class="lang-csharp hljs">public sealed class BlobStoreTimeoutError : ResultErrorBase, ITransientStorageError, IResultError</code></pre>
   </div>
 
 
@@ -116,6 +116,7 @@ Class BlobStoreTimeoutError
   <dl class="typelist implements">
     <dt>Implements</dt>
     <dd>
+      <div><a class="xref" href="BridgingIT.DevKit.Common.ITransientStorageError.html">ITransientStorageError</a></div>
       <div><a class="xref" href="BridgingIT.DevKit.Common.IResultError.html">IResultError</a></div>
     </dd>
   </dl>
@@ -319,6 +320,41 @@ Class BlobStoreTimeoutError
 
   <h2 class="section" id="properties">Properties
 </h2>
+
+
+  <a id="BridgingIT_DevKit_Application_Storage_BlobStoreTimeoutError_IsTransient_" data-uid="BridgingIT.DevKit.Application.Storage.BlobStoreTimeoutError.IsTransient*"></a>
+
+  <h3 id="BridgingIT_DevKit_Application_Storage_BlobStoreTimeoutError_IsTransient" data-uid="BridgingIT.DevKit.Application.Storage.BlobStoreTimeoutError.IsTransient">
+  IsTransient
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets whether a timed-out operation is eligible for retry.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public bool IsTransient { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><span class="xref">bool</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Application_Storage_BlobStoreTimeoutError_IsTransient_examples">Examples</h4>
+  <pre><code class="lang-csharp">var retry = error.IsTransient;</code></pre>
+
+
+
+
 
 
   <a id="BridgingIT_DevKit_Application_Storage_BlobStoreTimeoutError_Operation_" data-uid="BridgingIT.DevKit.Application.Storage.BlobStoreTimeoutError.Operation*"></a>

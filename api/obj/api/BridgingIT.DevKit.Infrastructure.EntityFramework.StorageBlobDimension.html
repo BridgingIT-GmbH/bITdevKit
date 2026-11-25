@@ -172,14 +172,12 @@ public sealed class StorageBlobDimension</code></pre>
   
   </h3>
 
-  <div class="markdown level1 summary"><p>Gets or sets the owning record identity.</p>
+  <div class="markdown level1 summary"><p>Gets or sets the GUID of the blob that owns this dimension.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[Required]
-[MaxLength(64)]
-public string BlobId { get; set; }</code></pre>
+    <pre><code class="lang-csharp hljs">public Guid BlobId { get; set; }</code></pre>
   </div>
 
 
@@ -188,11 +186,14 @@ public string BlobId { get; set; }</code></pre>
 
   <h4 class="section">Property Value</h4>
   <dl class="parameters">
-    <dt><span class="xref">string</span></dt>
+    <dt><span class="xref">Guid</span></dt>
     <dd></dd>
   </dl>
 
 
+
+  <h4 class="section" id="BridgingIT_DevKit_Infrastructure_EntityFramework_StorageBlobDimension_BlobId_examples">Examples</h4>
+  <pre><code class="lang-csharp">dimension.BlobId = blob.Id;</code></pre>
 
 
 

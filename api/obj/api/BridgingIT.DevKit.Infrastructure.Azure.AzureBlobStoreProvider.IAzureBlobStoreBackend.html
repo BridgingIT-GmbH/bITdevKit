@@ -251,6 +251,48 @@ Interface AzureBlobStoreProvider.IAzureBlobStoreBackend
 
 
 
+  <a id="BridgingIT_DevKit_Infrastructure_Azure_AzureBlobStoreProvider_IAzureBlobStoreBackend_GetPropertiesForExpirationAsync_" data-uid="BridgingIT.DevKit.Infrastructure.Azure.AzureBlobStoreProvider.IAzureBlobStoreBackend.GetPropertiesForExpirationAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_Azure_AzureBlobStoreProvider_IAzureBlobStoreBackend_GetPropertiesForExpirationAsync_BridgingIT_DevKit_Application_Storage_BlobKey_System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Infrastructure.Azure.AzureBlobStoreProvider.IAzureBlobStoreBackend.GetPropertiesForExpirationAsync(BridgingIT.DevKit.Application.Storage.BlobKey,System.Threading.CancellationToken)">
+  GetPropertiesForExpirationAsync(BlobKey, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Reads the metadata and ETag needed to check expiration.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">Task&lt;AzureBlobStoreProvider.AzureBlobProperties&gt; GetPropertiesForExpirationAsync(BlobKey key, CancellationToken cancellationToken)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>key</code> <a class="xref" href="BridgingIT.DevKit.Application.Storage.BlobKey.html">BlobKey</a></dt>
+    <dd></dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span>&lt;<a class="xref" href="BridgingIT.DevKit.Infrastructure.Azure.AzureBlobStoreProvider.html">AzureBlobStoreProvider</a>.<a class="xref" href="BridgingIT.DevKit.Infrastructure.Azure.AzureBlobStoreProvider.AzureBlobProperties.html">AzureBlobProperties</a>&gt;</dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Infrastructure_Azure_AzureBlobStoreProvider_IAzureBlobStoreBackend_GetPropertiesForExpirationAsync_BridgingIT_DevKit_Application_Storage_BlobKey_System_Threading_CancellationToken__examples">Examples</h4>
+  <pre><code class="lang-csharp">var properties = await backend.GetPropertiesForExpirationAsync(key, cancellationToken);</code></pre>
+
+
+
+
+
+
   <a id="BridgingIT_DevKit_Infrastructure_Azure_AzureBlobStoreProvider_IAzureBlobStoreBackend_ListContainersAsync_" data-uid="BridgingIT.DevKit.Infrastructure.Azure.AzureBlobStoreProvider.IAzureBlobStoreBackend.ListContainersAsync*"></a>
 
   <h3 id="BridgingIT_DevKit_Infrastructure_Azure_AzureBlobStoreProvider_IAzureBlobStoreBackend_ListContainersAsync_System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Infrastructure.Azure.AzureBlobStoreProvider.IAzureBlobStoreBackend.ListContainersAsync(System.Threading.CancellationToken)">
@@ -379,6 +421,50 @@ Interface AzureBlobStoreProvider.IAzureBlobStoreBackend
 
   <h4 class="section" id="BridgingIT_DevKit_Infrastructure_Azure_AzureBlobStoreProvider_IAzureBlobStoreBackend_ListPageAsync_System_String_System_String_System_String_System_Int32_System_Threading_CancellationToken__examples">Examples</h4>
   <pre><code class="lang-csharp">var page = await backend.ListPageAsync(container, prefix, token, take, cancellationToken);</code></pre>
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_Azure_AzureBlobStoreProvider_IAzureBlobStoreBackend_OpenReadAsync_" data-uid="BridgingIT.DevKit.Infrastructure.Azure.AzureBlobStoreProvider.IAzureBlobStoreBackend.OpenReadAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_Azure_AzureBlobStoreProvider_IAzureBlobStoreBackend_OpenReadAsync_BridgingIT_DevKit_Application_Storage_BlobKey_System_String_System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Infrastructure.Azure.AzureBlobStoreProvider.IAzureBlobStoreBackend.OpenReadAsync(BridgingIT.DevKit.Application.Storage.BlobKey,System.String,System.Threading.CancellationToken)">
+  OpenReadAsync(BlobKey, string, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Opens content for the ETag observed during the metadata read.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">Task&lt;Stream&gt; OpenReadAsync(BlobKey key, string ifMatchETag, CancellationToken cancellationToken)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>key</code> <a class="xref" href="BridgingIT.DevKit.Application.Storage.BlobKey.html">BlobKey</a></dt>
+    <dd></dd>
+    <dt><code>ifMatchETag</code> <span class="xref">string</span></dt>
+    <dd></dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span>&lt;<span class="xref">Stream</span>&gt;</dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Infrastructure_Azure_AzureBlobStoreProvider_IAzureBlobStoreBackend_OpenReadAsync_BridgingIT_DevKit_Application_Storage_BlobKey_System_String_System_Threading_CancellationToken__examples">Examples</h4>
+  <pre><code class="lang-csharp">await using var stream = await backend.OpenReadAsync(key, etag, cancellationToken);</code></pre>
 
 
 

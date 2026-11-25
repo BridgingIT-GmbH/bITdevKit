@@ -125,6 +125,9 @@ public class StorageDocument</code></pre>
   </dd></dl>
 
 
+  <h2 id="BridgingIT_DevKit_Infrastructure_EntityFramework_StorageDocument_examples">Examples</h2>
+  <pre><code class="lang-csharp">var document = new StorageDocument { Type = "invoice", PartitionKey = "sales", RowKey = "1001" };</code></pre>
+
 
 
 
@@ -433,8 +436,7 @@ public string DimensionsJson { get; set; }</code></pre>
   
   </h3>
 
-  <div class="markdown level1 summary"><p>Gets or sets the internal row identifier. It is generated on add by the Entity Framework value generator of the
-database provider, which is sequential on SQL Server and keeps the clustered index append-only.</p>
+  <div class="markdown level1 summary"><p>Gets or sets the internal row identifier, initialized to a UUIDv7 when the row is created.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -456,8 +458,7 @@ public Guid Id { get; set; }</code></pre>
 
 
   <h4 class="section" id="BridgingIT_DevKit_Infrastructure_EntityFramework_StorageDocument_Id_examples">Examples</h4>
-  <pre><code class="lang-csharp">var row = new StorageDocument();
-// row.Id stays Guid.Empty until the entity is added to a DbContext.</code></pre>
+  <pre><code class="lang-csharp">var document = new StorageDocument { Id = suppliedId };</code></pre>
 
 
 
@@ -924,6 +925,45 @@ public string TypeHash { get; set; }</code></pre>
   </dl>
 
 
+
+
+
+
+
+
+  <h2 class="section" id="methods">Methods
+</h2>
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_EntityFramework_StorageDocument_CreateId_" data-uid="BridgingIT.DevKit.Infrastructure.EntityFramework.StorageDocument.CreateId*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_EntityFramework_StorageDocument_CreateId" data-uid="BridgingIT.DevKit.Infrastructure.EntityFramework.StorageDocument.CreateId">
+  CreateId()
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Creates a UUIDv7 for a document row.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static Guid CreateId()</code></pre>
+  </div>
+
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Guid</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Infrastructure_EntityFramework_StorageDocument_CreateId_examples">Examples</h4>
+  <pre><code class="lang-csharp">var documentId = StorageDocument.CreateId();</code></pre>
 
 
 

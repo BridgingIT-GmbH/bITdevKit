@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+      <title>Class BlobDimensionQueryTranslator | bITdevKit API Reference </title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta name="title" content="Class BlobDimensionQueryTranslator | bITdevKit API Reference ">
+      
+      <meta name="description" content="Translates blob dimension filters into composable EF queries over indexed dimension rows.">
+      <link rel="icon" href="../../favicon.ico">
+      <link rel="stylesheet" href="../../public/docfx.min.css">
+      <link rel="stylesheet" href="../../public/main.css">
+      <meta name="docfx:navrel" content="../../toc.html">
+      <meta name="docfx:tocrel" content="toc.html">
+      
+      
+      
+      
+      
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+      <meta name="loc:downloadPdf" content="Download PDF">
+
+      <script type="module" src="./../../public/docfx.min.js"></script>
+
+      <script>
+        const theme = localStorage.getItem('theme') || 'auto'
+        document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+      </script>
+
+  </head>
+
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="ManagedReference">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="../../index.html">
+            <img id="logo" class="svg" src="../../logo.svg" alt="bITdevKit API Reference">
+            bITdevKit API Reference
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+            </div>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <main class="container-xxl">
+      <div class="toc-offcanvas">
+        <div class="offcanvas-md offcanvas-start" tabindex="-1" id="tocOffcanvas" aria-labelledby="tocOffcanvasLabel">
+          <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="tocOffcanvasLabel">Table of Contents</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#tocOffcanvas" aria-label="Close"></button>
+          </div>
+          <div class="offcanvas-body">
+            <nav class="toc" id="toc"></nav>
+          </div>
+        </div>
+      </div>
+
+      <div class="content">
+        <div class="actionbar">
+          <button class="btn btn-lg border-0 d-md-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#tocOffcanvas" aria-controls="tocOffcanvas" aria-expanded="false" aria-label="Show table of contents">
+            <i class="bi bi-list"></i>
+          </button>
+
+          <nav id="breadcrumb"></nav>
+        </div>
+
+        <article data-uid="BridgingIT.DevKit.Infrastructure.EntityFramework.BlobDimensionQueryTranslator">
+
+
+
+  <h1 id="BridgingIT_DevKit_Infrastructure_EntityFramework_BlobDimensionQueryTranslator" data-uid="BridgingIT.DevKit.Infrastructure.EntityFramework.BlobDimensionQueryTranslator" class="text-break">
+Class BlobDimensionQueryTranslator  
+  </h1>
+
+  <div class="facts text-secondary">
+    <dl><dt>Namespace</dt><dd><span class="xref">BridgingIT</span>.<span class="xref">DevKit</span>.<a class="xref" href="BridgingIT.DevKit.Infrastructure.html">Infrastructure</a>.<a class="xref" href="BridgingIT.DevKit.Infrastructure.EntityFramework.html">EntityFramework</a></dd></dl>
+  <dl><dt>Assembly</dt><dd>BridgingIT.DevKit.Infrastructure.EntityFramework.dll</dd></dl>
+  </div>
+
+  <div class="markdown summary"><p>Translates blob dimension filters into composable EF queries over indexed dimension rows.</p>
+</div>
+  <div class="markdown conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static class BlobDimensionQueryTranslator</code></pre>
+  </div>
+
+
+
+
+  <dl class="typelist inheritance">
+    <dt>Inheritance</dt>
+    <dd>
+      <div><span class="xref">object</span></div>
+      <div><span class="xref">BlobDimensionQueryTranslator</span></div>
+    </dd>
+  </dl>
+
+
+
+
+
+
+  <h2 id="BridgingIT_DevKit_Infrastructure_EntityFramework_BlobDimensionQueryTranslator_examples">Examples</h2>
+  <pre><code class="lang-csharp">var candidates = BlobDimensionQueryTranslator.BuildCandidates(context, ownerIds, filter, resolvedNames);</code></pre>
+
+
+
+
+  <h2 class="section" id="methods">Methods
+</h2>
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_EntityFramework_BlobDimensionQueryTranslator_ApplyAsync_" data-uid="BridgingIT.DevKit.Infrastructure.EntityFramework.BlobDimensionQueryTranslator.ApplyAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_EntityFramework_BlobDimensionQueryTranslator_ApplyAsync__1___0_System_Linq_IQueryable_BridgingIT_DevKit_Infrastructure_EntityFramework_StorageBlob__System_String_BridgingIT_DevKit_Application_Storage_BlobDimensionFilter_BridgingIT_DevKit_Application_Storage_BlobDimensionCapabilities_BridgingIT_DevKit_Infrastructure_EntityFramework_BlobDimensionNameResolver___0__System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Infrastructure.EntityFramework.BlobDimensionQueryTranslator.ApplyAsync``1(``0,System.Linq.IQueryable{BridgingIT.DevKit.Infrastructure.EntityFramework.StorageBlob},System.String,BridgingIT.DevKit.Application.Storage.BlobDimensionFilter,BridgingIT.DevKit.Application.Storage.BlobDimensionCapabilities,BridgingIT.DevKit.Infrastructure.EntityFramework.BlobDimensionNameResolver{``0},System.Threading.CancellationToken)">
+  ApplyAsync&lt;TContext&gt;(TContext, IQueryable&lt;StorageBlob&gt;, string, BlobDimensionFilter, BlobDimensionCapabilities, BlobDimensionNameResolver&lt;TContext&gt;, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Validates a filter, resolves its dimension names, and builds a query for the matching blob rows.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static Task&lt;Result&lt;IQueryable&lt;StorageBlob&gt;&gt;&gt; ApplyAsync&lt;TContext&gt;(TContext context, IQueryable&lt;StorageBlob&gt; owners, string scope, BlobDimensionFilter filter, BlobDimensionCapabilities capabilities, BlobDimensionNameResolver&lt;TContext&gt; resolver, CancellationToken token) where TContext : DbContext</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>context</code> <span class="xref">TContext</span></dt>
+    <dd><p>The context used to resolve names and query the dimension rows.</p>
+</dd>
+    <dt><code>owners</code> <span class="xref">IQueryable</span>&lt;<a class="xref" href="BridgingIT.DevKit.Infrastructure.EntityFramework.StorageBlob.html">StorageBlob</a>&gt;</dt>
+    <dd><p>The blob rows already restricted to the requested container.</p>
+</dd>
+    <dt><code>scope</code> <span class="xref">string</span></dt>
+    <dd><p>The container name used to resolve dimension names.</p>
+</dd>
+    <dt><code>filter</code> <a class="xref" href="BridgingIT.DevKit.Application.Storage.BlobDimensionFilter.html">BlobDimensionFilter</a></dt>
+    <dd><p>The filter to apply. A null filter returns the supplied owner query.</p>
+</dd>
+    <dt><code>capabilities</code> <a class="xref" href="BridgingIT.DevKit.Application.Storage.BlobDimensionCapabilities.html">BlobDimensionCapabilities</a></dt>
+    <dd><p>The dimension operations supported by the current provider.</p>
+</dd>
+    <dt><code>resolver</code> <a class="xref" href="BridgingIT.DevKit.Infrastructure.EntityFramework.BlobDimensionNameResolver-1.html">BlobDimensionNameResolver</a>&lt;TContext&gt;</dt>
+    <dd><p>The resolver for dimension names in the current store.</p>
+</dd>
+    <dt><code>token</code> <span class="xref">CancellationToken</span></dt>
+    <dd><p>Cancels dimension name resolution.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.Result-1.html">Result</a>&lt;<span class="xref">IQueryable</span>&lt;<a class="xref" href="BridgingIT.DevKit.Infrastructure.EntityFramework.StorageBlob.html">StorageBlob</a>&gt;&gt;&gt;</dt>
+    <dd><p>A composable owner query on success or the validation or name resolution errors on failure.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>TContext</code></dt>
+    <dd><p>The relational context type that maps blobs and their dimension tables.</p>
+</dd>
+  </dl>
+
+
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Infrastructure_EntityFramework_BlobDimensionQueryTranslator_ApplyAsync__1___0_System_Linq_IQueryable_BridgingIT_DevKit_Infrastructure_EntityFramework_StorageBlob__System_String_BridgingIT_DevKit_Application_Storage_BlobDimensionFilter_BridgingIT_DevKit_Application_Storage_BlobDimensionCapabilities_BridgingIT_DevKit_Infrastructure_EntityFramework_BlobDimensionNameResolver___0__System_Threading_CancellationToken__examples">Examples</h4>
+  <pre><code class="lang-csharp">var result = await BlobDimensionQueryTranslator.ApplyAsync(
+    context, context.StorageBlobs.Where(row =&gt; row.Container == "reports"), "reports",
+    filter, capabilities, resolver, cancellationToken);</code></pre>
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_EntityFramework_BlobDimensionQueryTranslator_BuildCandidates_" data-uid="BridgingIT.DevKit.Infrastructure.EntityFramework.BlobDimensionQueryTranslator.BuildCandidates*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_EntityFramework_BlobDimensionQueryTranslator_BuildCandidates_Microsoft_EntityFrameworkCore_DbContext_System_Linq_IQueryable_System_Guid__BridgingIT_DevKit_Application_Storage_BlobDimensionFilter_System_Collections_Generic_IReadOnlyDictionary_System_String_System_Int64__" data-uid="BridgingIT.DevKit.Infrastructure.EntityFramework.BlobDimensionQueryTranslator.BuildCandidates(Microsoft.EntityFrameworkCore.DbContext,System.Linq.IQueryable{System.Guid},BridgingIT.DevKit.Application.Storage.BlobDimensionFilter,System.Collections.Generic.IReadOnlyDictionary{System.String,System.Int64})">
+  BuildCandidates(DbContext, IQueryable&lt;Guid&gt;, BlobDimensionFilter, IReadOnlyDictionary&lt;string, long&gt;)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Builds a query for matching blob IDs using indexed dimension rows and resolved names.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static IQueryable&lt;Guid&gt; BuildCandidates(DbContext context, IQueryable&lt;Guid&gt; universe, BlobDimensionFilter filter, IReadOnlyDictionary&lt;string, long&gt; names)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>context</code> <span class="xref">DbContext</span></dt>
+    <dd><p>The relational context that maps the blob dimension tables.</p>
+</dd>
+    <dt><code>universe</code> <span class="xref">IQueryable</span>&lt;<span class="xref">Guid</span>&gt;</dt>
+    <dd><p>The blob IDs in scope, used for filter branches without an indexed match to start from.</p>
+</dd>
+    <dt><code>filter</code> <a class="xref" href="BridgingIT.DevKit.Application.Storage.BlobDimensionFilter.html">BlobDimensionFilter</a></dt>
+    <dd><p>A filter already validated against the provider's dimension capabilities.</p>
+</dd>
+    <dt><code>names</code> <span class="xref">IReadOnlyDictionary</span>&lt;<span class="xref">string</span>, <span class="xref">long</span>&gt;</dt>
+    <dd><p>The dictionary IDs for the canonical dimension names found in scope.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">IQueryable</span>&lt;<span class="xref">Guid</span>&gt;</dt>
+    <dd><p>A deferred query for the candidate IDs. Join it to the scoped owner query before returning blobs.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Infrastructure_EntityFramework_BlobDimensionQueryTranslator_BuildCandidates_Microsoft_EntityFrameworkCore_DbContext_System_Linq_IQueryable_System_Guid__BridgingIT_DevKit_Application_Storage_BlobDimensionFilter_System_Collections_Generic_IReadOnlyDictionary_System_String_System_Int64___examples">Examples</h4>
+  <pre><code class="lang-csharp">var ownerIds = context.StorageBlobs.Where(row =&gt; row.Container == "reports").Select(row =&gt; row.Id);
+var candidates = BlobDimensionQueryTranslator.BuildCandidates(context, ownerIds, filter, resolvedNames);</code></pre>
+
+
+
+
+
+
+
+</article>
+
+
+
+      </div>
+
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
+
+
+    <footer class="border-top text-secondary">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          <span>Made with <a href="https://dotnet.github.io/docfx">docfx</a></span>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

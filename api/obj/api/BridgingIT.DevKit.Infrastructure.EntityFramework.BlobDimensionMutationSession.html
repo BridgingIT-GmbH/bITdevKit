@@ -1,0 +1,518 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+      <title>Class BlobDimensionMutationSession | bITdevKit API Reference </title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta name="title" content="Class BlobDimensionMutationSession | bITdevKit API Reference ">
+      
+      <meta name="description" content="Tracks dimension names, registrations, and value rows for a single blob mutation or batch.">
+      <link rel="icon" href="../../favicon.ico">
+      <link rel="stylesheet" href="../../public/docfx.min.css">
+      <link rel="stylesheet" href="../../public/main.css">
+      <meta name="docfx:navrel" content="../../toc.html">
+      <meta name="docfx:tocrel" content="toc.html">
+      
+      
+      
+      
+      
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+      <meta name="loc:downloadPdf" content="Download PDF">
+
+      <script type="module" src="./../../public/docfx.min.js"></script>
+
+      <script>
+        const theme = localStorage.getItem('theme') || 'auto'
+        document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+      </script>
+
+  </head>
+
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="ManagedReference">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="../../index.html">
+            <img id="logo" class="svg" src="../../logo.svg" alt="bITdevKit API Reference">
+            bITdevKit API Reference
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+            </div>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <main class="container-xxl">
+      <div class="toc-offcanvas">
+        <div class="offcanvas-md offcanvas-start" tabindex="-1" id="tocOffcanvas" aria-labelledby="tocOffcanvasLabel">
+          <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="tocOffcanvasLabel">Table of Contents</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#tocOffcanvas" aria-label="Close"></button>
+          </div>
+          <div class="offcanvas-body">
+            <nav class="toc" id="toc"></nav>
+          </div>
+        </div>
+      </div>
+
+      <div class="content">
+        <div class="actionbar">
+          <button class="btn btn-lg border-0 d-md-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#tocOffcanvas" aria-controls="tocOffcanvas" aria-expanded="false" aria-label="Show table of contents">
+            <i class="bi bi-list"></i>
+          </button>
+
+          <nav id="breadcrumb"></nav>
+        </div>
+
+        <article data-uid="BridgingIT.DevKit.Infrastructure.EntityFramework.BlobDimensionMutationSession">
+
+
+
+  <h1 id="BridgingIT_DevKit_Infrastructure_EntityFramework_BlobDimensionMutationSession" data-uid="BridgingIT.DevKit.Infrastructure.EntityFramework.BlobDimensionMutationSession" class="text-break">
+Class BlobDimensionMutationSession  
+  </h1>
+
+  <div class="facts text-secondary">
+    <dl><dt>Namespace</dt><dd><span class="xref">BridgingIT</span>.<span class="xref">DevKit</span>.<a class="xref" href="BridgingIT.DevKit.Infrastructure.html">Infrastructure</a>.<a class="xref" href="BridgingIT.DevKit.Infrastructure.EntityFramework.html">EntityFramework</a></dd></dl>
+  <dl><dt>Assembly</dt><dd>BridgingIT.DevKit.Infrastructure.EntityFramework.dll</dd></dl>
+  </div>
+
+  <div class="markdown summary"><p>Tracks dimension names, registrations, and value rows for a single blob mutation or batch.</p>
+</div>
+  <div class="markdown conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public sealed class BlobDimensionMutationSession</code></pre>
+  </div>
+
+
+
+
+  <dl class="typelist inheritance">
+    <dt>Inheritance</dt>
+    <dd>
+      <div><span class="xref">object</span></div>
+      <div><span class="xref">BlobDimensionMutationSession</span></div>
+    </dd>
+  </dl>
+
+
+
+
+
+
+  <h2 id="BridgingIT_DevKit_Infrastructure_EntityFramework_BlobDimensionMutationSession_examples">Examples</h2>
+  <pre><code class="lang-csharp">await using var session = new BlobDimensionMutationSession(cache);</code></pre>
+
+
+
+
+  <h2 class="section" id="constructors">Constructors
+</h2>
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_EntityFramework_BlobDimensionMutationSession__ctor_" data-uid="BridgingIT.DevKit.Infrastructure.EntityFramework.BlobDimensionMutationSession.#ctor*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_EntityFramework_BlobDimensionMutationSession__ctor_BridgingIT_DevKit_Infrastructure_EntityFramework_BlobDimensionNameCache_" data-uid="BridgingIT.DevKit.Infrastructure.EntityFramework.BlobDimensionMutationSession.#ctor(BridgingIT.DevKit.Infrastructure.EntityFramework.BlobDimensionNameCache)">
+  BlobDimensionMutationSession(BlobDimensionNameCache)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Tracks dimension names, registrations, and value rows for a single blob mutation or batch.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public BlobDimensionMutationSession(BlobDimensionNameCache cache)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>cache</code> <a class="xref" href="BridgingIT.DevKit.Infrastructure.EntityFramework.BlobDimensionNameCache.html">BlobDimensionNameCache</a></dt>
+    <dd><p>The name cache that provides the current generation and registration admission.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Infrastructure_EntityFramework_BlobDimensionMutationSession__ctor_BridgingIT_DevKit_Infrastructure_EntityFramework_BlobDimensionNameCache__examples">Examples</h4>
+  <pre><code class="lang-csharp">await using var session = new BlobDimensionMutationSession(cache);</code></pre>
+
+
+
+
+
+
+  <h2 class="section" id="properties">Properties
+</h2>
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_EntityFramework_BlobDimensionMutationSession_Generation_" data-uid="BridgingIT.DevKit.Infrastructure.EntityFramework.BlobDimensionMutationSession.Generation*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_EntityFramework_BlobDimensionMutationSession_Generation" data-uid="BridgingIT.DevKit.Infrastructure.EntityFramework.BlobDimensionMutationSession.Generation">
+  Generation
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets the name cache generation captured when the session started.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public long Generation { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><span class="xref">long</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Infrastructure_EntityFramework_BlobDimensionMutationSession_Generation_examples">Examples</h4>
+  <pre><code class="lang-csharp">var generation = session.Generation;</code></pre>
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_EntityFramework_BlobDimensionMutationSession_NewRegistrations_" data-uid="BridgingIT.DevKit.Infrastructure.EntityFramework.BlobDimensionMutationSession.NewRegistrations*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_EntityFramework_BlobDimensionMutationSession_NewRegistrations" data-uid="BridgingIT.DevKit.Infrastructure.EntityFramework.BlobDimensionMutationSession.NewRegistrations">
+  NewRegistrations
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets or sets the number of new name rows registered in this session.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public int NewRegistrations { get; set; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><span class="xref">int</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Infrastructure_EntityFramework_BlobDimensionMutationSession_NewRegistrations_examples">Examples</h4>
+  <pre><code class="lang-csharp">var registered = session.NewRegistrations;</code></pre>
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_EntityFramework_BlobDimensionMutationSession_Pending_" data-uid="BridgingIT.DevKit.Infrastructure.EntityFramework.BlobDimensionMutationSession.Pending*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_EntityFramework_BlobDimensionMutationSession_Pending" data-uid="BridgingIT.DevKit.Infrastructure.EntityFramework.BlobDimensionMutationSession.Pending">
+  Pending
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets the name IDs queued for publication to the shared cache after commit.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Dictionary&lt;BlobDimensionNameKey, long&gt; Pending { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Dictionary</span>&lt;<a class="xref" href="BridgingIT.DevKit.Infrastructure.EntityFramework.BlobDimensionNameKey.html">BlobDimensionNameKey</a>, <span class="xref">long</span>&gt;</dt>
+    <dd></dd>
+  </dl>
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Infrastructure_EntityFramework_BlobDimensionMutationSession_Pending_examples">Examples</h4>
+  <pre><code class="lang-csharp">var count = session.Pending.Count;</code></pre>
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_EntityFramework_BlobDimensionMutationSession_Published_" data-uid="BridgingIT.DevKit.Infrastructure.EntityFramework.BlobDimensionMutationSession.Published*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_EntityFramework_BlobDimensionMutationSession_Published" data-uid="BridgingIT.DevKit.Infrastructure.EntityFramework.BlobDimensionMutationSession.Published">
+  Published
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets or sets whether the resolver has already handled publication for this session.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public bool Published { get; set; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><span class="xref">bool</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Infrastructure_EntityFramework_BlobDimensionMutationSession_Published_examples">Examples</h4>
+  <pre><code class="lang-csharp">var published = session.Published;</code></pre>
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_EntityFramework_BlobDimensionMutationSession_Resolved_" data-uid="BridgingIT.DevKit.Infrastructure.EntityFramework.BlobDimensionMutationSession.Resolved*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_EntityFramework_BlobDimensionMutationSession_Resolved" data-uid="BridgingIT.DevKit.Infrastructure.EntityFramework.BlobDimensionMutationSession.Resolved">
+  Resolved
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets the name IDs already resolved during the session.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Dictionary&lt;BlobDimensionNameKey, long&gt; Resolved { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Dictionary</span>&lt;<a class="xref" href="BridgingIT.DevKit.Infrastructure.EntityFramework.BlobDimensionNameKey.html">BlobDimensionNameKey</a>, <span class="xref">long</span>&gt;</dt>
+    <dd></dd>
+  </dl>
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Infrastructure_EntityFramework_BlobDimensionMutationSession_Resolved_examples">Examples</h4>
+  <pre><code class="lang-csharp">var found = session.Resolved.TryGetValue(key, out var nameId);</code></pre>
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_EntityFramework_BlobDimensionMutationSession_Rows_" data-uid="BridgingIT.DevKit.Infrastructure.EntityFramework.BlobDimensionMutationSession.Rows*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_EntityFramework_BlobDimensionMutationSession_Rows" data-uid="BridgingIT.DevKit.Infrastructure.EntityFramework.BlobDimensionMutationSession.Rows">
+  Rows
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets the dimension rows tracked during the mutation, keyed by blob ID and name ID.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Dictionary&lt;(Guid Owner, long Name), StorageBlobDimension&gt; Rows { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Dictionary</span>&lt;(<span class="xref">Guid</span> <span class="xref">Owner</span>, <span class="xref">long</span> <span class="xref">Name</span>), <a class="xref" href="BridgingIT.DevKit.Infrastructure.EntityFramework.StorageBlobDimension.html">StorageBlobDimension</a>&gt;</dt>
+    <dd></dd>
+  </dl>
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Infrastructure_EntityFramework_BlobDimensionMutationSession_Rows_examples">Examples</h4>
+  <pre><code class="lang-csharp">var found = session.Rows.TryGetValue((blob.Id, nameId), out var row);</code></pre>
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_EntityFramework_BlobDimensionMutationSession_StoreIdentity_" data-uid="BridgingIT.DevKit.Infrastructure.EntityFramework.BlobDimensionMutationSession.StoreIdentity*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_EntityFramework_BlobDimensionMutationSession_StoreIdentity" data-uid="BridgingIT.DevKit.Infrastructure.EntityFramework.BlobDimensionMutationSession.StoreIdentity">
+  StoreIdentity
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets or sets the store identity computed during the first name lookup.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public string StoreIdentity { get; set; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><span class="xref">string</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Infrastructure_EntityFramework_BlobDimensionMutationSession_StoreIdentity_examples">Examples</h4>
+  <pre><code class="lang-csharp">var store = session.StoreIdentity;</code></pre>
+
+
+
+
+
+
+  <h2 class="section" id="methods">Methods
+</h2>
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_EntityFramework_BlobDimensionMutationSession_AdmitAsync_" data-uid="BridgingIT.DevKit.Infrastructure.EntityFramework.BlobDimensionMutationSession.AdmitAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_EntityFramework_BlobDimensionMutationSession_AdmitAsync_System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Infrastructure.EntityFramework.BlobDimensionMutationSession.AdmitAsync(System.Threading.CancellationToken)">
+  AdmitAsync(CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Acquires a registration slot for the session if it does not already hold one.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Task AdmitAsync(CancellationToken token)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>token</code> <span class="xref">CancellationToken</span></dt>
+    <dd><p>Cancels waiting for an available registration slot.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span></dt>
+    <dd><p>A task that completes when the session holds a slot.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Infrastructure_EntityFramework_BlobDimensionMutationSession_AdmitAsync_System_Threading_CancellationToken__examples">Examples</h4>
+  <pre><code class="lang-csharp">await session.AdmitAsync(cancellationToken);</code></pre>
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_EntityFramework_BlobDimensionMutationSession_DisposeAsync_" data-uid="BridgingIT.DevKit.Infrastructure.EntityFramework.BlobDimensionMutationSession.DisposeAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_EntityFramework_BlobDimensionMutationSession_DisposeAsync" data-uid="BridgingIT.DevKit.Infrastructure.EntityFramework.BlobDimensionMutationSession.DisposeAsync">
+  DisposeAsync()
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Releases the session's registration slot if it was acquired.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public ValueTask DisposeAsync()</code></pre>
+  </div>
+
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">ValueTask</span></dt>
+    <dd><p>A completed task after the slot has been released.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Infrastructure_EntityFramework_BlobDimensionMutationSession_DisposeAsync_examples">Examples</h4>
+  <pre><code class="lang-csharp">await session.DisposeAsync();</code></pre>
+
+
+
+
+
+
+
+</article>
+
+
+
+      </div>
+
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
+
+
+    <footer class="border-top text-secondary">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          <span>Made with <a href="https://dotnet.github.io/docfx">docfx</a></span>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

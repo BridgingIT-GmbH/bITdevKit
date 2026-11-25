@@ -2,6 +2,11 @@
 
 This changelog includes unreleased changes on `main` and the full tagged release history from the `main` branch.
 
+## [10.0.133] - 2026-11-25
+
+- Fixed HTTP/2 failures with `AddResponseProblemDetails()` by letting ASP.NET Core manage response headers. Empty-status Problem Details responses keep their existing headers and cache policy.
+- Removed `ProblemDetailsOptions.AllowedHeaderNames` and `ResponseProblemDetailsHeaderSnapshot`. **Breaking change.** Set custom exception-response headers in middleware with `HttpResponse.OnStarting()`. [Header guidance](docs/features-presentation-exception-handling.md#manage-response-headers-in-middleware)
+
 ## [10.0.132] - 2026-11-25
 
 - Fixed `FilterModel` JSON parsing to skip blank ordering fields and include paths. Omitted or null directions sort ascending. **Breaking change.** `FilterOrderCriteria.Direction` is now nullable. Rebuild consumers and handle null when reading the property directly.
